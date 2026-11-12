@@ -1,1 +1,1164 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planilha Pizza AVPN Exclusiva - Marcelo</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            avpn: {
+              red: '#C0392B',
+              terracotta: '#D9534F',
+              gold: '#D4AF37',
+              goldHover: '#B8962E',
+              darkBg: '#0F1115',
+              cardDark: '#1A1D24',
+              borderDark: '#2D323E',
+              cream: '#FAF6EE',
+              olive: '#4A5D4E'
+            }
+          },
+          fontFamily: {
+            serif: ['Cinzel', 'serif'],
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1a1d24;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #d4af37;
+    }
+
+    /* Print styling */
+    @media print {
+      body {
+        background-color: #fff !important;
+        color: #000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .card-print {
+        border: 1px solid #ccc !important;
+        background: #fff !important;
+        color: #000 !important;
+        box-shadow: none !important;
+      }
+      .tab-content {
+        display: block !important;
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body class="bg-avpn-darkBg text-slate-200 font-sans min-h-screen transition-colors duration-300">
+
+  <!-- Header Header principal -->
+  <header class="border-b border-avpn-borderDark bg-avpn-cardDark/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+      
+      <!-- Brand & Badge AVPN -->
+      <div class="flex items-center space-x-3">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-avpn-red to-amber-600 flex items-center justify-center shadow-lg shadow-red-900/40 ring-2 ring-avpn-gold/50">
+          <i class="fa-solid font-bold text-white text-xl">🍕</i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-serif font-bold text-lg sm:text-xl text-slate-100 tracking-wide">AVPN MARCELO</h1>
+            <span class="bg-amber-500/10 text-avpn-gold text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full border border-avpn-gold/30 flex items-center gap-1">
+              <i class="fa-solid fa-certificate text-avpn-gold"></i> Standard 100%
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">Ficha Técnica & Sistema Operacional Napolitano</p>
+        </div>
+      </div>
+
+      <!-- Quick Actions / Theme Toggle -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <button onclick="window.print()" class="no-print bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 font-medium shadow-sm">
+          <i class="fa-solid fa-print text-avpn-gold"></i>
+          <span class="hidden sm:inline">Imprimir Ficha</span>
+        </button>
+        <button id="themeToggleBtn" onclick="toggleTheme()" class="no-print bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 p-2 rounded-lg transition-all text-xs" title="Alternar Tema">
+          <i class="fa-solid fa-moon text-amber-400" id="themeIcon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 no-print">
+      <nav class="flex space-x-2 sm:space-x-6 border-t border-slate-800/80 pt-2 overflow-x-auto no-scrollbar">
+        <button onclick="switchTab('massa')" id="tab-btn-massa" class="tab-btn active px-3 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-avpn-gold text-avpn-gold whitespace-nowrap transition-all flex items-center gap-2">
+          <i class="fa-solid fa-calculator"></i> Receita & Calculadora
+        </button>
+        <button onclick="switchTab('cronograma')" id="tab-btn-cronograma" class="tab-btn px-3 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition-all flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left"></i> Cronograma Reverso
+        </button>
+        <button onclick="switchTab('coberturas')" id="tab-btn-coberturas" class="tab-btn px-3 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition-all flex items-center gap-2">
+          <i class="fa-solid fa-basket-shopping"></i> Coberturas & Compras
+        </button>
+        <button onclick="switchTab('diametro')" id="tab-btn-diametro" class="tab-btn px-3 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition-all flex items-center gap-2">
+          <i class="fa-solid fa-ruler-combined"></i> Peso × Diâmetro
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: CALCULADORA E RECEITA DE MASSA AVPN -->
+    <!-- ========================================== -->
+    <section id="tab-massa" class="tab-content space-y-6">
+      
+      <!-- AVPN Compliance Banner -->
+      <div id="complianceBanner" class="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40 flex items-start sm:items-center justify-between gap-3 shadow-lg">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-shield-halved text-lg"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-emerald-200 flex items-center gap-2">
+              Conformidade AVPN Regulamentar
+              <span id="complianceStatusBadge" class="bg-emerald-500 text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">100% AVPN</span>
+            </h4>
+            <p id="complianceText" class="text-xs text-emerald-300/80">Todos os parâmetros de hidratação, sal, fermento e panetto estão rigorosamente dentro do estatuto técnico da Verace Pizza Napoletana.</p>
+          </div>
+        </div>
+        <button onclick="resetDefaults()" class="text-xs text-emerald-400 underline hover:text-emerald-200 shrink-0 font-medium">
+          Restaurar Padrão Marcelo
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Controls Column (Inputs/Sliders) -->
+        <div class="lg:col-span-5 bg-avpn-cardDark border border-avpn-borderDark rounded-2xl p-5 space-y-5 shadow-xl">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <h3 class="font-serif font-bold text-base text-slate-100 flex items-center gap-2">
+              <i class="fa-solid fa-sliders text-avpn-gold"></i> Parâmetros da Receita
+            </h3>
+            <span class="text-xs text-slate-400">Regime: Peso Único Fixo</span>
+          </div>
+
+          <!-- Qtd Pizzas -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-semibold">
+              <label for="inputPizzas" class="text-slate-300">Quantidade de Pizzas (Unidades)</label>
+              <span id="valPizzas" class="text-avpn-gold font-bold text-sm">20 un</span>
+            </div>
+            <div class="flex gap-3 items-center">
+              <input type="range" id="sliderPizzas" min="1" max="100" value="20" class="w-full accent-avpn-gold cursor-pointer" oninput="updateCalculations()">
+              <input type="number" id="inputPizzas" min="1" max="500" value="20" class="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-center text-sm font-bold text-slate-100 focus:border-avpn-gold focus:outline-none" oninput="syncPizzasFromInput(this.value)">
+            </div>
+          </div>
+
+          <!-- Peso por Panetto -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-semibold">
+              <label for="inputPesoPanetto" class="text-slate-300">Peso por Panetto / Boleadora (g)</label>
+              <div class="text-right">
+                <span id="valPesoPanetto" class="text-avpn-gold font-bold text-sm">200,0 g</span>
+                <span class="text-[10px] text-slate-400 block">(Faixa AVPN: 200g - 280g)</span>
+              </div>
+            </div>
+            <input type="range" id="sliderPesoPanetto" min="180" max="300" step="5" value="200" class="w-full accent-avpn-gold cursor-pointer" oninput="updateCalculations()">
+          </div>
+
+          <!-- Hidratação -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-semibold">
+              <label for="inputHidratacao" class="text-slate-300">Hidratação (Água / Farinha)</label>
+              <div class="text-right">
+                <span id="valHidratacao" class="text-avpn-gold font-bold text-sm">55,0%</span>
+                <span class="text-[10px] text-slate-400 block">(Faixa AVPN: 55,0% - 62,5%)</span>
+              </div>
+            </div>
+            <input type="range" id="sliderHidratacao" min="50" max="70" step="0.5" value="55.0" class="w-full accent-avpn-gold cursor-pointer" oninput="updateCalculations()">
+          </div>
+
+          <!-- Sal Marinho -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-semibold">
+              <label for="inputSal" class="text-slate-300">Sal Marinho Fino (g / Litro de Água)</label>
+              <div class="text-right">
+                <span id="valSal" class="text-avpn-gold font-bold text-sm">55 g/L</span>
+                <span class="text-[10px] text-slate-400 block">(Faixa AVPN: 40 - 60 g/L)</span>
+              </div>
+            </div>
+            <input type="range" id="sliderSal" min="30" max="70" step="1" value="55" class="w-full accent-avpn-gold cursor-pointer" oninput="updateCalculations()">
+          </div>
+
+          <!-- Fermento Fresco -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-semibold">
+              <label for="inputFermento" class="text-slate-300">Fermento Fresco (g / Litro de Água)</label>
+              <div class="text-right">
+                <span id="valFermento" class="text-avpn-gold font-bold text-sm">0,20 g/L</span>
+                <span class="text-[10px] text-slate-400 block">(Faixa AVPN: 0,1 - 3,0 g/L)</span>
+              </div>
+            </div>
+            <input type="range" id="sliderFermento" min="0.1" max="3.0" step="0.05" value="0.20" class="w-full accent-avpn-gold cursor-pointer" oninput="updateCalculations()">
+          </div>
+
+          <!-- Horas e Temperatura -->
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-800">
+              <span class="text-[11px] text-slate-400 block mb-1">Fermentação Total</span>
+              <span class="text-sm font-bold text-slate-200">16,5 h (12-24h)</span>
+            </div>
+            <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-800">
+              <span class="text-[11px] text-slate-400 block mb-1">Temp. Ambiente</span>
+              <span class="text-sm font-bold text-slate-200">20°C - 24°C</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recipe Display Cards Column -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            
+            <!-- Total Massa Card -->
+            <div class="bg-avpn-cardDark border border-avpn-borderDark p-4 rounded-xl shadow-lg relative overflow-hidden group">
+              <div class="absolute -right-3 -top-3 w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center text-amber-500">
+                <i class="fa-solid fa-weight-hanging text-lg"></i>
+              </div>
+              <span class="text-xs text-slate-400 uppercase font-bold tracking-wider block mb-1">Massa Total</span>
+              <div id="cardMassaTotal" class="text-2xl font-serif font-extrabold text-white">4.000 g</div>
+              <span class="text-[11px] text-slate-500 mt-1 block font-mono">100% Rendimento</span>
+            </div>
+
+            <!-- Farinha 00 Card -->
+            <div class="bg-avpn-cardDark border border-avpn-borderDark p-4 rounded-xl shadow-lg relative overflow-hidden group">
+              <div class="absolute -right-3 -top-3 w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center text-amber-500">
+                <i class="fa-solid fa-wheat-awn text-lg"></i>
+              </div>
+              <span class="text-xs text-slate-400 uppercase font-bold tracking-wider block mb-1">Farinha Tipo 00</span>
+              <div id="cardFarinha" class="text-2xl font-serif font-extrabold text-avpn-gold">2.531,1 g</div>
+              <span class="text-[11px] text-slate-400 mt-1 block">W 250-320 | P/L 0,50-0,60</span>
+            </div>
+
+            <!-- Água Card -->
+            <div class="bg-avpn-cardDark border border-avpn-borderDark p-4 rounded-xl shadow-lg relative overflow-hidden group">
+              <div class="absolute -right-3 -top-3 w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center text-blue-400">
+                <i class="fa-solid fa-droplet text-lg"></i>
+              </div>
+              <span class="text-xs text-slate-400 uppercase font-bold tracking-wider block mb-1">Água Mineral/Filtrada</span>
+              <div id="cardAgua" class="text-2xl font-serif font-extrabold text-blue-400">1.392,1 g</div>
+              <span id="cardAguaPct" class="text-[11px] text-slate-400 mt-1 block">1.392 mL (55,0% base farinha)</span>
+            </div>
+
+            <!-- Sal Card -->
+            <div class="bg-avpn-cardDark border border-avpn-borderDark p-4 rounded-xl shadow-lg relative overflow-hidden group">
+              <div class="absolute -right-3 -top-3 w-12 h-12 bg-slate-500/10 rounded-full flex items-center justify-center text-slate-300">
+                <i class="fa-solid fa-cube text-lg"></i>
+              </div>
+              <span class="text-xs text-slate-400 uppercase font-bold tracking-wider block mb-1">Sal Marinho Fino</span>
+              <div id="cardSal" class="text-xl font-serif font-bold text-slate-200">76,6 g</div>
+              <span id="cardSalPct" class="text-[11px] text-slate-400 mt-1 block">3,02% da Farinha (55g/L)</span>
+            </div>
+
+            <!-- Fermento Fresco Card -->
+            <div class="bg-avpn-cardDark border border-avpn-borderDark p-4 rounded-xl shadow-lg relative overflow-hidden group">
+              <div class="absolute -right-3 -top-3 w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-400">
+                <i class="fa-solid fa-bacteria text-lg"></i>
+              </div>
+              <span class="text-xs text-slate-400 uppercase font-bold tracking-wider block mb-1">Fermento Fresco</span>
+              <div id="cardFermentoFresco" class="text-xl font-serif font-bold text-emerald-400">0,28 g</div>
+              <span id="cardFermentoFrescoPct" class="text-[11px] text-slate-400 mt-1 block">0,011% da Farinha</span>
+            </div>
+
+            <!-- Fermento Seco Card -->
+            <div class="bg-avpn-cardDark border border-avpn-borderDark p-4 rounded-xl shadow-lg relative overflow-hidden group">
+              <div class="absolute -right-3 -top-3 w-12 h-12 bg-amber-600/10 rounded-full flex items-center justify-center text-amber-500">
+                <i class="fa-solid fa-seedling text-lg"></i>
+              </div>
+              <span class="text-xs text-slate-400 uppercase font-bold tracking-wider block mb-1">Opção Seco (Instantâneo)</span>
+              <div id="cardFermentoSeco" class="text-xl font-serif font-bold text-amber-400">0,09 g</div>
+              <span class="text-[11px] text-slate-400 mt-1 block">1/3 do Fermento Fresco</span>
+            </div>
+
+          </div>
+
+          <!-- Formula Detail Card -->
+          <div class="bg-avpn-cardDark border border-avpn-borderDark rounded-xl p-4 text-xs text-slate-300 space-y-2">
+            <h4 class="font-bold text-avpn-gold flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-info"></i> Método Oficial de Cálculo AVPN (Base de Água)
+            </h4>
+            <p class="leading-relaxed text-slate-400">
+              Na tradição napolitana registrada na AVPN, a água de nascente é a referência fixa (1,0 Litro). O sal (40-60g) e o fermento (0,1-3g) são dissolvidos diretamente na água antes da adição gradual da farinha até atingir o ponto de corda (<em>punto di pasta</em>).
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Tabela de Referência Rápida (Escalonamento Dinâmico) -->
+      <div class="bg-avpn-cardDark border border-avpn-borderDark rounded-2xl p-5 shadow-xl space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="font-serif font-bold text-base text-slate-100 flex items-center gap-2">
+              <i class="fa-solid fa-table-list text-avpn-gold"></i> Tabela de Referência Rápida de Escalonamento
+            </h3>
+            <p class="text-xs text-slate-400">Valores calculados dinamicamente com base nas configurações selecionadas acima.</p>
+          </div>
+          <span class="bg-slate-800 text-slate-300 text-xs px-3 py-1 rounded-full border border-slate-700">
+            Panetto: <strong id="lblTablePanetto" class="text-avpn-gold">200g</strong> | Hidratação: <strong id="lblTableHidra" class="text-avpn-gold">55%</strong>
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-900/80 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-4">Pizzas (un)</th>
+                <th class="py-3 px-4">Massa Total (g)</th>
+                <th class="py-3 px-4">Água (g / mL)</th>
+                <th class="py-3 px-4">Farinha Tipo 00 (g)</th>
+                <th class="py-3 px-4">Sal Marinho (g)</th>
+                <th class="py-3 px-4">Fermento Fresco (g)</th>
+                <th class="py-3 px-4">Fermento Seco (g)</th>
+              </tr>
+            </thead>
+            <tbody id="scalingTableBody" class="divide-y divide-slate-800 font-mono">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: CRONOGRAMA OPERACIONAL REVERSO      -->
+    <!-- ========================================== -->
+    <section id="tab-cronograma" class="tab-content hidden space-y-6">
+      
+      <!-- Date & Service Time Setup Card -->
+      <div class="bg-avpn-cardDark border border-avpn-borderDark rounded-2xl p-5 shadow-xl space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <h3 class="font-serif font-bold text-lg text-slate-100 flex items-center gap-2">
+              <i class="fa-solid fa-clock text-avpn-gold"></i> Planejamento de Produção Reverso
+            </h3>
+            <p class="text-xs text-slate-400">Defina o momento de forneamento da 1ª pizza. O sistema calcula a hora exata de cada etapa do processo artesanal.</p>
+          </div>
+          
+          <div class="flex flex-wrap gap-3 items-center">
+            <div>
+              <label for="eventDate" class="block text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-1">Data do Evento</label>
+              <input type="date" id="eventDate" value="2026-11-08" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-200 focus:border-avpn-gold focus:outline-none" onchange="updateSchedule()">
+            </div>
+            <div>
+              <label for="eventTime" class="block text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-1">Início do Serviço / Forno</label>
+              <input type="time" id="eventTime" value="19:30" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-bold text-avpn-gold focus:border-avpn-gold focus:outline-none" onchange="updateSchedule()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Overview Bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl">
+            <span class="text-[11px] text-slate-400 block">Tempo Total de Processo</span>
+            <span class="text-sm font-bold text-avpn-gold">17 horas</span>
+          </div>
+          <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl">
+            <span class="text-[11px] text-slate-400 block">Início Amassamento</span>
+            <span id="summaryStartTime" class="text-sm font-bold text-slate-200">08/11 às 02:30</span>
+          </div>
+          <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl">
+            <span class="text-[11px] text-slate-400 block">Maturação em Bolas (Appretto)</span>
+            <span class="text-sm font-bold text-emerald-400">14 Horas</span>
+          </div>
+          <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl">
+            <span class="text-[11px] text-slate-400 block">Início do Serviço</span>
+            <span id="summaryEndTime" class="text-sm font-bold text-avpn-terracotta">08/11 às 19:30</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Detailed Steps -->
+      <div id="timelineContainer" class="space-y-4">
+        <!-- Step items dynamically updated -->
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: COBERTURAS E LISTA DE COMPRAS       -->
+    <!-- ========================================== -->
+    <section id="tab-coberturas" class="tab-content hidden space-y-6">
+      
+      <!-- Pizza Flavors Split Control -->
+      <div class="bg-avpn-cardDark border border-avpn-borderDark rounded-2xl p-5 shadow-xl space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3 border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="font-serif font-bold text-base text-slate-100 flex items-center gap-2">
+              <i class="fa-solid fa-pizza-slice text-avpn-gold"></i> Distribuição do Cardápio AVPN
+            </h3>
+            <p class="text-xs text-slate-400">Ajuste as quantidades de cada sabor para dimensionar os insumos exatos de cobertura.</p>
+          </div>
+          <span class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1 rounded-full">
+            Total Calculado: <span id="toppingsTotalCount" class="text-avpn-gold">20 pizzas</span>
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          
+          <!-- Margherita Card -->
+          <div class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-sm text-slate-200">Margherita Classica</span>
+              <span class="text-[10px] bg-red-900/40 text-red-300 px-2 py-0.5 rounded border border-red-800">D.O.P.</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Tomate, Mozzarella, Manjericão, Azeite EVOO e Parmigiano/Grana.</p>
+            <div class="flex items-center gap-2 pt-2">
+              <label for="inputMargherita" class="text-xs text-slate-400">Qtd:</label>
+              <input type="number" id="inputMargherita" min="0" value="14" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-center font-bold text-slate-100" onchange="updateToppings()">
+            </div>
+          </div>
+
+          <!-- Marinara Card -->
+          <div class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-sm text-slate-200">Marinara Tradizionale</span>
+              <span class="text-[10px] bg-amber-900/40 text-amber-300 px-2 py-0.5 rounded border border-amber-800">Sem Queijo</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Tomate, Alho Laminado, Orégano Seco e Azeite EVOO.</p>
+            <div class="flex items-center gap-2 pt-2">
+              <label for="inputMarinara" class="text-xs text-slate-400">Qtd:</label>
+              <input type="number" id="inputMarinara" min="0" value="4" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-center font-bold text-slate-100" onchange="updateToppings()">
+            </div>
+          </div>
+
+          <!-- Calzone Card -->
+          <div class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-sm text-slate-200">Ripieno / Calzone</span>
+              <span class="text-[10px] bg-emerald-900/40 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800">Recheado</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Ricota Fresca, Salame Napolitano, Mozzarella e Tomate.</p>
+            <div class="flex items-center gap-2 pt-2">
+              <label for="inputCalzone" class="text-xs text-slate-400">Qtd:</label>
+              <input type="number" id="inputCalzone" min="0" value="2" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-center font-bold text-slate-100" onchange="updateToppings()">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Ingredients Table & Shopping List -->
+      <div class="bg-avpn-cardDark border border-avpn-borderDark rounded-2xl p-5 shadow-xl space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3 border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="font-serif font-bold text-base text-slate-100 flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-avpn-gold"></i> Lista Consolidada de Insumos & Especificações AVPN
+            </h3>
+            <p class="text-xs text-slate-400">Dosagem por pizza, quantidade total necessária e checklist de compras com estimativa financeira.</p>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-400 block">Massa Consolidada de Coberturas</span>
+            <span id="totalToppingsWeight" class="text-sm font-extrabold text-avpn-gold font-mono">4,25 kg</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-900/80 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-3 no-print">Check</th>
+                <th class="py-3 px-3">Ingrediente / Insumo</th>
+                <th class="py-3 px-3">Dose Unitária</th>
+                <th class="py-3 px-3">Total Necessário</th>
+                <th class="py-3 px-3">Especificação Técnica AVPN</th>
+                <th class="py-3 px-3 no-print">Preço Estimado (R$/kg ou L)</th>
+                <th class="py-3 px-3 font-right">Custo Total</th>
+              </tr>
+            </thead>
+            <tbody id="toppingsTableBody" class="divide-y divide-slate-800">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Financial Summary Bar -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+            <span class="text-xs text-slate-400">Custo Total em Insumos:</span>
+            <span id="costTotalInsumos" class="text-sm font-bold text-slate-100">R$ 0,00</span>
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+            <span class="text-xs text-slate-400">Custo Médio / Pizza:</span>
+            <span id="costPorPizza" class="text-sm font-bold text-avpn-gold">R$ 0,00</span>
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+            <span class="text-xs text-slate-400">Volume Total da Operação:</span>
+            <span id="totalVolumeOperacao" class="text-sm font-bold text-emerald-400">8,25 kg</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: RELAÇÃO PESO × TAMANHO (DIÂMETRO)   -->
+    <!-- ========================================== -->
+    <section id="tab-diametro" class="tab-content hidden space-y-6">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Interactive Visualizer -->
+        <div class="lg:col-span-6 bg-avpn-cardDark border border-avpn-borderDark rounded-2xl p-5 shadow-xl flex flex-col justify-between items-center text-center space-y-4">
+          <div class="w-full text-left">
+            <h3 class="font-serif font-bold text-base text-slate-100 flex items-center gap-2">
+              <i class="fa-solid fa-circle-dot text-avpn-gold"></i> Visualizador Gráfico de Disco AVPN
+            </h3>
+            <p class="text-xs text-slate-400">Simulação em escala real do diâmetro final da pizza assada.</p>
+          </div>
+
+          <!-- Disc Interactive Container -->
+          <div class="relative w-full max-w-[340px] aspect-square bg-slate-950/60 rounded-full border border-slate-800 flex items-center justify-center p-4 my-2">
+            
+            <!-- Outer Scaled Circle (Pizza Disc) -->
+            <div id="visualPizzaDisc" class="w-64 h-64 rounded-full bg-gradient-to-br from-amber-700/40 via-amber-900/20 to-slate-900 border-4 border-amber-600/60 flex items-center justify-center shadow-2xl transition-all duration-300 relative group">
+              
+              <!-- Cornicione Effect (Borda) -->
+              <div class="absolute inset-2 rounded-full border-2 border-dashed border-amber-500/30"></div>
+              
+              <!-- Center Spec Text -->
+              <div class="text-center p-3 z-10 bg-slate-950/80 backdrop-blur rounded-xl border border-slate-800">
+                <span id="visualPesoLbl" class="text-xs text-slate-400 block font-mono">200 g</span>
+                <span id="visualDiametroLbl" class="text-2xl font-serif font-extrabold text-avpn-gold">Ø 22,0 cm</span>
+                <span id="visualAreaLbl" class="text-[10px] text-slate-500 block">Área: ~380 cm²</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Slider inside Visualizer -->
+          <div class="w-full space-y-2 pt-2 border-t border-slate-800">
+            <div class="flex justify-between text-xs font-semibold">
+              <label for="visualSliderPeso" class="text-slate-300">Testar Peso do Panetto (g):</label>
+              <span id="visualSliderVal" class="text-avpn-gold font-bold">200 g</span>
+            </div>
+            <input type="range" id="visualSliderPeso" min="180" max="280" step="5" value="200" class="w-full accent-avpn-gold cursor-pointer" oninput="updateDiameterVisualizer(this.value)">
+          </div>
+        </div>
+
+        <!-- Diameter Reference Table -->
+        <div class="lg:col-span-6 bg-avpn-cardDark border border-avpn-borderDark rounded-2xl p-5 shadow-xl space-y-4">
+          <div>
+            <h3 class="font-serif font-bold text-base text-slate-100 flex items-center gap-2">
+              <i class="fa-solid fa-table text-avpn-gold"></i> Tabela Proporcional AVPN (Peso × Diâmetro)
+            </h3>
+            <p class="text-xs text-slate-400">Escala de expansão manual e elasticidade típica do disco napolitano.</p>
+          </div>
+
+          <div class="overflow-y-auto max-h-[380px] pr-1">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-900/90 text-slate-400 uppercase tracking-wider text-[11px] sticky top-0 border-b border-slate-800">
+                <tr>
+                  <th class="py-2.5 px-3">Peso do Panetto</th>
+                  <th class="py-2.5 px-3">Diâmetro Estimado</th>
+                  <th class="py-2.5 px-3">Classificação AVPN</th>
+                </tr>
+              </thead>
+              <tbody id="diameterTableBody" class="divide-y divide-slate-800 font-mono">
+                <!-- Dynamically Populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-avpn-borderDark bg-avpn-cardDark py-6 text-center text-xs text-slate-500 space-y-2 no-print">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-pizza-slice text-avpn-gold"></i>
+        <span>Pizzas AVPN Exclusiva - Marcelo &copy; 2026</span>
+      </div>
+      <p class="text-slate-400 text-[11px]">Desenvolvido com rigor técnico conforme estatuto da <em>Associazione Verace Pizza Napoletana</em>.</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript Application Logic -->
+  <script>
+    // Global State
+    let recipeState = {
+      pizzas: 20,
+      pesoPanetto: 200.0,
+      hidratacao: 55.0,
+      salGPerL: 55.0,
+      fermentoGPerL: 0.20,
+      
+      // Flavors
+      margherita: 14,
+      marinara: 4,
+      calzone: 2
+    };
+
+    // Ingressos Specs & Unit Prices
+    const toppingSpecs = [
+      { id: 'tomate', name: 'Tomate Pelado (S. Marzano / Roma D.O.P.)', dose: 75, unit: 'g', spec: 'Esmagado à mão; salgar c/ 7-10g/kg', priceKg: 18.00, appliesTo: ['margherita', 'marinara', 'calzone'] },
+      { id: 'mozzarella', name: 'Mozzarella di Bufala / Fior di Latte', dose: 90, unit: 'g', spec: 'Cortada em tiras regulares, escorrida previamente', priceKg: 55.00, appliesTo: ['margherita', 'calzone'] },
+      { id: 'evoo', name: 'Azeite de Oliva Extra Virgem (EVOO)', dose: 7, unit: 'g', spec: 'Em espiral em forma de "6" antes de assar', priceKg: 60.00, appliesTo: ['margherita', 'marinara'] },
+      { id: 'parmigiano', name: 'Queijo Duro Ralado (Grana / Parmigiano)', dose: 6, unit: 'g', spec: 'Polvilhado uniformemente sobre o molho', priceKg: 95.00, appliesTo: ['margherita'] },
+      { id: 'basilico', name: 'Manjericão Fresco (Basílico)', dose: 3, unit: 'g', spec: '3 a 5 folhas frescas por pizza', priceKg: 40.00, appliesTo: ['margherita'] },
+      { id: 'alho', name: 'Alho Fresco Laminado (Marinara)', dose: 3, unit: 'g', spec: '1 dente fino fatiado por pizza Marinara', priceKg: 25.00, appliesTo: ['marinara'] },
+      { id: 'oregano', name: 'Orégano Seco Aromático (Marinara)', dose: 0.5, unit: 'g', spec: '1 pitada de Origanum vulgare', priceKg: 120.00, appliesTo: ['marinara'] },
+      { id: 'ricota', name: 'Ricota Fresca (Ripieno / Calzone)', dose: 120, unit: 'g', spec: 'Diluída com um fio d’água se não for fuscella', priceKg: 32.00, appliesTo: ['calzone'] },
+      { id: 'salame', name: 'Salame Napolitano Fatiado (Calzone)', dose: 40, unit: 'g', spec: 'Tiras ou fatias finas de 2-3mm', priceKg: 78.00, appliesTo: ['calzone'] },
+      { id: 'semolina', name: 'Semolina / Farinha de Abertura', dose: 15, unit: 'g', spec: 'Quantidade mínima para não queimar na soleira', priceKg: 12.00, appliesTo: ['margherita', 'marinara', 'calzone'] }
+    ];
+
+    // Checked Items state
+    let checkedItems = {};
+
+    // Initialization
+    window.onload = function() {
+      updateCalculations();
+      updateSchedule();
+      updateToppings();
+      renderDiameterTable();
+      updateDiameterVisualizer(recipeState.pesoPanetto);
+    };
+
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active', 'border-avpn-gold', 'text-avpn-gold');
+        btn.classList.add('border-transparent', 'text-slate-400');
+      });
+
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-btn-' + tabId);
+      activeBtn.classList.add('active', 'border-avpn-gold', 'text-avpn-gold');
+      activeBtn.classList.remove('border-transparent', 'text-slate-400');
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+      } else {
+        html.classList.add('dark');
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+      }
+    }
+
+    // Sync input from number box
+    function syncPizzasFromInput(val) {
+      let num = parseInt(val) || 1;
+      if (num < 1) num = 1;
+      document.getElementById('sliderPizzas').value = Math.min(num, 100);
+      updateCalculations();
+    }
+
+    // Reset Defaults
+    function resetDefaults() {
+      document.getElementById('sliderPizzas').value = 20;
+      document.getElementById('inputPizzas').value = 20;
+      document.getElementById('sliderPesoPanetto').value = 200;
+      document.getElementById('sliderHidratacao').value = 55.0;
+      document.getElementById('sliderSal').value = 55;
+      document.getElementById('sliderFermento').value = 0.20;
+      
+      document.getElementById('inputMargherita').value = 14;
+      document.getElementById('inputMarinara').value = 4;
+      document.getElementById('inputCalzone').value = 2;
+
+      updateCalculations();
+      updateToppings();
+    }
+
+    // Main Calculations Function
+    function updateCalculations() {
+      // Read Inputs
+      const pizzas = parseInt(document.getElementById('sliderPizzas').value);
+      document.getElementById('inputPizzas').value = pizzas;
+      const pesoPanetto = parseFloat(document.getElementById('sliderPesoPanetto').value);
+      const hidratacao = parseFloat(document.getElementById('sliderHidratacao').value);
+      const salGPerL = parseFloat(document.getElementById('sliderSal').value);
+      const fermentoGPerL = parseFloat(document.getElementById('sliderFermento').value);
+
+      recipeState.pizzas = pizzas;
+      recipeState.pesoPanetto = pesoPanetto;
+      recipeState.hidratacao = hidratacao;
+      recipeState.salGPerL = salGPerL;
+      recipeState.fermentoGPerL = fermentoGPerL;
+
+      // Labels UI
+      document.getElementById('valPizzas').innerText = pizzas + ' un';
+      document.getElementById('valPesoPanetto').innerText = pesoPanetto.toFixed(1).replace('.', ',') + ' g';
+      document.getElementById('valHidratacao').innerText = hidratacao.toFixed(1).replace('.', ',') + '%';
+      document.getElementById('valSal').innerText = salGPerL + ' g/L';
+      document.getElementById('valFermento').innerText = fermentoGPerL.toFixed(2).replace('.', ',') + ' g/L';
+
+      // AVPN Formula Math:
+      // Total Dough = pizzas * pesoPanetto
+      // Total Dough = Farinha + Agua + Sal + Fermento
+      // Farinha = Agua / (hidratacao / 100)
+      // Sal = (Agua / 1000) * salGPerL
+      // Fermento = (Agua / 1000) * fermentoGPerL
+      // Total Dough = Agua * (1 / (H/100) + 1 + salGPerL/1000 + fermentoGPerL/1000)
+
+      const totalDough = pizzas * pesoPanetto;
+      const factorPerGWater = (1 / (hidratacao / 100)) + 1 + (salGPerL / 1000) + (fermentoGPerL / 1000);
+      
+      const aguaG = totalDough / factorPerGWater;
+      const farinhaG = aguaG / (hidratacao / 100);
+      const salG = (aguaG / 1000) * salGPerL;
+      const fermentoFrescoG = (aguaG / 1000) * fermentoGPerL;
+      const fermentoSecoG = fermentoFrescoG / 3;
+
+      // Cards Update
+      document.getElementById('cardMassaTotal').innerText = formatWeight(totalDough);
+      document.getElementById('cardFarinha').innerText = formatWeight(farinhaG);
+      document.getElementById('cardAgua').innerText = formatWeight(aguaG);
+      document.getElementById('cardAguaPct').innerText = `${aguaG.toFixed(0)} mL (${hidratacao.toFixed(1).replace('.', ',')}% base farinha)`;
+      
+      document.getElementById('cardSal').innerText = formatWeight(salG);
+      document.getElementById('cardSalPct').innerText = `${((salG / farinhaG) * 100).toFixed(2).replace('.', ',')}% da Farinha (${salGPerL}g/L)`;
+      
+      document.getElementById('cardFermentoFresco').innerText = formatWeight(fermentoFrescoG);
+      document.getElementById('cardFermentoFrescoPct').innerText = `${((fermentoFrescoG / farinhaG) * 100).toFixed(3).replace('.', ',')}% da Farinha`;
+      
+      document.getElementById('cardFermentoSeco').innerText = formatWeight(fermentoSecoG);
+
+      // Check AVPN Compliance
+      validateAVPNCompliance(pesoPanetto, hidratacao, salGPerL, fermentoGPerL);
+
+      // Render Scaling Table
+      renderScalingTable(pesoPanetto, hidratacao, salGPerL, fermentoGPerL);
+
+      // Sync Toppings Total if count matches
+      const currentToppingsCount = parseInt(document.getElementById('inputMargherita').value || 0) + 
+                                   parseInt(document.getElementById('inputMarinara').value || 0) + 
+                                   parseInt(document.getElementById('inputCalzone').value || 0);
+      if (currentToppingsCount !== pizzas) {
+        // Adjust Margherita to balance total
+        const diff = pizzas - (parseInt(document.getElementById('inputMarinara').value || 0) + parseInt(document.getElementById('inputCalzone').value || 0));
+        document.getElementById('inputMargherita').value = Math.max(0, diff);
+        updateToppings();
+      }
+
+      // Update Visualizer Slider if tab is active
+      updateDiameterVisualizer(pesoPanetto);
+    }
+
+    // Helper: format weights
+    function formatWeight(g) {
+      if (g >= 1000) {
+        return (g / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 3 }) + ' g';
+      }
+      return g.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + ' g';
+    }
+
+    // Validate AVPN Standards
+    function validateAVPNCompliance(peso, hidra, sal, fermento) {
+      const isPesoOk = peso >= 200 && peso <= 280;
+      const isHidraOk = hidra >= 55.0 && hidra <= 62.5;
+      const isSalOk = sal >= 40 && sal <= 60;
+      const isFermentoOk = fermento >= 0.1 && fermento <= 3.0;
+
+      const banner = document.getElementById('complianceBanner');
+      const badge = document.getElementById('complianceStatusBadge');
+      const text = document.getElementById('complianceText');
+
+      if (isPesoOk && isHidraOk && isSalOk && isFermentoOk) {
+        banner.className = "p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40 flex items-start sm:items-center justify-between gap-3 shadow-lg";
+        badge.className = "bg-emerald-500 text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase";
+        badge.innerText = "100% AVPN";
+        text.innerText = "Todos os parâmetros de hidratação, sal, fermento e panetto estão rigorosamente dentro do estatuto técnico da Verace Pizza Napoletana.";
+      } else {
+        banner.className = "p-4 rounded-xl bg-amber-950/40 border border-amber-500/40 flex items-start sm:items-center justify-between gap-3 shadow-lg";
+        badge.className = "bg-amber-500 text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase";
+        badge.innerText = "Fora do Padrão AVPN";
+        
+        let warnings = [];
+        if (!isPesoOk) warnings.push("Peso panetto deve ser 200g-280g");
+        if (!isHidraOk) warnings.push("Hidratação deve ser 55%-62.5%");
+        if (!isSalOk) warnings.push("Sal deve ser 40-60 g/L");
+        if (!isFermentoOk) warnings.push("Fermento fresco deve ser 0.1-3.0 g/L");
+        
+        text.innerText = "Atenção: " + warnings.join("; ") + ".";
+      }
+    }
+
+    // Render Dynamic Scaling Table
+    function renderScalingTable(peso, hidra, sal, fermento) {
+      document.getElementById('lblTablePanetto').innerText = peso.toFixed(0) + 'g';
+      document.getElementById('lblTableHidra').innerText = hidra.toFixed(1) + '%';
+
+      const quantities = [1, 2, 5, 10, 12, 14, 16, 20, 30, 40, 50];
+      const tbody = document.getElementById('scalingTableBody');
+      tbody.innerHTML = '';
+
+      const factorPerGWater = (1 / (hidra / 100)) + 1 + (sal / 1000) + (fermento / 1000);
+
+      quantities.forEach(q => {
+        const totalDough = q * peso;
+        const aguaG = totalDough / factorPerGWater;
+        const farinhaG = aguaG / (hidra / 100);
+        const salG = (aguaG / 1000) * sal;
+        const fermentoFrescoG = (aguaG / 1000) * fermento;
+        const fermentoSecoG = fermentoFrescoG / 3;
+
+        const isCurrent = (q === recipeState.pizzas);
+        const tr = document.createElement('tr');
+        if (isCurrent) {
+          tr.className = "bg-amber-500/15 font-bold border-l-4 border-avpn-gold text-white";
+        } else {
+          tr.className = "hover:bg-slate-800/40 transition-colors";
+        }
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-4">${q} ${isCurrent ? '★' : ''}</td>
+          <td class="py-2.5 px-4">${totalDough.toLocaleString('pt-BR', {maximumFractionDigits:1})} g</td>
+          <td class="py-2.5 px-4 text-blue-400">${aguaG.toLocaleString('pt-BR', {maximumFractionDigits:1})} g</td>
+          <td class="py-2.5 px-4 text-avpn-gold">${farinhaG.toLocaleString('pt-BR', {maximumFractionDigits:1})} g</td>
+          <td class="py-2.5 px-4">${salG.toLocaleString('pt-BR', {maximumFractionDigits:1})} g</td>
+          <td class="py-2.5 px-4 text-emerald-400">${fermentoFrescoG.toFixed(2).replace('.', ',')} g</td>
+          <td class="py-2.5 px-4 text-amber-400">${fermentoSecoG.toFixed(2).replace('.', ',')} g</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Cronograma Reverso logic
+    function updateSchedule() {
+      const dateVal = document.getElementById('eventDate').value;
+      const timeVal = document.getElementById('eventTime').value;
+
+      if (!dateVal || !timeVal) return;
+
+      const serviceDateTime = new Date(`${dateVal}T${timeVal}:00`);
+
+      // Steps specs
+      // 1. Amassamento (30m)
+      // 2. Puntata (2h)
+      // 3. Staglio (30m)
+      // 4. Appretto (14h)
+      // 5. Aquecimento Forno (1h30m - overlaps with last 1.5h of Appretto)
+      // 6. Servico (Start: 19:30)
+
+      // Total fermentation & prep time before service = 30m + 2h + 30m + 14h = 17 hours
+      const apprettoEnd = new Date(serviceDateTime); // 19:30
+      const apprettoStart = new Date(apprettoEnd.getTime() - (14 * 60 * 60 * 1000)); // 05:30
+      const staglioStart = new Date(apprettoStart.getTime() - (30 * 60 * 1000)); // 05:00
+      const puntataStart = new Date(staglioStart.getTime() - (2 * 60 * 60 * 1000)); // 03:00
+      const amassamentoStart = new Date(puntataStart.getTime() - (30 * 60 * 1000)); // 02:30
+
+      const ovenStart = new Date(serviceDateTime.getTime() - (90 * 60 * 1000)); // 18:00
+
+      document.getElementById('summaryStartTime').innerText = formatDateShort(amassamentoStart);
+      document.getElementById('summaryEndTime').innerText = formatDateShort(serviceDateTime);
+
+      const steps = [
+        {
+          num: 1,
+          title: "Amassamento e Ponto de Corda (Punto di Pasta)",
+          duration: "30 minutos",
+          start: amassamentoStart,
+          end: puntataStart,
+          temp: "Tacho da Amassadeira: 16°C a 22°C",
+          desc: "Método direto: Dissolver o sal e o fermento na água mineral fria. Adicionar 50% da farinha Tipo 00 aos poucos misturando continuamente. Incorporar o restante da farinha até atingir o ponto de corda macio e aveludado sem aquecer a massa."
+        },
+        {
+          num: 2,
+          title: "Primeira Fermentação em Bloco (Puntata)",
+          duration: "2 horas",
+          start: puntataStart,
+          end: staglioStart,
+          temp: "Bancada: 20°C a 24°C",
+          desc: "Descanso da massa inteira em bloco sobre bancada de mármore/inox coberta por pano úmido ou recipiente selado para relaxar o glúten e iniciar a fermentação alcoólica inicial."
+        },
+        {
+          num: 3,
+          title: "Porcionamento e Boleamento (Staglio)",
+          duration: "30 minutos",
+          start: staglioStart,
+          end: apprettoStart,
+          temp: "Bancada de trabalho",
+          desc: "Divisão manual da massa com espátula em porções exatas de " + recipeState.pesoPanetto.toFixed(0) + "g. Boleamento (mozzatura) preciso formando esferas perfeitamente seladas por baixo."
+        },
+        {
+          num: 4,
+          title: "Segunda Fermentação em Bolas (Appretto)",
+          duration: "14 horas",
+          start: apprettoStart,
+          end: apprettoEnd,
+          temp: "Caixas Plásticas Mattarelle a ~20°C",
+          desc: "Maturação lenta dos panetti dispostos em caixas plásticas atóxicas fechadas. Desenvolvimento dos aromas característicos, complexidade de acidez e estrutura de facilíssima digestibilidade."
+        },
+        {
+          num: 5,
+          title: "Aquecimento e Estabilização do Forno",
+          duration: "1 hora e 30 min",
+          start: ovenStart,
+          end: serviceDateTime,
+          temp: "Soleira: 380°C-430°C | Cúpula: ~485°C",
+          desc: "Acendimento do forno napolitano (lenha de acácia/carvalho ou forno a gás homologado). Garantir estabilização da soleira refratária de Biscotto di Sorrento."
+        },
+        {
+          num: 6,
+          title: "Abertura, Forneamento e Serviço",
+          duration: "Sob demanda",
+          start: serviceDateTime,
+          end: null,
+          temp: "Soleira: 430°C - 480°C",
+          desc: "Abertura manual com o movimento da 'bofetada' (schiaffo) do centro para as bordas, preservando os gases do cornicione. Assamento ultrarrápido em 60 a 90 segundos com giros precisos da pá."
+        }
+      ];
+
+      const container = document.getElementById('timelineContainer');
+      container.innerHTML = '';
+
+      steps.forEach(step => {
+        const div = document.createElement('div');
+        div.className = "bg-avpn-cardDark border border-avpn-borderDark rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between transition-all hover:border-slate-700";
+
+        const timeString = step.end 
+          ? `${formatTimeOnly(step.start)} - ${formatTimeOnly(step.end)}`
+          : `${formatTimeOnly(step.start)} em diante`;
+
+        div.innerHTML = `
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-avpn-gold/20 text-avpn-gold font-serif font-bold text-base flex items-center justify-center shrink-0 border border-avpn-gold/30">
+              ${step.num}
+            </div>
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <h4 class="font-bold text-slate-100 text-sm sm:text-base">${step.title}</h4>
+                <span class="bg-slate-800 text-slate-300 text-[11px] px-2 py-0.5 rounded border border-slate-700">${step.duration}</span>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed">${step.desc}</p>
+              <div class="flex items-center gap-3 pt-1 text-[11px] text-amber-400 font-medium">
+                <span><i class="fa-solid fa-temperature-half"></i> ${step.temp}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-right shrink-0 w-full sm:w-auto flex sm:flex-col justify-between items-center sm:items-end">
+            <span class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Horário Previsto</span>
+            <span class="text-sm font-extrabold text-avpn-gold font-mono">${timeString}</span>
+            <span class="text-[10px] text-slate-400 block">${formatDateShort(step.start).split(' ')[0]}</span>
+          </div>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    function formatDateShort(dateObj) {
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const hh = String(dateObj.getHours()).padStart(2, '0');
+      const mm = String(dateObj.getMinutes()).padStart(2, '0');
+      return `${d}/${m} às ${hh}:${mm}`;
+    }
+
+    function formatTimeOnly(dateObj) {
+      const hh = String(dateObj.getHours()).padStart(2, '0');
+      const mm = String(dateObj.getMinutes()).padStart(2, '0');
+      return `${hh}:${mm}`;
+    }
+
+    // Update Toppings and Shopping List
+    function updateToppings() {
+      const margherita = parseInt(document.getElementById('inputMargherita').value || 0);
+      const marinara = parseInt(document.getElementById('inputMarinara').value || 0);
+      const calzone = parseInt(document.getElementById('inputCalzone').value || 0);
+
+      recipeState.margherita = margherita;
+      recipeState.marinara = marinara;
+      recipeState.calzone = calzone;
+
+      const totalPizzas = margherita + marinara + calzone;
+      document.getElementById('toppingsTotalCount').innerText = totalPizzas + ' pizzas';
+
+      const tbody = document.getElementById('toppingsTableBody');
+      tbody.innerHTML = '';
+
+      let totalWeightG = 0;
+      let totalCostR$ = 0;
+
+      toppingSpecs.forEach(item => {
+        let countForIngredient = 0;
+        if (item.appliesTo.includes('margherita')) countForIngredient += margherita;
+        if (item.appliesTo.includes('marinara')) countForIngredient += marinara;
+        if (item.appliesTo.includes('calzone')) countForIngredient += calzone;
+
+        const totalReqG = countForIngredient * item.dose;
+        totalWeightG += totalReqG;
+
+        const totalCostItem = (totalReqG / 1000) * item.priceKg;
+        totalCostR$ += totalCostItem;
+
+        const isChecked = checkedItems[item.id] || false;
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/40 transition-colors";
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 no-print">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCheckItem('${item.id}')" class="accent-avpn-gold cursor-pointer w-4 h-4">
+          </td>
+          <td class="py-2.5 px-3 font-semibold text-slate-200 ${isChecked ? 'line-through text-slate-500' : ''}">
+            ${item.name}
+          </td>
+          <td class="py-2.5 px-3 text-slate-400 font-mono">${item.dose} ${item.unit} / un</td>
+          <td class="py-2.5 px-3 font-mono font-bold ${isChecked ? 'text-slate-500' : 'text-avpn-gold'}">
+            ${totalReqG >= 1000 ? (totalReqG / 1000).toFixed(2).replace('.', ',') + ' kg' : totalReqG.toFixed(1).replace('.', ',') + ' g'}
+          </td>
+          <td class="py-2.5 px-3 text-slate-400 text-[11px]">${item.spec}</td>
+          <td class="py-2.5 px-3 no-print font-mono">
+            <input type="number" step="0.5" value="${item.priceKg.toFixed(2)}" class="w-20 bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-xs text-right text-slate-200" onchange="updateItemPrice('${item.id}', this.value)">
+          </td>
+          <td class="py-2.5 px-3 font-mono font-bold text-right text-slate-200">
+            R$ ${totalCostItem.toFixed(2).replace('.', ',')}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Update Financial Metrics
+      document.getElementById('totalToppingsWeight').innerText = (totalWeightG / 1000).toFixed(2).replace('.', ',') + ' kg';
+      document.getElementById('costTotalInsumos').innerText = 'R$ ' + totalCostR$.toFixed(2).replace('.', ',');
+      
+      const avgCost = totalPizzas > 0 ? (totalCostR$ / totalPizzas) : 0;
+      document.getElementById('costPorPizza').innerText = 'R$ ' + avgCost.toFixed(2).replace('.', ',');
+
+      const totalDoughG = recipeState.pizzas * recipeState.pesoPanetto;
+      const totalOpKg = (totalDoughG + totalWeightG) / 1000;
+      document.getElementById('totalVolumeOperacao').innerText = totalOpKg.toFixed(2).replace('.', ',') + ' kg';
+    }
+
+    function toggleCheckItem(id) {
+      checkedItems[id] = !checkedItems[id];
+      updateToppings();
+    }
+
+    function updateItemPrice(id, val) {
+      const price = parseFloat(val) || 0;
+      const item = toppingSpecs.find(i => i.id === id);
+      if (item) {
+        item.priceKg = price;
+        updateToppings();
+      }
+    }
+
+    // Diameter Table Render & Visualizer
+    function renderDiameterTable() {
+      const tbody = document.getElementById('diameterTableBody');
+      tbody.innerHTML = '';
+
+      // 200g -> 22.0cm up to 280g -> 35.0cm
+      const rows = [
+        { g: 200, cm: 22.0, class: "AVPN Standard Min" },
+        { g: 205, cm: 22.8, class: "Standard Napolitano" },
+        { g: 210, cm: 23.6, class: "Standard Napolitano" },
+        { g: 215, cm: 24.4, class: "Standard Napolitano" },
+        { g: 220, cm: 25.3, class: "Standard Napolitano" },
+        { g: 225, cm: 26.1, class: "Standard Napolitano" },
+        { g: 230, cm: 26.9, class: "Standard Napolitano" },
+        { g: 235, cm: 27.7, class: "Standard Napolitano" },
+        { g: 240, cm: 28.5, class: "AVPN Tradizionale" },
+        { g: 245, cm: 29.3, class: "AVPN Tradizionale" },
+        { g: 250, cm: 30.1, class: "AVPN Classica (~30cm)" },
+        { g: 255, cm: 30.9, class: "AVPN Classica" },
+        { g: 260, cm: 31.8, class: "AVPN Classica" },
+        { g: 265, cm: 32.6, class: "AVPN Classica" },
+        { g: 270, cm: 33.4, class: "AVPN Máximo" },
+        { g: 275, cm: 34.2, class: "AVPN Máximo" },
+        { g: 280, cm: 35.0, class: "AVPN Limit Top (35cm)" }
+      ];
+
+      rows.forEach(r => {
+        const isCurrent = Math.abs(recipeState.pesoPanetto - r.g) < 2.5;
+        const tr = document.createElement('tr');
+        tr.className = isCurrent 
+          ? "bg-amber-500/20 font-bold border-l-4 border-avpn-gold text-white" 
+          : "hover:bg-slate-800/40 transition-colors";
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-3">${r.g} g ${isCurrent ? '★' : ''}</td>
+          <td class="py-2.5 px-3 text-avpn-gold">Ø ${r.cm.toFixed(1).replace('.', ',')} cm</td>
+          <td class="py-2.5 px-3 text-slate-400 text-[11px]">${r.class}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Dynamic Visualizer scaling
+    function updateDiameterVisualizer(weightG) {
+      const g = parseFloat(weightG);
+      document.getElementById('visualSliderVal').innerText = g.toFixed(0) + ' g';
+      document.getElementById('visualPesoLbl').innerText = g.toFixed(0) + ' g';
+
+      // Diameter formula approx: 22.0cm at 200g -> 35.0cm at 280g
+      const cm = 22.0 + ((g - 200) * (13.0 / 80.0));
+      document.getElementById('visualDiametroLbl').innerText = `Ø ${cm.toFixed(1).replace('.', ',')} cm`;
+
+      // Area in cm^2 = PI * r^2
+      const radius = cm / 2;
+      const area = Math.PI * radius * radius;
+      document.getElementById('visualAreaLbl').innerText = `Área: ~${area.toFixed(0)} cm²`;
+
+      // Visual scale px (min 200px at 180g, max 310px at 280g)
+      const scalePx = 180 + ((g - 180) * (130 / 100));
+      const disc = document.getElementById('visualPizzaDisc');
+      disc.style.width = scalePx + 'px';
+      disc.style.height = scalePx + 'px';
+
+      renderDiameterTable();
+    }
+  </script>
+</body>
+</html>
