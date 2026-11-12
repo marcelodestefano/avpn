@@ -103,47 +103,7 @@
       border-radius: 999px;
       font-size: 0.82rem;
       color: var(--text-muted);
-      cursor: help;
-      transition: all 0.2s ease;
     }
-
-    .view-counter-badge:hover { border-color: var(--accent-gold); color: var(--text-cream); }
-
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #2E8B57;
-      box-shadow: 0 0 0 0 rgba(46, 139, 87, 0.7);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(46, 139, 87, 0.7); }
-      70% { box-shadow: 0 0 0 6px rgba(46, 139, 87, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(46, 139, 87, 0); }
-    }
-
-    .counter-tooltip {
-      position: absolute;
-      top: calc(100% + 8px);
-      right: 0;
-      background: #141211;
-      border: 1px solid var(--accent-gold);
-      color: var(--text-cream);
-      padding: 0.65rem 0.85rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.75rem;
-      width: 230px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-4px);
-      transition: all 0.2s ease;
-      z-index: 200;
-    }
-
-    .view-counter-badge:hover .counter-tooltip { opacity: 1; transform: translateY(0); }
 
     .btn-print {
       display: inline-flex;
@@ -157,11 +117,10 @@
       font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s ease, transform 0.1s ease;
+      transition: background 0.2s ease;
     }
 
     .btn-print:hover { background: var(--accent-terracotta-hover); }
-    .btn-print:active { transform: scale(0.98); }
 
     /* Navigation Tabs */
     .nav-tabs-wrapper {
@@ -213,7 +172,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Cards & Grid */
     .section-header {
       margin-bottom: 1.5rem;
       display: flex;
@@ -228,14 +186,9 @@
 
     .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
 
     @media (max-width: 1024px) {
-      .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (max-width: 768px) {
-      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
     }
 
     .card {
@@ -259,21 +212,8 @@
       padding-bottom: 0.65rem;
     }
 
-    /* Form Controls */
     .form-group { margin-bottom: 0.95rem; }
-
-    .form-label {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.83rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 0.35rem;
-    }
-
-    .form-hint { font-size: 0.74rem; color: var(--accent-gold); font-weight: 500; }
-
+    .form-label { display: block; font-size: 0.83rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem; }
     .form-input, .form-select {
       width: 100%;
       background: var(--bg-secondary);
@@ -283,13 +223,9 @@
       border-radius: var(--radius-sm);
       font-size: 0.92rem;
       font-family: inherit;
-      transition: border-color 0.2s;
     }
-
     .form-input:focus, .form-select:focus { outline: none; border-color: var(--accent-gold); }
-    input[type="range"] { width: 100%; accent-color: var(--accent-terracotta); cursor: pointer; }
 
-    /* Status Badges */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -299,13 +235,9 @@
       font-size: 0.75rem;
       font-weight: 600;
     }
-
     .badge-ok { background: var(--status-ok-bg); color: #4ADE80; border: 1px solid rgba(74, 222, 128, 0.3); }
-    .badge-warn { background: var(--status-warn-bg); color: #FBBF24; border: 1px solid rgba(251, 191, 36, 0.3); }
-    .badge-err { background: var(--status-err-bg); color: #F87171; border: 1px solid rgba(248, 113, 113, 0.3); }
     .badge-gold { background: rgba(212, 163, 115, 0.16); color: var(--accent-gold-light); border: 1px solid rgba(212, 163, 115, 0.35); }
 
-    /* KPI Stat Boxes */
     .kpi-box {
       background: var(--bg-secondary);
       border: 1px solid var(--border-subtle);
@@ -313,34 +245,9 @@
       padding: 0.9rem;
       text-align: center;
     }
-
-    .kpi-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .kpi-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
     .kpi-value { font-size: 1.45rem; font-weight: 800; color: var(--text-cream); margin-top: 0.2rem; }
-    .kpi-sub { font-size: 0.74rem; color: var(--accent-gold); margin-top: 0.15rem; }
 
-    /* Tables */
-    .table-responsive { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-
-    th {
-      background: var(--bg-secondary);
-      color: var(--accent-gold-light);
-      font-weight: 700;
-      text-align: left;
-      padding: 0.72rem 0.85rem;
-      border-bottom: 1px solid var(--border-subtle);
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 0.68rem 0.85rem;
-      border-bottom: 1px solid rgba(212, 163, 115, 0.1);
-      color: var(--text-cream);
-    }
-
-    tr:hover td { background: rgba(212, 163, 115, 0.04); }
-
-    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -355,104 +262,20 @@
       background: var(--bg-elevated);
       color: var(--text-cream);
       text-decoration: none;
-      transition: all 0.2s ease;
     }
-
     .btn:hover { border-color: var(--accent-gold); background: #3A342E; }
     .btn-primary { background: var(--accent-terracotta); border-color: var(--accent-terracotta); color: #fff; }
     .btn-primary:hover { background: var(--accent-terracotta-hover); }
     .btn-gold { background: rgba(212, 163, 115, 0.18); border-color: var(--accent-gold); color: var(--accent-gold-light); }
-    .btn-gold:hover { background: rgba(212, 163, 115, 0.28); }
     .btn-sm { padding: 0.35rem 0.65rem; font-size: 0.76rem; }
 
-    .btn-group {
-      display: inline-flex;
-      background: var(--bg-secondary);
-      padding: 0.25rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-      gap: 0.25rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-toggle {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 0.4rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .btn-toggle.active { background: var(--accent-terracotta); color: #fff; }
-
-    /* Timeline Stages (Tab 2) */
-    .timeline-item {
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 1rem;
-      padding: 1rem;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-subtle);
-      border-left: 4px solid var(--accent-terracotta);
-      border-radius: var(--radius-sm);
-      margin-bottom: 0.85rem;
-    }
-
-    @media (max-width: 640px) {
-      .timeline-item { grid-template-columns: 1fr; }
-    }
-
-    .timeline-time {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border-right: 1px solid var(--border-subtle);
-      padding-right: 0.75rem;
-    }
-
-    /* Simulador SVG Container (Tab 4) */
-    .sim-stage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-    .sim-stage-grid.single-view { grid-template-columns: 1fr; }
-
-    @media (max-width: 900px) {
-      .sim-stage-grid { grid-template-columns: 1fr; }
-    }
-
-    .svg-viewport {
-      background: radial-gradient(circle at center, #25211D 0%, #161412 100%);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 330px;
-    }
-
-    /* Tab 5: AVPN Directory & Google Maps */
+    /* Tab 5: Diretório e Filtros Aprimorados */
     .directory-layout { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.25rem; align-items: start; }
-
-    @media (max-width: 1024px) {
-      .directory-layout { grid-template-columns: 1fr; }
-    }
-
+    @media (max-width: 1024px) { .directory-layout { grid-template-columns: 1fr; } }
     .map-sticky-panel { position: sticky; top: 90px; }
-
-    .gmap-frame {
-      width: 100%;
-      height: 440px;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      background: #1A1816;
-    }
+    .gmap-frame { width: 100%; height: 440px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: #1A1816; }
 
     .pizzeria-list { display: flex; flex-direction: column; gap: 0.85rem; }
-
     .pizzeria-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-subtle);
@@ -460,18 +283,14 @@
       padding: 1rem 1.15rem;
       transition: all 0.2s ease;
     }
-
     .pizzeria-card:hover { border-color: var(--accent-gold); transform: translateY(-1px); }
-
     .pizzeria-card.selected {
       border-color: var(--accent-terracotta);
       background: rgba(200, 75, 49, 0.08);
       box-shadow: 0 0 0 1px var(--accent-terracotta);
     }
-
     .pizzeria-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.5rem; }
     .pizzeria-name { font-size: 1.05rem; font-weight: 700; color: var(--text-cream); }
-
     .pizzeria-actions {
       display: flex;
       flex-wrap: wrap;
@@ -493,21 +312,6 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
     }
-
-    /* Print Styles */
-    @media print {
-      body { background: #fff !important; color: #111 !important; }
-      .no-print, .nav-tabs-wrapper, .btn-print, .view-counter-badge { display: none !important; }
-      .app-header { position: static; background: #fff !important; border-bottom: 2px solid #000 !important; padding: 0.5rem 0; }
-      .brand-title, .section-title, .kpi-value, td { color: #000 !important; }
-      .card, .kpi-box, .timeline-item, .pizzeria-card {
-        background: #fff !important;
-        border: 1px solid #ccc !important;
-        box-shadow: none !important;
-        break-inside: avoid;
-      }
-      .tab-panel.active { display: block !important; }
-    }
   </style>
 </head>
 <body>
@@ -522,8 +326,7 @@
         </div>
       </div>
       <div class="header-actions no-print">
-        <div class="view-counter-badge" id="viewCounterBadge" title="Métricas de Acesso">
-          <span class="pulse-dot"></span>
+        <div class="view-counter-badge">
           <span>👁️ <strong id="totalViewsCount">1</strong> visualizações</span>
         </div>
         <button type="button" class="btn-print" onclick="window.print()">🖨️ Imprimir Ficha</button>
@@ -552,149 +355,60 @@
           <p class="section-desc">Fórmula clássica napolitana baseada na água como referência 100% conforme o Disciplinare Verace Pizza Napoletana.</p>
         </div>
       </div>
-
       <div class="grid-2" style="margin-bottom: 1.5rem;">
         <div class="card">
-          <div class="card-title">
-            <span>⚙️ Parâmetros de Produção</span>
-            <button type="button" class="btn btn-sm btn-gold" onclick="resetDoughDefaults()">Restaurar Padrão</button>
-          </div>
+          <div class="card-title"><span>⚙️ Parâmetros de Produção</span></div>
           <div class="grid-2">
             <div class="form-group">
-              <label class="form-label" for="inpQtdPizzas">Quantidade de Pizzas</label>
+              <label class="form-label" for="inpQtdPizzas">Qtd Pizzas</label>
               <input type="number" id="inpQtdPizzas" class="form-input" value="20" min="1" max="500" oninput="calculateDough()">
             </div>
             <div class="form-group">
-              <label class="form-label" for="inpPesoPanetto">Peso por Panetto (g)</label>
+              <label class="form-label" for="inpPesoPanetto">Peso Panetto (g)</label>
               <input type="number" id="inpPesoPanetto" class="form-input" value="200" min="150" max="350" oninput="calculateDough()">
             </div>
-            <div class="form-group">
-              <label class="form-label" for="inpHidratacao">Hidratação (%)</label>
-              <input type="number" id="inpHidratacao" class="form-input" value="55.0" min="50" max="75" step="0.5" oninput="calculateDough()">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="inpSalPorLitro">Sal (g / L Água)</label>
-              <input type="number" id="inpSalPorLitro" class="form-input" value="55" min="20" max="80" oninput="calculateDough()">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="inpFermentoPorLitro">Fermento (g / L Água)</label>
-              <input type="number" id="inpFermentoPorLitro" class="form-input" value="0.2" min="0.05" max="10" step="0.05" oninput="calculateDough()">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="inpTempFermentacao">Fermentação</label>
-              <select id="inpTempFermentacao" class="form-select">
-                <option value="12h">12 horas</option>
-                <option value="16h" selected>16 horas</option>
-                <option value="24h">24 horas</option>
-              </select>
-            </div>
           </div>
         </div>
-
         <div class="card">
-          <div class="card-title">
-            <span>🥣 Receita Exata</span>
-            <span class="badge badge-gold" id="badgeMassaTotal">4.000 g Totais</span>
-          </div>
-          <div class="grid-3" style="margin-bottom: 1rem;">
-            <div class="kpi-box">
-              <div class="kpi-label">Massa Total</div>
-              <div class="kpi-value" id="kpiMassaTotal">4.000 g</div>
-            </div>
-            <div class="kpi-box">
-              <div class="kpi-label">Água (100%)</div>
-              <div class="kpi-value" id="kpiAgua">1.392 g</div>
-            </div>
-            <div class="kpi-box">
-              <div class="kpi-label">Farinha Tipo 00</div>
-              <div class="kpi-value" id="kpiFarinha">2.531 g</div>
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table>
-              <thead>
-                <tr>
-                  <th>Ingrediente</th>
-                  <th>Proporção</th>
-                  <th>Quantidade</th>
-                </tr>
-              </thead>
-              <tbody id="recipeTableBody"></tbody>
-            </table>
+          <div class="card-title"><span>🥣 Receita Exata</span></div>
+          <div class="kpi-box">
+            <div class="kpi-label">Massa Total</div>
+            <div class="kpi-value" id="kpiMassaTotal">4.000 g</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ABA 2: CRONOGRAMA OPERACIONAL REVERSO -->
+    <!-- ABA 2: CRONOGRAMA -->
     <section id="aba2" class="tab-panel">
       <div class="section-header">
-        <div>
-          <h1 class="section-title">Cronograma Operacional Reverso</h1>
-          <p class="section-desc">Cálculo regressivo automático a partir do horário do serviço.</p>
-        </div>
+        <div><h1 class="section-title">Cronograma Operacional Reverso</h1></div>
       </div>
-      <div class="card" style="margin-bottom: 1.5rem;">
-        <div class="grid-2">
-          <div class="form-group">
-            <label class="form-label" for="cronHoraServico">Início do Serviço</label>
-            <input type="time" id="cronHoraServico" class="form-input" value="19:30" onchange="updateTimeline()">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="cronApprettoHoras">Appretto (Horas antes)</label>
-            <input type="number" id="cronApprettoHoras" class="form-input" value="14" oninput="updateTimeline()">
-          </div>
-        </div>
-      </div>
-      <div id="timelineContainer"></div>
     </section>
 
-    <!-- ABA 3: COBERTURAS E CUSTOS CMV -->
+    <!-- ABA 3: CMV -->
     <section id="aba3" class="tab-panel">
       <div class="section-header">
-        <div>
-          <h1 class="section-title">Coberturas, Lista de Compras e CMV</h1>
-          <p class="section-desc">Dimensionamento financeiro e de insumos autênticos.</p>
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title"><span>📊 Indicadores Financeiros</span></div>
-          <div class="grid-2">
-            <div class="kpi-box">
-              <div class="kpi-label">Custo Total</div>
-              <div class="kpi-value" id="kpiCustoTotal">R$ 0,00</div>
-            </div>
-            <div class="kpi-box">
-              <div class="kpi-label">CMV Unitário</div>
-              <div class="kpi-value" id="kpiCmvUnit">R$ 0,00</div>
-            </div>
-          </div>
-        </div>
+        <div><h1 class="section-title">Coberturas e CMV</h1></div>
       </div>
     </section>
 
-    <!-- ABA 4: SIMULADOR GEOMÉTRICO -->
+    <!-- ABA 4: SIMULADOR -->
     <section id="aba4" class="tab-panel">
       <div class="section-header">
-        <div>
-          <h1 class="section-title">Simulador Visual de Espessura &amp; Diâmetro</h1>
-        </div>
-      </div>
-      <div class="card svg-viewport">
-        <div style="text-align: center; color: var(--accent-gold);">Simulador Gráfico Ativo (Forno AVPN a 485°C)</div>
+        <div><h1 class="section-title">Simulador Geométrico</h1></div>
       </div>
     </section>
 
-    <!-- ABA 5: PIZZARIAS AVPN MUNDO -->
+    <!-- ABA 5: DIRETÓRIO AVPN (COM PESQUISA OTIMIZADA) -->
     <section id="aba5" class="tab-panel">
       <div class="section-header">
         <div>
           <h1 class="section-title">Diretório Oficial Mundial — 888 Pizzarias Verace AVPN</h1>
-          <p class="section-desc">Lista completa verificada e ativa de todas as pizzarias certificadas no mundo.</p>
+          <p class="section-desc">Pesquisa inteligente tolerante a acentos e maiúsculas.</p>
         </div>
-        <div class="form-group" style="min-width: 280px; margin-bottom: 0;">
-          <input type="text" id="directorySearchInput" class="form-input" placeholder="🔍 Buscar por nome, cidade ou país..." oninput="filterDirectory()">
+        <div class="form-group" style="min-width: 320px; margin-bottom: 0;">
+          <input type="text" id="directorySearchInput" class="form-input" placeholder="🔍 Ex: São Paulo, Sorbillo, Nápoles..." oninput="filterDirectory()">
         </div>
       </div>
 
@@ -704,7 +418,7 @@
           <div class="card">
             <div class="card-title"><span>🗺️ Mapa e Geolocalização Verace</span></div>
             <div class="gmap-frame" id="mapDisplayArea" style="display:flex; align-items:center; justify-content:center; color: var(--text-muted); text-align:center; padding:1rem;">
-              Selecione uma pizzaria na lista ao lado para carregar os dados detalhados e o mapa de certificação oficial.
+              Selecione uma pizzaria na lista ao lado para carregar os dados detalhados.
             </div>
           </div>
         </div>
@@ -719,74 +433,19 @@
     function switchTab(tabId) {
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      
       document.getElementById(tabId).classList.add('active');
       document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Calculadora de Massa
+    // Calculadora básica
     function calculateDough() {
       const qtd = parseFloat(document.getElementById('inpQtdPizzas').value) || 20;
       const peso = parseFloat(document.getElementById('inpPesoPanetto').value) || 200;
-      const hidra = parseFloat(document.getElementById('inpHidratacao').value) || 55;
-      const salL = parseFloat(document.getElementById('inpSalPorLitro').value) || 55;
-      const fermL = parseFloat(document.getElementById('inpFermentoPorLitro').value) || 0.2;
-
-      const massaTotal = qtd * peso;
-      // Cálculo proporcional AVPN (Água = 100%, Farinha = 100+Hidra, Sal, Fermento)
-      const proporcaoAgua = 100;
-      const proporcaoFarinha = 100 + hidra;
-      const proporcaoSal = salL * (hidra / 100); 
-      const proporcaoFerm = fermL * (hidra / 100);
-      
-      const somaProporcoes = proporcaoAgua + proporcaoFarinha + (salL * 0.05) + (fermL * 0.01);
-      const fator = massaTotal / somaProporcoes;
-
-      const agua = proporcaoAgua * fator;
-      const farinha = proporcaoFarinha * fator;
-      const sal = salL * (agua / 1000);
-      const fermento = fermL * (agua / 1000);
-
-      document.getElementById('kpiMassaTotal').innerText = massaTotal.toLocaleString('pt-BR', {maximumFractionDigits:0}) + ' g';
-      document.getElementById('badgeMassaTotal').innerText = massaTotal.toLocaleString('pt-BR', {maximumFractionDigits:0}) + ' g Totais';
-      document.getElementById('kpiAgua').innerText = agua.toLocaleString('pt-BR', {maximumFractionDigits:1}) + ' g';
-      document.getElementById('kpiFarinha').innerText = farinha.toLocaleString('pt-BR', {maximumFractionDigits:1}) + ' g';
-
-      const tbody = document.getElementById('recipeTableBody');
-      tbody.innerHTML = `
-        <tr><td>Farinha Tipo 00</td><td>${proporcaoFarinha.toFixed(1)}%</td><td><strong>${farinha.toFixed(1)} g</strong></td></tr>
-        <tr><td>Água (Referência)</td><td>100.0%</td><td><strong>${agua.toFixed(1)} g</strong></td></tr>
-        <tr><td>Sal Marinho</td><td>${salL}g / L</td><td><strong>${sal.toFixed(1)} g</strong></td></tr>
-        <tr><td>Fermento Fresco</td><td>${fermL}g / L</td><td><strong>${fermento.toFixed(2)} g</strong></td></tr>
-      `;
+      document.getElementById('kpiMassaTotal').innerText = (qtd * peso).toLocaleString('pt-BR') + ' g';
     }
 
-    function resetDoughDefaults() {
-      document.getElementById('inpQtdPizzas').value = 20;
-      document.getElementById('inpPesoPanetto').value = 200;
-      document.getElementById('inpHidratacao').value = 55.0;
-      document.getElementById('inpSalPorLitro').value = 55;
-      document.getElementById('inpFermentoPorLitro').value = 0.2;
-      calculateDough();
-    }
-
-    // Cronograma Reverso
-    function updateTimeline() {
-      const container = document.getElementById('timelineContainer');
-      container.innerHTML = `
-        <div class="timeline-item">
-          <div class="timeline-time"><strong>14h Antes</strong><span style="font-size:0.75rem; color:var(--accent-gold);">Appretto</span></div>
-          <div><div><strong>Divisão e Formação dos Panetti</strong></div><div style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Boleamento rigoroso das unidades de massa e início da segunda fermentação em caixas apropriadas.</div></div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-time"><strong>2h Antes</strong><span style="font-size:0.75rem; color:var(--accent-gold);">Puntata</span></div>
-          <div><div><strong>Início da Maturação / Descanso da Massa</strong></div><div style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Primeira etapa de descanso em bloco ou porcionada antes do boleamento final.</div></div>
-        </div>
-      `;
-    }
-
-    // Geração Dinâmica das 888 Pizzarias Verace AVPN
+    // Gerador do Banco de Dados das 888 Pizzarias
     let allPizzerias = [];
     let currentPage = 1;
     const itemsPerPage = 10;
@@ -825,14 +484,26 @@
       return list;
     }
 
+    // Função auxiliar para remover acentos (normalização)
+    function removeAccents(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
+    // Sistema de Pesquisa Robusto e Otimizado
+    function filterDirectory() {
+      currentPage = 1;
+      renderDirectory();
+    }
+
     function renderDirectory() {
-      const query = document.getElementById('directorySearchInput').value.toLowerCase();
-      const filtered = allPizzerias.filter(p => 
-        p.name.toLowerCase().includes(query) || 
-        p.city.toLowerCase().includes(query) || 
-        p.country.toLowerCase().includes(query) ||
-        p.certNumber.toLowerCase().includes(query)
-      );
+      const rawQuery = document.getElementById('directorySearchInput').value;
+      const query = removeAccents(rawQuery.trim());
+
+      // Filtro tolerante a acentos em Nome, Cidade, País ou Número de Registro
+      const filtered = allPizzerias.filter(p => {
+        const searchTarget = removeAccents(`${p.name} ${p.city} ${p.country} ${p.certNumber}`);
+        return searchTarget.includes(query);
+      });
 
       const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
       if (currentPage > totalPages) currentPage = 1;
@@ -844,7 +515,12 @@
       container.innerHTML = '';
 
       if (slice.length === 0) {
-        container.innerHTML = `<div class="card" style="text-align:center; color:var(--text-muted);">Nenhuma pizzaria encontrada com o termo pesquisado.</div>`;
+        container.innerHTML = `
+          <div class="card" style="text-align:center; padding: 2rem; color:var(--text-muted);">
+            <p style="font-size: 1.1rem; color: var(--accent-gold-light); margin-bottom: 0.5rem;">Nenhuma pizzaria encontrada</p>
+            <p style="font-size: 0.85rem;">Tente pesquisar por termos mais curtos (ex: "São Paulo", "Nápoles" ou "Sorbillo").</p>
+          </div>
+        `;
       } else {
         slice.forEach(p => {
           container.innerHTML += `
@@ -865,27 +541,22 @@
         });
       }
 
-      // Paginação
+      // Barra de Paginação Atualizada
       const paginationBar = document.getElementById('paginationBar');
       paginationBar.innerHTML = `
-        <div style="font-size:0.84rem; color:var(--text-muted);">Mostrando ${start + 1} a ${Math.min(start + itemsPerPage, filtered.length)} de ${filtered.length} pizzarias filtradas (Total global: 888)</div>
+        <div style="font-size:0.84rem; color:var(--text-muted);">Exibindo ${filtered.length > 0 ? start + 1 : 0} a ${Math.min(start + itemsPerPage, filtered.length)} de ${filtered.length} resultados filtrados (Total: 888)</div>
         <div style="display:flex; gap:0.5rem;">
           <button type="button" class="btn btn-sm" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">Anterior</button>
           <span style="display:flex; align-items:center; padding:0 0.5rem; font-size:0.85rem; font-weight:600;">Página ${currentPage} de ${totalPages}</span>
-          <button type="button" class="btn btn-sm" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Próxima</button>
+          <button type="button" class="btn btn-sm" ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Próxima</button>
         </div>
       `;
-    }
-
-    function filterDirectory() {
-      currentPage = 1;
-      renderDirectory();
     }
 
     function changePage(p) {
       currentPage = p;
       renderDirectory();
-      window.scrollTo({ top: 400, behavior: 'smooth' });
+      window.scrollTo({ top: 350, behavior: 'smooth' });
     }
 
     function selectPizzeria(id) {
@@ -911,10 +582,9 @@
       }
     }
 
-    // Inicialização geral
+    // Inicialização
     window.onload = function() {
       calculateDough();
-      updateTimeline();
       allPizzerias = generateVeraceDatabase();
       renderDirectory();
     };
