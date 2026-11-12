@@ -13,14 +13,17 @@
       theme: {
         extend: {
           colors: {
-            charcoal: '#141211',
-            surface: '#1E1B19',
-            surfaceLight: '#2A2623',
-            terracotta: '#D9381E',
-            terracottaDark: '#B22A14',
-            gold: '#E5A93C',
-            cream: '#F7F3EB',
-            creamDark: '#E6DEC9'
+            brand: {
+              charcoal: '#1A1817',
+              darkcard: '#242120',
+              border: '#383330',
+              terracotta: '#C85A32',
+              terracottalight: '#E06D44',
+              gold: '#D4AF37',
+              goldlight: '#F3E5AB',
+              cream: '#FFFDF9',
+              slate: '#8E8883'
+            }
           },
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
@@ -30,1420 +33,1264 @@
       }
     }
   </script>
-
-  <!-- Google Fonts -->
+  
+  <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- PapaParse for CSV parsing -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet CSS & JS (para o Mapa Interativo de Pizzarias) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <style>
-    /* Estilos artesanais e impressão */
+    /* Estilos Customizados e Modo de Impressão de Ficha de Bancada */
     body {
-      background-color: #141211;
-      color: #F7F3EB;
+      background-color: #1A1817;
+      color: #FFFDF9;
       font-family: 'Inter', sans-serif;
     }
-
-    .font-serif-title {
-      font-family: 'Playfair Display', serif;
+    
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFFDF9 0%, #D4AF37 50%, #C85A32 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    /* Custom Scrollbar */
+    .terracotta-badge {
+      background: linear-gradient(135deg, #C85A32 0%, #A0401D 100%);
+    }
+
+    /* Scrollbar personalizada */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: #141211;
+      background: #1A1817;
     }
     ::-webkit-scrollbar-thumb {
-      background: #3A3430;
+      background: #383330;
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #D9381E;
+      background: #C85A32;
     }
 
-    /* Eye pulse animation */
-    @keyframes pulse-soft {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(0.95); }
-    }
-    .eye-pulse {
-      animation: pulse-soft 3s infinite ease-in-out;
+    /* Custom Leaflet Dark Popup */
+    .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+      background: #242120 !important;
+      color: #FFFDF9 !important;
+      border: 1px solid #D4AF37;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
 
-    /* Impressão Limpa para Ficha de Bancada */
+    /* Regras do Modo de Impressão (Ficha de Bancada Limpa) */
     @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        color: #000 !important;
+        background: #fff !important;
+        padding: 20px;
+      }
       .no-print {
         display: none !important;
-      }
-      body {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-      }
-      .print-card {
-        background-color: #ffffff !important;
-        border: 1px solid #000000 !important;
-        color: #000000 !important;
-        box-shadow: none !important;
-      }
-      .print-header {
-        border-bottom: 2px solid #000000 !important;
-        margin-bottom: 20px !important;
-        padding-bottom: 10px !important;
-      }
-      .print-text-dark {
-        color: #000000 !important;
-      }
-      .print-bg-light {
-        background-color: #f3f4f6 !important;
-      }
-      .print-page-break {
-        page-break-after: always;
       }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-terracotta selection:text-white">
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-terracotta selection:text-white">
 
-  <!-- ==================== HEADER DA APLICAÇÃO ==================== -->
-  <header class="no-print border-b border-white/10 bg-surface/90 backdrop-blur sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+  <!-- ========================================== -->
+  <!-- CABEÇALHO PRINCIPAL E CONTADOR HÍBRIDO -->
+  <!-- ========================================== -->
+  <header class="bg-brand-darkcard border-b border-brand-border sticky top-0 z-40 shadow-xl no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row justify-between items-center gap-4">
       
-      <!-- Logo & Título -->
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-terracotta to-gold p-0.5 shadow-lg shadow-terracotta/20">
-          <div class="w-full h-full bg-surface rounded-[10px] flex items-center justify-center text-gold">
-            <i data-lucide="flame" class="w-6 h-6 text-terracotta animate-pulse"></i>
-          </div>
+      <!-- Logo e Título -->
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-xl terracotta-badge flex items-center justify-center text-white shadow-lg border border-brand-gold/30">
+          <i class="fa-solid font-bold text-xl fa-pizza-slice"></i>
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-xl sm:text-2xl font-bold font-serif-title tracking-wide text-cream">
-              AVPN <span class="text-terracotta">Napoletana</span>
-            </h1>
-            <span class="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-gold/20 text-gold border border-gold/30">
-              Marcelo Spec
-            </span>
-          </div>
-          <p class="text-xs text-cream/60 hidden sm:block">Calculadora Padrão Associazione Verace Pizza Napoletana</p>
+          <h1 class="text-xl sm:text-2xl font-bold font-serif gold-gradient-text tracking-wide">
+            Planilha Pizza AVPN Exclusiva Marcelo
+          </h1>
+          <p class="text-xs text-brand-slate flex items-center gap-2">
+            <span><i class="fa-solid fa-certificate text-brand-gold"></i> Padrão Oficial Associazione Verace Pizza Napoletana</span>
+            <span class="hidden sm:inline">•</span>
+            <span class="hidden sm:inline text-brand-terracottalight">Edição Limitada</span>
+          </p>
         </div>
       </div>
 
-      <!-- Ações do Header & Contador de Visualizações -->
-      <div class="flex items-center gap-3 sm:gap-4">
-        
-        <!-- Contador de Visualizações Híbrido Embutido -->
-        <div id="view-counter-container" class="relative group">
-          <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surfaceLight border border-white/10 text-xs font-medium text-cream/90 shadow-inner hover:border-gold/50 transition cursor-help">
-            <i data-lucide="eye" class="w-4 h-4 text-gold eye-pulse"></i>
-            <span id="view-count-display" class="font-mono text-gold font-bold">---</span>
-            <span class="hidden md:inline text-cream/60 text-[11px]">visitas</span>
+      <!-- Métricas / Contador Híbrido Persistente -->
+      <div class="flex items-center gap-3">
+        <div class="relative group cursor-pointer bg-brand-charcoal px-3.5 py-1.5 rounded-lg border border-brand-border hover:border-brand-gold transition duration-200">
+          <div class="flex items-center gap-2.5 text-xs">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span class="text-brand-slate">Visualizações:</span>
+            <span id="view-count-badge" class="font-bold text-brand-gold text-sm">--</span>
           </div>
-          
-          <!-- Tooltip Informativo do Contador -->
-          <div class="absolute right-0 top-full mt-2 w-64 p-3 bg-surface border border-white/10 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none z-50 text-xs">
-            <div class="font-bold text-cream border-b border-white/10 pb-1 mb-2 flex items-center justify-between">
-              <span>Estatísticas de Acesso</span>
-              <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-gold"></i>
+
+          <!-- Tooltip de Métricas de Sessão -->
+          <div class="absolute right-0 top-full mt-2 w-64 p-3 bg-brand-darkcard border border-brand-gold rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-xs text-gray-300">
+            <div class="font-semibold text-brand-gold mb-1 border-b border-brand-border pb-1">
+              <i class="fa-solid fa-chart-line mr-1"></i> Métricas de Acesso Híbrido
             </div>
-            <div class="space-y-1 text-cream/80 font-mono text-[11px]">
-              <div class="flex justify-between">
-                <span>Total Global:</span>
-                <strong id="tooltip-global" class="text-gold">---</strong>
-              </div>
-              <div class="flex justify-between">
-                <span>Neste Dispositivo:</span>
-                <strong id="tooltip-local" class="text-cream">---</strong>
-              </div>
-              <div class="flex justify-between">
-                <span>Último Acesso:</span>
-                <strong id="tooltip-last" class="text-cream/70 text-[10px]">---</strong>
-              </div>
+            <div class="flex justify-between py-1">
+              <span>Acessos nesta sessão:</span>
+              <span id="session-views" class="font-bold text-white">1</span>
+            </div>
+            <div class="flex justify-between py-1">
+              <span>Total acumulado local:</span>
+              <span id="total-views" class="font-bold text-brand-gold">--</span>
+            </div>
+            <div class="flex justify-between py-1 border-t border-brand-border/50 pt-1 text-[10px] text-brand-slate">
+              <span>Última atualização:</span>
+              <span id="last-access-time">Agora</span>
             </div>
           </div>
         </div>
 
-        <!-- Botão Imprimir Ficha Técnica -->
-        <button onclick="window.print()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-terracotta hover:bg-terracottaDark text-white font-medium text-xs sm:text-sm transition shadow-lg shadow-terracotta/30">
-          <i data-lucide="printer" class="w-4 h-4"></i>
+        <button onclick="window.print()" class="bg-brand-terracotta hover:bg-brand-terracottalight text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-md">
+          <i class="fa-solid fa-print"></i>
           <span class="hidden sm:inline">Imprimir Ficha</span>
         </button>
-
       </div>
     </div>
 
-    <!-- Navegação de Abas -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 overflow-x-auto border-t border-white/5 no-scrollbar">
-      <button onclick="switchTab('tab1')" id="tab-btn-tab1" class="tab-btn active px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition flex items-center gap-2 text-gold border-gold">
-        <i data-lucide="calculator" class="w-4 h-4"></i> 1. Calculadora de Massa
+    <!-- Navegação por Abas (5 Abas) -->
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-brand-border/50 flex overflow-x-auto no-scrollbar">
+      <button onclick="switchTab(1)" id="tab-btn-1" class="tab-button py-3 px-4 font-medium text-xs sm:text-sm whitespace-nowrap border-b-2 border-brand-gold text-brand-gold flex items-center gap-2 transition">
+        <i class="fa-solid fa-calculator"></i> 1. Calculadora & Ficha
       </button>
-      <button onclick="switchTab('tab2')" id="tab-btn-tab2" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition flex items-center gap-2 text-cream/60 border-transparent hover:text-cream">
-        <i data-lucide="clock" class="w-4 h-4"></i> 2. Cronograma Reverso
+      <button onclick="switchTab(2)" id="tab-btn-2" class="tab-button py-3 px-4 font-medium text-xs sm:text-sm whitespace-nowrap border-b-2 border-transparent text-brand-slate hover:text-white flex items-center gap-2 transition">
+        <i class="fa-solid fa-clock-rotate-left"></i> 2. Cronograma Reverso
       </button>
-      <button onclick="switchTab('tab3')" id="tab-btn-tab3" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition flex items-center gap-2 text-cream/60 border-transparent hover:text-cream">
-        <i data-lucide="dollar-sign" class="w-4 h-4"></i> 3. Coberturas & Custos
+      <button onclick="switchTab(3)" id="tab-btn-3" class="tab-button py-3 px-4 font-medium text-xs sm:text-sm whitespace-nowrap border-b-2 border-transparent text-brand-slate hover:text-white flex items-center gap-2 transition">
+        <i class="fa-solid fa-chart-pie"></i> 3. Coberturas & CMV
       </button>
-      <button onclick="switchTab('tab4')" id="tab-btn-tab4" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition flex items-center gap-2 text-cream/60 border-transparent hover:text-cream">
-        <i data-lucide="disc" class="w-4 h-4"></i> 4. Simulador Peso × Diâmetro
+      <button onclick="switchTab(4)" id="tab-btn-4" class="tab-button py-3 px-4 font-medium text-xs sm:text-sm whitespace-nowrap border-b-2 border-transparent text-brand-slate hover:text-white flex items-center gap-2 transition">
+        <i class="fa-solid fa-[#000]"></i> 4. Simulador Peso x Diâmetro
       </button>
-      <button onclick="switchTab('tab5')" id="tab-btn-tab5" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition flex items-center gap-2 text-cream/60 border-transparent hover:text-cream">
-        <i data-lucide="map-pin" class="w-4 h-4"></i> 5. Pizzarias AVPN Mundo
+      <button onclick="switchTab(5)" id="tab-btn-5" class="tab-button py-3 px-4 font-medium text-xs sm:text-sm whitespace-nowrap border-b-2 border-transparent text-brand-slate hover:text-white flex items-center gap-2 transition">
+        <i class="fa-solid fa-map-location-dot"></i> 5. Pizzarias AVPN Mundo
       </button>
-    </div>
+    </nav>
   </header>
 
-  <!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
+  <!-- ========================================== -->
+  <!-- CONTEÚDO PRINCIPAL DAS 5 ABAS -->
+  <!-- ========================================== -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-    <!-- HEADER DE IMPRESSÃO (Visível apenas ao imprimir) -->
-    <div class="hidden print:block print-header">
-      <div class="flex justify-between items-center border-b-2 border-black pb-4 mb-4">
-        <div>
-          <h1 class="text-2xl font-bold text-black font-serif-title">FICHA TÉCNICA DE BANCADA - PIZZA NAPOLETANA AVPN</h1>
-          <p class="text-sm text-black">Especificação técnica de produção organizada por Marcelo Destefano | Disciplinar AVPN</p>
+    <!-- ABA 1: CALCULADORA DE MASSA AVPN + SCALING + FICHA DE BANCADA -->
+    <div id="tab-content-1" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Formulário de Parâmetros da Massa -->
+        <div class="bg-brand-darkcard p-5 rounded-2xl border border-brand-border shadow-xl">
+          <h2 class="text-lg font-serif font-bold text-brand-gold mb-4 flex items-center gap-2 border-b border-brand-border pb-2">
+            <i class="fa-solid fa-sliders text-brand-terracotta"></i> Parâmetros da Massa STG
+          </h2>
+          
+          <div class="space-y-4 text-sm">
+            <div>
+              <label class="block text-brand-slate text-xs font-medium mb-1">Quantidade de Pizzas (Bolinhas):</label>
+              <input type="number" id="input-pizzas" value="10" min="1" max="500" onchange="calculateRecipe()" class="w-full bg-brand-charcoal border border-brand-border rounded-xl p-2.5 text-white focus:border-brand-gold focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-brand-slate text-xs font-medium mb-1">Peso da Bolinha (g): <span id="val-weight" class="text-brand-gold font-bold">250g</span></label>
+              <input type="range" id="input-weight" min="200" max="280" value="250" step="5" oninput="document.getElementById('val-weight').innerText = this.value + 'g'; calculateRecipe();" class="w-full accent-brand-terracotta">
+              <div class="flex justify-between text-[10px] text-brand-slate">
+                <span>200g (Individual)</span>
+                <span>250g (Padrão AVPN)</span>
+                <span>280g (Max AVPN)</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-brand-slate text-xs font-medium mb-1">Hidratação (% da Farinha): <span id="val-hydration" class="text-brand-gold font-bold">60%</span></label>
+              <input type="range" id="input-hydration" min="55" max="65" value="60" step="0.5" oninput="document.getElementById('val-hydration').innerText = this.value + '%'; calculateRecipe();" class="w-full accent-brand-terracotta">
+              <div class="flex justify-between text-[10px] text-brand-slate">
+                <span>55% (Mínima)</span>
+                <span>60% (Recomendada)</span>
+                <span>65% (Máxima)</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-brand-slate text-xs font-medium mb-1">Sal (g/L Água):</label>
+                <input type="number" id="input-salt" value="50" min="40" max="60" onchange="calculateRecipe()" class="w-full bg-brand-charcoal border border-brand-border rounded-xl p-2.5 text-white focus:border-brand-gold focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-brand-slate text-xs font-medium mb-1">Tipo de Fermento:</label>
+                <select id="input-yeast-type" onchange="calculateRecipe()" class="w-full bg-brand-charcoal border border-brand-border rounded-xl p-2.5 text-white focus:border-brand-gold focus:outline-none">
+                  <option value="fresh">Fresco (Lievito Fresco)</option>
+                  <option value="dry">Seco Instantâneo</option>
+                  <option value="sourdough">Criscito / Licoli</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-brand-slate text-xs font-medium mb-1">Qtd Fermento (g/L Água):</label>
+              <input type="number" id="input-yeast-qty" value="1.5" step="0.1" min="0.1" max="10" onchange="calculateRecipe()" class="w-full bg-brand-charcoal border border-brand-border rounded-xl p-2.5 text-white focus:border-brand-gold focus:outline-none">
+            </div>
+          </div>
         </div>
-        <div class="text-right">
-          <p class="text-xs font-mono" id="print-date">Data: --/--/----</p>
-          <p class="text-xs font-bold text-black">REGIME: AVPN ORIGINAL</p>
+
+        <!-- Ficha de Bancada Limpa (Pronta para Impressão) -->
+        <div id="print-area" class="lg:col-span-2 bg-brand-darkcard p-6 rounded-2xl border border-brand-gold/40 shadow-2xl relative">
+          <div class="flex justify-between items-start border-b border-brand-border pb-4 mb-4">
+            <div>
+              <span class="text-[10px] uppercase tracking-widest text-brand-terracotta font-bold">Documento de Bancada Oficial</span>
+              <h3 class="text-2xl font-serif font-bold text-brand-gold">Ficha Técnica de Produção STG</h3>
+              <p class="text-xs text-brand-slate">Receita calculada rigorosamente no regulamento AVPN Napoletana</p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-brand-slate">Massa Total Prevista</span>
+              <div id="calc-total-dough" class="text-2xl font-bold text-white">2.50 kg</div>
+            </div>
+          </div>
+
+          <!-- Tabela com proporções calculadas -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm mb-6">
+              <thead>
+                <tr class="border-b border-brand-border text-brand-gold text-xs uppercase">
+                  <th class="py-2.5">Ingrediente</th>
+                  <th class="py-2.5">Percentual Baker</th>
+                  <th class="py-2.5 text-right">Quantidade Exacta</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-brand-border/40 text-gray-200">
+                <tr>
+                  <td class="py-3 font-medium flex items-center gap-2"><i class="fa-solid fa-wheat-awn text-brand-gold"></i> Farinha Tipo 00 / Tipo 0</td>
+                  <td class="py-3 text-brand-slate">100.0%</td>
+                  <td id="res-flour" class="py-3 text-right font-bold text-white">1,515 g</td>
+                </tr>
+                <tr>
+                  <td class="py-3 font-medium flex items-center gap-2"><i class="fa-solid fa-droplet text-blue-400"></i> Água Potável (16°C - 18°C)</td>
+                  <td id="res-water-pct" class="py-3 text-brand-slate">60.0%</td>
+                  <td id="res-water" class="py-3 text-right font-bold text-white">909 ml</td>
+                </tr>
+                <tr>
+                  <td class="py-3 font-medium flex items-center gap-2"><i class="fa-solid fa-cubes-stacked text-amber-200"></i> Sal Marinho Fino</td>
+                  <td id="res-salt-pct" class="py-3 text-brand-slate">3.0%</td>
+                  <td id="res-salt" class="py-3 text-right font-bold text-white">45 g</td>
+                </tr>
+                <tr>
+                  <td class="py-3 font-medium flex items-center gap-2"><i class="fa-solid fa-bacon text-amber-500"></i> Fermento Biológico</td>
+                  <td id="res-yeast-pct" class="py-3 text-brand-slate">0.09%</td>
+                  <td id="res-yeast" class="py-3 text-right font-bold text-white">1.36 g</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Instruções de Processo Direto AVPN -->
+          <div class="bg-brand-charcoal p-4 rounded-xl border border-brand-border text-xs text-brand-slate space-y-2">
+            <p class="font-semibold text-brand-gold uppercase text-[11px]"><i class="fa-solid fa-list-check mr-1"></i> Resumo de Processo Recomendado (AVPN):</p>
+            <p>1. Dissolva o sal integralmente na água fria antes de adicionar a farinha.</p>
+            <p>2. Adicione 10% da farinha, misture e adicione o fermento dissolvido.</p>
+            <p>3. Adicione o restante da farinha gradualmente e sove por 15-20 min (Temp. Final da Massa: 23°C - 24°C).</p>
+            <p>4. <strong>Puntata (Descanso em bloco):</strong> 2h a 6h a 23°C. | <strong>Appretto (Bolotas):</strong> 8h a 18h a 23°C.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tabela de Escalonamento 1 a 50 Pizzas -->
+      <div class="bg-brand-darkcard p-5 rounded-2xl border border-brand-border shadow-xl">
+        <h3 class="text-md font-serif font-bold text-brand-gold mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-table text-brand-terracotta"></i> Tabela Rápida de Escalonamento (1 a 100 Bolinhas de 250g - Hidratação 60%)
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead>
+              <tr class="bg-brand-charcoal border-b border-brand-border text-brand-slate uppercase">
+                <th class="p-2.5">Nº Pizzas</th>
+                <th class="p-2.5">Peso Total</th>
+                <th class="p-2.5">Farinha (g)</th>
+                <th class="p-2.5">Água (ml)</th>
+                <th class="p-2.5">Sal (g)</th>
+                <th class="p-2.5">Fermento Fresco (g)</th>
+              </tr>
+            </thead>
+            <tbody id="scaling-table-body" class="divide-y divide-brand-border/30 text-gray-300">
+              <!-- Renderizado via JS -->
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
-    <!-- ABA 1: CALCULADORA DE MASSA AVPN -->
-    <div id="tab1" class="tab-content space-y-6">
+    <!-- ABA 2: CRONOGRAMA OPERACIONAL REVERSO (6 ETAPAS) -->
+    <div id="tab-content-2" class="tab-content hidden space-y-6">
+      <div class="bg-brand-darkcard p-6 rounded-2xl border border-brand-border shadow-xl">
+        <div class="max-w-2xl mx-auto text-center space-y-3 mb-6">
+          <h2 class="text-xl font-serif font-bold text-brand-gold">Calculadora de Cronograma Reverso de Fermentação</h2>
+          <p class="text-xs text-brand-slate">Informe o horário exato em que deseja assar as primeiras pizzas e o sistema calculará os horários exatos para cada uma das 6 etapas da massa.</p>
+          
+          <div class="flex justify-center items-center gap-3 pt-2">
+            <label class="text-xs font-semibold text-white">Horário Alvo do Forneamento:</label>
+            <input type="time" id="target-bake-time" value="20:00" onchange="calculateSchedule()" class="bg-brand-charcoal border border-brand-gold rounded-xl px-4 py-2 text-white font-bold text-lg focus:outline-none">
+          </div>
+        </div>
+
+        <div id="schedule-timeline" class="space-y-4 max-w-3xl mx-auto">
+          <!-- Gerado dinamicamente via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 3: COBERTURAS & CUSTOS CMV -->
+    <div id="tab-content-3" class="tab-content hidden space-y-6">
+      <div class="bg-brand-darkcard p-6 rounded-2xl border border-brand-border shadow-xl">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-brand-border pb-4 mb-6 gap-4">
+          <div>
+            <h2 class="text-xl font-serif font-bold text-brand-gold">Ficha de Custos de Cobertura & Cálculo de CMV</h2>
+            <p class="text-xs text-brand-slate">Estime o custo unitário por pizza e determine a margem de lucro operacional</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-brand-slate">Preço de Venda Sugerido:</span>
+            <span id="cmv-suggested-price" class="text-xl font-bold text-emerald-400">R$ 48,00</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-4">
+            <h3 class="text-sm font-bold text-brand-gold uppercase tracking-wider">Composição de Ingredientes (Por Pizza)</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="bg-brand-charcoal text-brand-slate border-b border-brand-border uppercase">
+                    <th class="p-2">Item</th>
+                    <th class="p-2">Qtd/Pizza</th>
+                    <th class="p-2">Custo Unitário (R$/kg ou L)</th>
+                    <th class="p-2 text-right">Custo na Pizza (R$)</th>
+                  </tr>
+                </thead>
+                <tbody id="cmv-table-body" class="divide-y divide-brand-border/30">
+                  <!-- Render via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="bg-brand-charcoal p-5 rounded-xl border border-brand-border space-y-4 text-xs">
+            <h3 class="text-sm font-bold text-brand-gold border-b border-brand-border pb-2">Resumo Financeiro por Pizza</h3>
+            <div class="flex justify-between py-1">
+              <span class="text-brand-slate">Custo Total dos Ingredientes (CMV):</span>
+              <span id="cmv-total-cost" class="font-bold text-white">R$ 0,00</span>
+            </div>
+            <div class="flex justify-between py-1">
+              <span class="text-brand-slate">Embalagem + Gás/Energia:</span>
+              <span class="font-bold text-white">R$ 3,50</span>
+            </div>
+            <div class="flex justify-between py-1 border-t border-brand-border pt-2 text-sm font-bold">
+              <span class="text-brand-gold">Custo Produção Direto:</span>
+              <span id="cmv-final-cost" class="text-brand-terracottalight">R$ 0,00</span>
+            </div>
+            
+            <div class="pt-3">
+              <label class="block text-brand-slate mb-1">Margem Desejada sobre a Venda (%):</label>
+              <input type="number" id="cmv-target-margin" value="70" min="10" max="90" onchange="calculateCMV()" class="w-full bg-brand-darkcard border border-brand-border rounded-lg p-2 text-white">
+            </div>
+
+            <div class="bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-lg text-emerald-300">
+              <div class="flex justify-between text-xs">
+                <span>Lucro Bruto estimado/pizza:</span>
+                <span id="cmv-profit" class="font-bold">R$ 0,00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 4: SIMULADOR GRÁFICO PESO X DIÂMETRO (200G - 280G) -->
+    <div id="tab-content-4" class="tab-content hidden space-y-6">
+      <div class="bg-brand-darkcard p-6 rounded-2xl border border-brand-border shadow-xl">
+        <h2 class="text-xl font-serif font-bold text-brand-gold mb-2">Simulador Visual de Espessura & Borda (Cornicione)</h2>
+        <p class="text-xs text-brand-slate mb-6">Ajuste o peso da massa e o diâmetro do disco para visualizar graficamente a densidade da massa no centro e o volume relativo da borda.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div class="space-y-5">
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-brand-slate">Peso da Massa (g):</span>
+                <span id="sim-val-weight" class="text-brand-gold font-bold">250 g</span>
+              </div>
+              <input type="range" id="sim-weight" min="200" max="280" value="250" step="5" oninput="updateSim()" class="w-full accent-brand-terracotta">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-brand-slate">Diâmetro Abertura (cm):</span>
+                <span id="sim-val-diam" class="text-brand-gold font-bold">30 cm</span>
+              </div>
+              <input type="range" id="sim-diam" min="22" max="35" value="30" step="1" oninput="updateSim()" class="w-full accent-brand-terracotta">
+            </div>
+
+            <div class="bg-brand-charcoal p-4 rounded-xl border border-brand-border text-xs space-y-2">
+              <div class="flex justify-between">
+                <span class="text-brand-slate">Área do Disco:</span>
+                <span id="sim-area" class="font-bold text-white">-- cm²</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-brand-slate">Densidade do Centro:</span>
+                <span id="sim-density" class="font-bold text-white">-- g/cm²</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-brand-slate">Classificação de Estilo:</span>
+                <span id="sim-status" class="font-bold text-brand-gold">Napoletana Canotto / AVPN</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Canvas Interativo de Visualização da Pizza -->
+          <div class="flex flex-col items-center justify-center p-4 bg-brand-charcoal rounded-2xl border border-brand-border">
+            <canvas id="pizzaCanvas" width="300" height="300" class="max-w-full h-auto"></canvas>
+            <span class="text-[11px] text-brand-slate mt-2">Representação Proporcional em Escala Visual</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 5: PIZZARIAS AVPN MUNDO - MAPA & LISTA (FONTE PLANILHA OFICIAL GID 1919471207) -->
+    <div id="tab-content-5" class="tab-content hidden space-y-6">
       
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        <!-- Formulário de Parâmetros -->
-        <div class="lg:col-span-5 bg-surface rounded-2xl p-6 border border-white/10 shadow-xl space-y-5">
-          <div class="flex items-center justify-between border-b border-white/10 pb-3">
-            <h2 class="text-lg font-bold font-serif-title text-cream flex items-center gap-2">
-              <i data-lucide="sliders" class="w-5 h-5 text-terracotta"></i> Parâmetros de Produção
-            </h2>
-            <span class="text-xs text-cream/50">Base Baker's %</span>
+      <!-- Banner de Controle da Aba 5 -->
+      <div class="bg-brand-darkcard p-5 rounded-2xl border border-brand-border shadow-xl space-y-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-brand-border pb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold bg-brand-terracotta/20 text-brand-terracottalight border border-brand-terracotta/40">Sincronizado Oficial</span>
+              <span class="text-xs text-brand-slate">Aba: <strong class="text-white">Pizzarias AVPN</strong> (gid=1919471207)</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-serif font-bold text-brand-gold mt-1">Diretório Global de Pizzarias Certificadas AVPN</h2>
           </div>
+          <div class="flex items-center gap-3">
+            <button onclick="fetchSheetData()" class="bg-brand-charcoal hover:bg-brand-border text-brand-gold border border-brand-gold/40 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition">
+              <i class="fa-solid fa-rotate text-brand-terracotta"></i> Atualizar Dados da Planilha
+            </button>
+            <span id="pizzeria-count-badge" class="bg-brand-terracotta text-white font-bold text-xs px-3 py-2 rounded-xl">0 Encontradas</span>
+          </div>
+        </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-medium text-cream/70 mb-1">Qtd. de Pizzas (Bolinhas)</label>
-              <input type="number" id="input-qtd-pizzas" value="20" min="1" max="500" oninput="calculateDough()" class="w-full bg-surfaceLight border border-white/10 rounded-xl px-3 py-2 text-cream font-mono font-bold focus:border-gold outline-none">
-            </div>
-
-            <div>
-              <label class="block text-xs font-medium text-cream/70 mb-1">Peso Panetto (g)</label>
-              <div class="relative">
-                <input type="number" id="input-peso-panetto" value="200" min="200" max="280" step="1" oninput="calculateDough()" class="w-full bg-surfaceLight border border-white/10 rounded-xl px-3 py-2 text-cream font-mono font-bold focus:border-gold outline-none">
-                <span class="absolute right-3 top-2.5 text-xs text-cream/40">200-280g</span>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-medium text-cream/70 mb-1">Hidratação (%)</label>
-              <div class="relative">
-                <input type="number" id="input-hidratacao" value="55.0" min="55.0" max="62.5" step="0.5" oninput="calculateDough()" class="w-full bg-surfaceLight border border-white/10 rounded-xl px-3 py-2 text-cream font-mono font-bold focus:border-gold outline-none">
-                <span class="absolute right-3 top-2.5 text-xs text-cream/40">55-62.5%</span>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-medium text-cream/70 mb-1">Sal Marinho (g / Litro Água)</label>
-              <div class="relative">
-                <input type="number" id="input-sal-litro" value="55" min="40" max="60" step="1" oninput="calculateDough()" class="w-full bg-surfaceLight border border-white/10 rounded-xl px-3 py-2 text-cream font-mono font-bold focus:border-gold outline-none">
-                <span class="absolute right-3 top-2.5 text-xs text-cream/40">40-60g/L</span>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-medium text-cream/70 mb-1">Fermento Fresco (g / Litro Água)</label>
-              <div class="relative">
-                <input type="number" id="input-fermento-litro" value="0.2" min="0.1" max="3.0" step="0.1" oninput="calculateDough()" class="w-full bg-surfaceLight border border-white/10 rounded-xl px-3 py-2 text-cream font-mono font-bold focus:border-gold outline-none">
-                <span class="absolute right-3 top-2.5 text-xs text-cream/40">0.1-3g/L</span>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-medium text-cream/70 mb-1">Tempo Total Maturação (h)</label>
-              <input type="number" id="input-tempo-fermentacao" value="16" min="8" max="48" step="1" oninput="calculateDough()" class="w-full bg-surfaceLight border border-white/10 rounded-xl px-3 py-2 text-cream font-mono font-bold focus:border-gold outline-none">
+        <!-- Filtros e Motor de Busca Bilíngue -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          <div>
+            <label class="block text-brand-slate mb-1">Buscar (Nome, Cidade, Endereço ou Nº):</label>
+            <div class="relative">
+              <input type="text" id="pizz-search" placeholder="Ex: Nápoles, Mattozzi, Roma..." oninput="filterPizzerias()" class="w-full bg-brand-charcoal border border-brand-border rounded-xl pl-8 pr-3 py-2.5 text-white focus:border-brand-gold focus:outline-none">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-brand-slate"></i>
             </div>
           </div>
 
-          <div class="space-y-3 pt-2">
-            <label class="block text-xs font-medium text-cream/70">Tipo de Fermento Escolhido</label>
-            <div class="grid grid-cols-2 gap-3">
-              <button onclick="setYeastType('fresco')" id="yeast-btn-fresco" class="px-3 py-2 rounded-xl text-xs font-bold border border-gold bg-gold/20 text-gold transition flex items-center justify-center gap-1.5">
-                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Biológico Fresco
-              </button>
-              <button onclick="setYeastType('seco')" id="yeast-btn-seco" class="px-3 py-2 rounded-xl text-xs font-bold border border-white/10 bg-surfaceLight text-cream/60 hover:text-cream transition flex items-center justify-center gap-1.5">
-                <i data-lucide="circle" class="w-3.5 h-3.5"></i> Seco (1/3 da dose)
-              </button>
-            </div>
-          </div>
-
-          <div class="space-y-3 pt-2">
-            <label class="block text-xs font-medium text-cream/70">Regime de Maturação</label>
-            <select id="input-regime" onchange="calculateDough()" class="w-full bg-surfaceLight border border-white/10 rounded-xl px-3 py-2 text-cream text-xs font-medium focus:border-gold outline-none">
-              <option value="direto">Direto a Temperatura Ambiente (23°C - 8 a 24h)</option>
-              <option value="refrigerado">Misto / Controlado em Geladeira (4-6°C - 24 a 48h)</option>
+          <div>
+            <label class="block text-brand-slate mb-1">Filtrar por País (Traduzido PT):</label>
+            <select id="pizz-country" onchange="filterPizzerias()" class="w-full bg-brand-charcoal border border-brand-border rounded-xl px-3 py-2.5 text-white focus:border-brand-gold focus:outline-none">
+              <option value="">Todos os Países</option>
             </select>
           </div>
 
-          <!-- Verificador AVPN em Tempo Real -->
-          <div class="pt-4 border-t border-white/10 space-y-2">
-            <div class="text-xs font-bold text-cream/80 uppercase tracking-wider mb-2">Conformidade AVPN Oficial:</div>
-            <div id="avpn-badges-container" class="grid grid-cols-2 gap-2 text-xs">
-              <!-- Renderizado via JS -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Receita Calculada + Ficha de Bancada -->
-        <div class="lg:col-span-7 bg-surface rounded-2xl p-6 border border-white/10 shadow-xl space-y-6 flex flex-col justify-between print-card">
           <div>
-            <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
-              <div>
-                <h2 class="text-lg font-bold font-serif-title text-cream flex items-center gap-2 print-text-dark">
-                  <i data-lucide="wheat" class="w-5 h-5 text-gold"></i> Receita do Lote Atual
-                </h2>
-                <p class="text-xs text-cream/60 print-text-dark">Rendimento total: <span id="res-massa-total" class="font-bold text-gold font-mono">4.000g</span> de massa</p>
-              </div>
-              <div class="text-right">
-                <span class="text-xs px-2.5 py-1 rounded-full bg-terracotta/20 text-terracotta border border-terracotta/30 font-bold font-mono">
-                  Lote: <span id="res-lote-qtd">20</span> × <span id="res-lote-peso">200</span>g
-                </span>
-              </div>
-            </div>
-
-            <!-- Tabela Principais Ingredientes -->
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-sm border-collapse">
-                <thead>
-                  <tr class="border-b border-white/10 text-cream/50 text-xs font-semibold uppercase tracking-wider print-text-dark">
-                    <th class="py-2.5 px-3">Ingrediente</th>
-                    <th class="py-2.5 px-3">Percentual</th>
-                    <th class="py-2.5 px-3 text-right">Quantidade Exata</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-white/5 font-mono text-cream print-text-dark">
-                  <tr class="hover:bg-white/5 transition">
-                    <td class="py-3 px-3 flex items-center gap-2 font-sans font-medium text-cream">
-                      <div class="w-2.5 h-2.5 rounded-full bg-cream"></div> Farinha Tipo 00 (AVPN)
-                    </td>
-                    <td class="py-3 px-3 text-cream/70" id="percent-farinha">100.0%</td>
-                    <td class="py-3 px-3 text-right font-bold text-gold text-base" id="val-farinha">2.540 g</td>
-                  </tr>
-                  <tr class="hover:bg-white/5 transition">
-                    <td class="py-3 px-3 font-sans font-medium text-cream flex items-center gap-2">
-                      <div class="w-2.5 h-2.5 rounded-full bg-blue-400"></div> Água Potável (55-62.5%)
-                    </td>
-                    <td class="py-3 px-3 text-cream/70" id="percent-agua">55.0%</td>
-                    <td class="py-3 px-3 text-right font-bold text-blue-400 text-base" id="val-agua">1.397 mL (g)</td>
-                  </tr>
-                  <tr class="hover:bg-white/5 transition">
-                    <td class="py-3 px-3 font-sans font-medium text-cream flex items-center gap-2">
-                      <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div> Sal Marinho Fino
-                    </td>
-                    <td class="py-3 px-3 text-cream/70" id="percent-sal">3.03%</td>
-                    <td class="py-3 px-3 text-right font-bold text-emerald-400 text-base" id="val-sal">76.8 g</td>
-                  </tr>
-                  <tr class="hover:bg-white/5 transition">
-                    <td class="py-3 px-3 font-sans font-medium text-cream flex items-center gap-2">
-                      <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div> Fermento (<span id="yeast-label-name">Fresco</span>)
-                    </td>
-                    <td class="py-3 px-3 text-cream/70" id="percent-fermento">0.02%</td>
-                    <td class="py-3 px-3 text-right font-bold text-amber-500 text-base" id="val-fermento">0.28 g</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <label class="block text-brand-slate mb-1">Ordenar Registros por:</label>
+            <select id="pizz-sort" onchange="filterPizzerias()" class="w-full bg-brand-charcoal border border-brand-border rounded-xl px-3 py-2.5 text-white focus:border-brand-gold focus:outline-none">
+              <option value="number-asc">Número AVPN (Crescente)</option>
+              <option value="number-desc">Número AVPN (Decrescente)</option>
+              <option value="name-asc">Nome (A-Z)</option>
+              <option value="country-asc">País (A-Z)</option>
+            </select>
           </div>
 
-          <!-- Escalonamento de Lotes Rápidos -->
-          <div class="pt-4 border-t border-white/10 space-y-3">
-            <h3 class="text-xs font-bold text-cream/70 uppercase tracking-wider flex items-center gap-2">
-              <i data-lucide="layers" class="w-4 h-4 text-gold"></i> Tabela Dinâmica de Lotes
-            </h3>
-            <div class="overflow-x-auto">
-              <table class="w-full text-xs font-mono text-center border-collapse">
-                <thead>
-                  <tr class="bg-surfaceLight/80 text-cream/60 border-b border-white/10">
-                    <th class="py-2 px-2">Pizzas</th>
-                    <th class="py-2 px-2">Farinha (g)</th>
-                    <th class="py-2 px-2">Água (g)</th>
-                    <th class="py-2 px-2">Sal (g)</th>
-                    <th class="py-2 px-2">Fermento (g)</th>
-                    <th class="py-2 px-2">Total (g)</th>
-                  </tr>
-                </thead>
-                <tbody id="scaling-table-body" class="divide-y divide-white/5 text-cream/80">
-                  <!-- Inserido dinamicamente -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- ABA 2: CRONOGRAMA OPERACIONAL REVERSO -->
-    <div id="tab2" class="tab-content hidden space-y-6">
-      
-      <div class="bg-surface rounded-2xl p-6 border border-white/10 shadow-xl space-y-6">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
           <div>
-            <h2 class="text-xl font-bold font-serif-title text-cream flex items-center gap-2">
-              <i data-lucide="clock" class="w-6 h-6 text-terracotta"></i> Cronograma Operacional Reverso
-            </h2>
-            <p class="text-xs text-cream/60">Planeje o início do amassamento calculando em tempo real os horários de cada etapa técnica AVPN.</p>
-          </div>
-          
-          <div class="flex flex-wrap items-center gap-4">
-            <div>
-              <label class="block text-xs text-cream/60 mb-1">Data do Serviço</label>
-              <input type="date" id="input-data-servico" onchange="calculateTimeline()" class="bg-surfaceLight border border-white/10 rounded-xl px-3 py-1.5 text-xs font-mono text-cream outline-none focus:border-gold">
-            </div>
-            <div>
-              <label class="block text-xs text-cream/60 mb-1">Horário de Início (Forneamento)</label>
-              <input type="time" id="input-hora-servico" value="19:30" onchange="calculateTimeline()" class="bg-surfaceLight border border-white/10 rounded-xl px-3 py-1.5 text-xs font-mono font-bold text-gold outline-none focus:border-gold">
+            <label class="block text-brand-slate mb-1">Modo de Exibição:</label>
+            <div class="grid grid-cols-2 gap-1 bg-brand-charcoal p-1 rounded-xl border border-brand-border">
+              <button onclick="setViewMode('grid')" id="btn-view-grid" class="py-1.5 rounded-lg font-medium text-center transition bg-brand-terracotta text-white">
+                <i class="fa-solid fa-grip mr-1"></i> Lista
+              </button>
+              <button onclick="setViewMode('map')" id="btn-view-map" class="py-1.5 rounded-lg font-medium text-center text-brand-slate hover:text-white transition">
+                <i class="fa-solid fa-map-marked-alt mr-1"></i> Mapa
+              </button>
             </div>
           </div>
         </div>
-
-        <!-- Linha do Tempo Visual -->
-        <div class="space-y-4 relative before:absolute before:inset-0 before:left-8 before:w-0.5 before:bg-white/10">
-          
-          <div class="relative flex items-start gap-6 group">
-            <div class="w-16 h-16 rounded-2xl bg-surfaceLight border border-gold/50 flex flex-col items-center justify-center font-mono text-gold z-10 shadow-lg">
-              <span class="text-xs font-bold" id="step-time-1">10:00</span>
-              <span class="text-[9px] opacity-60">ETAPA 1</span>
-            </div>
-            <div class="flex-grow bg-surfaceLight/50 rounded-2xl p-4 border border-white/5 hover:border-gold/30 transition">
-              <div class="flex items-center justify-between mb-1">
-                <h3 class="font-bold text-cream text-sm flex items-center gap-2">
-                  1. Amassamento (Impasto) <span class="text-xs font-normal text-cream/50">(Duração: ~30 min)</span>
-                </h3>
-                <span class="text-xs font-mono text-gold px-2 py-0.5 rounded bg-gold/10">Temp Alvo: 23°C - 24°C</span>
-              </div>
-              <p class="text-xs text-cream/70 leading-relaxed mb-2">
-                Dissolva o sal na água. Adicione 10% da farinha para criar o soro. Acrescente o fermento dissolvido e incorpore gradualmente o restante da farinha. Amasse até a formação do ponto de véu liso e elástico.
-              </p>
-              <div class="flex items-center gap-2">
-                <input type="checkbox" id="check-step-1" class="rounded accent-terracotta">
-                <label for="check-step-1" class="text-xs text-cream/60">Concluído</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="relative flex items-start gap-6 group">
-            <div class="w-16 h-16 rounded-2xl bg-surfaceLight border border-white/20 flex flex-col items-center justify-center font-mono text-cream z-10 shadow-lg">
-              <span class="text-xs font-bold" id="step-time-2">10:30</span>
-              <span class="text-[9px] opacity-60">ETAPA 2</span>
-            </div>
-            <div class="flex-grow bg-surfaceLight/50 rounded-2xl p-4 border border-white/5 hover:border-gold/30 transition">
-              <div class="flex items-center justify-between mb-1">
-                <h3 class="font-bold text-cream text-sm flex items-center gap-2">
-                  2. Descanso em Bloco (Puntata) <span class="text-xs font-normal text-cream/50">(Duração: 2 horas)</span>
-                </h3>
-                <span class="text-xs font-mono text-cream/60 px-2 py-0.5 rounded bg-white/5">Cobrir com pano úmido</span>
-              </div>
-              <p class="text-xs text-cream/70 leading-relaxed mb-2">
-                Deixe a massa descansar coberta na bancada em temperatura ambiente para relaxar o glúten e iniciar a fermentação da massa inteira.
-              </p>
-              <div class="flex items-center gap-2">
-                <input type="checkbox" id="check-step-2" class="rounded accent-terracotta">
-                <label for="check-step-2" class="text-xs text-cream/60">Concluído</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="relative flex items-start gap-6 group">
-            <div class="w-16 h-16 rounded-2xl bg-surfaceLight border border-white/20 flex flex-col items-center justify-center font-mono text-cream z-10 shadow-lg">
-              <span class="text-xs font-bold" id="step-time-3">12:30</span>
-              <span class="text-[9px] opacity-60">ETAPA 3</span>
-            </div>
-            <div class="flex-grow bg-surfaceLight/50 rounded-2xl p-4 border border-white/5 hover:border-gold/30 transition">
-              <div class="flex items-center justify-between mb-1">
-                <h3 class="font-bold text-cream text-sm flex items-center gap-2">
-                  3. Divisão e Boleamento (Staglio) <span class="text-xs font-normal text-cream/50">(Duração: ~30 min)</span>
-                </h3>
-                <span class="text-xs font-mono text-cream/60 px-2 py-0.5 rounded bg-white/5">Porções exatas</span>
-              </div>
-              <p class="text-xs text-cream/70 leading-relaxed mb-2">
-                Corte e peses os panetti individualmente (200g a 280g). Boleie com as palmas das mãos fechando a base perfeitamente sem rasgar a superfície.
-              </p>
-              <div class="flex items-center gap-2">
-                <input type="checkbox" id="check-step-3" class="rounded accent-terracotta">
-                <label for="check-step-3" class="text-xs text-cream/60">Concluído</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="relative flex items-start gap-6 group">
-            <div class="w-16 h-16 rounded-2xl bg-surfaceLight border border-terracotta flex flex-col items-center justify-center font-mono text-terracotta z-10 shadow-lg">
-              <span class="text-xs font-bold" id="step-time-4">13:00</span>
-              <span class="text-[9px] opacity-60">ETAPA 4</span>
-            </div>
-            <div class="flex-grow bg-surfaceLight/50 rounded-2xl p-4 border border-white/5 hover:border-gold/30 transition">
-              <div class="flex items-center justify-between mb-1">
-                <h3 class="font-bold text-cream text-sm flex items-center gap-2">
-                  4. Segunda Maturação (Appretto) <span class="text-xs font-normal text-cream/50">(Duração: <span id="duracao-appretto">14</span> horas)</span>
-                </h3>
-                <span class="text-xs font-mono text-terracotta px-2 py-0.5 rounded bg-terracotta/10">Caixa de Fermentação</span>
-              </div>
-              <p class="text-xs text-cream/70 leading-relaxed mb-2">
-                Acomode as bolinhas espaçadas nas caixas plásticas atóxicas tampadas. Maturação completa até dobrarem suavemente de volume com tenacidade perfeita.
-              </p>
-              <div class="flex items-center gap-2">
-                <input type="checkbox" id="check-step-4" class="rounded accent-terracotta">
-                <label for="check-step-4" class="text-xs text-cream/60">Concluído</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="relative flex items-start gap-6 group">
-            <div class="w-16 h-16 rounded-2xl bg-surfaceLight border border-gold flex flex-col items-center justify-center font-mono text-gold z-10 shadow-lg">
-              <span class="text-xs font-bold" id="step-time-5">18:00</span>
-              <span class="text-[9px] opacity-60">ETAPA 5</span>
-            </div>
-            <div class="flex-grow bg-surfaceLight/50 rounded-2xl p-4 border border-white/5 hover:border-gold/30 transition">
-              <div class="flex items-center justify-between mb-1">
-                <h3 class="font-bold text-cream text-sm flex items-center gap-2">
-                  5. Pré-aquecimento do Forno <span class="text-xs font-normal text-cream/50">(Duração: 1h30min)</span>
-                </h3>
-                <span class="text-xs font-mono text-gold px-2 py-0.5 rounded bg-gold/10">Lastro 430°C - Teto 485°C</span>
-              </div>
-              <p class="text-xs text-cream/70 leading-relaxed mb-2">
-                Acenda o forno a lenha, gás ou elétrico de alta performance para estabilizar o lastro biscotto napolitano na temperatura ideal AVPN.
-              </p>
-              <div class="flex items-center gap-2">
-                <input type="checkbox" id="check-step-5" class="rounded accent-terracotta">
-                <label for="check-step-5" class="text-xs text-cream/60">Concluído</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="relative flex items-start gap-6 group">
-            <div class="w-16 h-16 rounded-2xl bg-terracotta border border-terracotta flex flex-col items-center justify-center font-mono text-white z-10 shadow-lg shadow-terracotta/40">
-              <span class="text-xs font-bold" id="step-time-6">19:30</span>
-              <span class="text-[9px] opacity-80">SERVIÇO</span>
-            </div>
-            <div class="flex-grow bg-surfaceLight rounded-2xl p-4 border border-terracotta/40 shadow-lg">
-              <div class="flex items-center justify-between mb-1">
-                <h3 class="font-bold text-cream text-sm flex items-center gap-2">
-                  6. Stesura, Cobertura e Forneamento <span class="text-xs font-normal text-gold">(Tempo Assamento: 60 - 90 segundos)</span>
-                </h3>
-                <span class="text-xs font-mono text-white bg-terracotta px-2 py-0.5 rounded font-bold">HORA H</span>
-              </div>
-              <p class="text-xs text-cream/80 leading-relaxed mb-2">
-                Abertura manual do centro para a borda (sem rolo), montagem rápida dos ingredientes e assamento com giro técnico. Servir imediatamente fumegante.
-              </p>
-              <div class="flex items-center gap-2">
-                <input type="checkbox" id="check-step-6" class="rounded accent-terracotta">
-                <label for="check-step-6" class="text-xs font-bold text-gold">Pronto para o Serviço!</label>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
       </div>
 
-    </div>
-
-    <!-- ABA 3: COBERTURAS E CUSTOS (CMV) -->
-    <div id="tab3" class="tab-content hidden space-y-6">
-      
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        <!-- Tabela Editável de Ingredientes & Doses -->
-        <div class="lg:col-span-8 bg-surface rounded-2xl p-6 border border-white/10 shadow-xl space-y-4">
-          <div class="flex items-center justify-between border-b border-white/10 pb-3">
-            <div>
-              <h2 class="text-lg font-bold font-serif-title text-cream flex items-center gap-2">
-                <i data-lucide="shopping-cart" class="w-5 h-5 text-terracotta"></i> Tabela de Preços & Doses de Cobertura
-              </h2>
-              <p class="text-xs text-cream/60">Insira o custo de compra por Kg/L para calcular o custo exato da porção.</p>
-            </div>
-            <button onclick="resetCosts()" class="text-xs text-cream/40 hover:text-gold transition">Restaurar Padrões</button>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr class="border-b border-white/10 text-cream/50 uppercase tracking-wider font-mono">
-                  <th class="py-2 px-3">Ingrediente</th>
-                  <th class="py-2 px-3">Dose / Pizza</th>
-                  <th class="py-2 px-3">Preço Compra (R$/kg ou L)</th>
-                  <th class="py-2 px-3 text-right">Custo / Pizza</th>
-                  <th class="py-2 px-3 text-right">Custo Total Lote (<span id="cmv-lote-qtd">20</span>p)</th>
-                </tr>
-              </thead>
-              <tbody id="cmv-table-body" class="divide-y divide-white/5 font-mono text-cream">
-                <!-- Preenchido dinamicamente via JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Resumo Financeiro & CMV -->
-        <div class="lg:col-span-4 bg-surface rounded-2xl p-6 border border-white/10 shadow-xl space-y-6 flex flex-col justify-between">
-          <div class="space-y-4">
-            <h3 class="text-base font-bold font-serif-title text-gold border-b border-white/10 pb-2 flex items-center gap-2">
-              <i data-lucide="pie-chart" class="w-5 h-5"></i> Simulação de CMV & Preço
-            </h3>
-
-            <!-- Fichas das Pizzas Clássicas -->
-            <div class="space-y-3">
-              <div class="p-3 bg-surfaceLight rounded-xl border border-white/5">
-                <div class="flex justify-between items-center mb-1">
-                  <span class="font-bold text-cream text-xs">Margherita AVPN Clássica</span>
-                  <span class="text-xs font-mono text-gold font-bold" id="custo-margherita">R$ 0,00</span>
-                </div>
-                <p class="text-[10px] text-cream/50">Massa + Molho San Marzano 75g + Fior di Latte/Bufala 90g + EVOO 7g + Manjericão 3g + Queijo Duro 6g</p>
-              </div>
-
-              <div class="p-3 bg-surfaceLight rounded-xl border border-white/5">
-                <div class="flex justify-between items-center mb-1">
-                  <span class="font-bold text-cream text-xs">Marinara AVPN Tradicional</span>
-                  <span class="text-xs font-mono text-emerald-400 font-bold" id="custo-marinara">R$ 0,00</span>
-                </div>
-                <p class="text-[10px] text-cream/50">Massa + Molho 80g + Alho 3g + Orégano 0.5g + EVOO 8g</p>
-              </div>
-            </div>
-
-            <!-- Preço de Venda Desejado -->
-            <div class="pt-2 space-y-3">
-              <div>
-                <label class="block text-xs font-medium text-cream/70 mb-1">Preço de Venda Sugerido (R$)</label>
-                <input type="number" id="input-preco-venda" value="55.00" step="1" oninput="calculateCMV()" class="w-full bg-surfaceLight border border-white/10 rounded-xl px-3 py-2 text-cream font-mono font-bold text-lg focus:border-gold outline-none">
-              </div>
-
-              <div class="p-4 rounded-xl bg-surfaceLight/80 border border-gold/30 space-y-2">
-                <div class="flex justify-between text-xs">
-                  <span class="text-cream/70">Margem Bruta Unitária:</span>
-                  <strong id="res-margem-bruta" class="text-gold font-mono">R$ 0,00</strong>
-                </div>
-                <div class="flex justify-between text-xs">
-                  <span class="text-cream/70">CMV Teórico Margherita:</span>
-                  <strong id="res-percent-cmv" class="text-terracotta font-mono font-bold">0.0%</strong>
-                </div>
-                <div class="w-full bg-surface rounded-full h-2 overflow-hidden mt-1">
-                  <div id="cmv-bar" class="bg-gradient-to-r from-emerald-500 via-gold to-terracotta h-full w-0 transition-all duration-300"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="text-[11px] text-cream/40 italic text-center">
-            * Custo da massa inclui farinha, água, sal e fermento do lote ativo na Aba 1.
-          </div>
-        </div>
-
+      <!-- Container do Mapa Global Interativo -->
+      <div id="map-container" class="bg-brand-darkcard p-3 rounded-2xl border border-brand-border shadow-xl h-[500px] relative hidden">
+        <div id="map" class="w-full h-full rounded-xl z-10"></div>
       </div>
 
-    </div>
-
-    <!-- ABA 4: SIMULADOR PESO X DIÂMETRO -->
-    <div id="tab4" class="tab-content hidden space-y-6">
-      
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        <!-- Slider Interativo + Visualizador SVG -->
-        <div class="lg:col-span-6 bg-surface rounded-2xl p-6 border border-white/10 shadow-xl space-y-6 flex flex-col justify-between">
-          <div class="space-y-4">
-            <h2 class="text-lg font-bold font-serif-title text-cream flex items-center gap-2">
-              <i data-lucide="disc" class="w-5 h-5 text-terracotta"></i> Visualizador Gráfico em Escala Real
-            </h2>
-
-            <div>
-              <div class="flex justify-between items-center mb-2">
-                <label class="text-xs font-bold text-cream/80">Ajuste o Peso do Panetto:</label>
-                <span class="text-sm font-mono font-bold text-gold" id="sim-peso-val">220g</span>
-              </div>
-              <input type="range" id="sim-slider-peso" min="200" max="280" step="5" value="220" oninput="updatePizzaSim()" class="w-full accent-terracotta cursor-pointer">
-              <div class="flex justify-between text-[10px] font-mono text-cream/40 mt-1">
-                <span>200g (22cm)</span>
-                <span>240g (28cm)</span>
-                <span>280g (35cm)</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Canvas / SVG Render -->
-          <div class="relative w-full aspect-square max-w-[340px] mx-auto bg-surfaceLight/50 rounded-full border border-white/10 flex items-center justify-center p-4">
-            
-            <svg id="pizza-svg-container" viewBox="0 0 400 400" class="w-full h-full transition-all duration-300">
-              <!-- Renderizado via JS -->
-            </svg>
-
-            <!-- Dimensões sobrepostas -->
-            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-surface/90 border border-white/10 px-3 py-1 rounded-full text-[11px] font-mono text-gold shadow-lg">
-              Ø <span id="sim-diametro-label">26.0</span> cm | Cornicione ~<span id="sim-borda-label">1.5</span> cm
-            </div>
-          </div>
-
-          <div class="grid grid-cols-3 gap-2 text-center text-xs font-mono">
-            <div class="p-2 bg-surfaceLight rounded-xl border border-white/5">
-              <span class="block text-[10px] text-cream/50">Área Útil</span>
-              <strong id="sim-area-val" class="text-cream">530 cm²</strong>
-            </div>
-            <div class="p-2 bg-surfaceLight rounded-xl border border-white/5">
-              <span class="block text-[10px] text-cream/50">Densidade Massa</span>
-              <strong id="sim-densidade-val" class="text-gold">0.41 g/cm²</strong>
-            </div>
-            <div class="p-2 bg-surfaceLight rounded-xl border border-white/5">
-              <span class="block text-[10px] text-cream/50">Estilo Alvo</span>
-              <strong id="sim-estilo-val" class="text-terracotta">AVPN Trad.</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tabela Completa 200g a 280g -->
-        <div class="lg:col-span-6 bg-surface rounded-2xl p-6 border border-white/10 shadow-xl space-y-4">
-          <h3 class="text-base font-bold font-serif-title text-cream border-b border-white/10 pb-2">
-            Tabela de Referência Oficial (Faixa 200g - 280g)
-          </h3>
-
-          <div class="overflow-y-auto max-h-[440px]">
-            <table class="w-full text-left text-xs font-mono border-collapse">
-              <thead class="sticky top-0 bg-surface border-b border-white/10 text-cream/50 uppercase">
-                <tr>
-                  <th class="py-2.5 px-3">Peso Panetto</th>
-                  <th class="py-2.5 px-3">Diâmetro Esperado</th>
-                  <th class="py-2.5 px-3">Cornicione</th>
-                  <th class="py-2.5 px-3 text-right">Classificação</th>
-                </tr>
-              </thead>
-              <tbody id="sim-table-body" class="divide-y divide-white/5 text-cream/80">
-                <!-- Preenchido dinamicamente via JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- ABA 5: PIZZARIAS AVPN MUNDO -->
-    <div id="tab5" class="tab-content hidden space-y-6">
-      
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        <!-- Lista + Filtros -->
-        <div class="lg:col-span-5 bg-surface rounded-2xl p-6 border border-white/10 shadow-xl space-y-4 flex flex-col h-[650px]">
-          
-          <div class="space-y-3">
-            <div class="flex justify-between items-center">
-              <h2 class="text-base font-bold font-serif-title text-cream flex items-center gap-2">
-                <i data-lucide="map-pin" class="w-5 h-5 text-terracotta"></i> Pizzarias AVPN Certificadas
-              </h2>
-              <span id="pizzarias-count" class="text-xs font-mono bg-gold/20 text-gold px-2 py-0.5 rounded-full font-bold">0 pizzarias</span>
-            </div>
-
-            <!-- Busca Instantânea -->
-            <div class="relative">
-              <i data-lucide="search" class="w-4 h-4 text-cream/40 absolute left-3 top-2.5"></i>
-              <input type="text" id="map-search" placeholder="Buscar por nome, nº AVPN, cidade..." oninput="filterPizzerias()" class="w-full bg-surfaceLight border border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs text-cream outline-none focus:border-gold">
-            </div>
-
-            <!-- Filtros Cascata -->
-            <div class="grid grid-cols-2 gap-2">
-              <select id="map-filter-country" onchange="filterPizzerias()" class="bg-surfaceLight border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-cream/80 outline-none">
-                <option value="">Todos os Países</option>
-              </select>
-              <select id="map-filter-city" onchange="filterPizzerias()" class="bg-surfaceLight border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-cream/80 outline-none">
-                <option value="">Todas as Cidades</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Container Scroll de Pizzarias -->
-          <div id="pizzerias-list" class="flex-grow overflow-y-auto space-y-2.5 pr-1">
-            <!-- Renderizado via JS -->
-          </div>
-        </div>
-
-        <!-- Visualizador de Mapa + Cartão Detalhado -->
-        <div class="lg:col-span-7 bg-surface rounded-2xl p-6 border border-white/10 shadow-xl space-y-4 flex flex-col h-[650px]">
-          
-          <!-- Google Maps Dynamic Embed -->
-          <div class="relative flex-grow rounded-xl overflow-hidden border border-white/10 bg-surfaceLight">
-            <iframe id="google-maps-frame" class="w-full h-full border-0" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=Napoli,Italy&t=&z=12&ie=UTF8&iwloc=&output=embed"></iframe>
-          </div>
-
-          <!-- Cartão de Detalhes Selecionado -->
-          <div id="pizzeria-detail-card" class="bg-surfaceLight p-4 rounded-xl border border-white/10 space-y-3">
-            <div class="flex justify-between items-start">
-              <div>
-                <span id="card-avpn-no" class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-terracotta/20 text-terracotta border border-terracotta/30 font-bold">AVPN #--</span>
-                <h3 id="card-name" class="font-serif-title font-bold text-cream text-base mt-1">Selecione uma Pizzaria</h3>
-                <p id="card-location" class="text-xs text-cream/60">Clique na lista ao lado para ver rotas e detalhes</p>
-              </div>
-            </div>
-
-            <div id="card-actions" class="flex flex-wrap items-center gap-2 pt-1 hidden">
-              <a id="btn-route" target="_blank" class="px-3 py-1.5 rounded-lg bg-gold text-surface font-bold text-xs flex items-center gap-1.5 hover:bg-gold/90 transition shadow">
-                <i data-lucide="navigation" class="w-3.5 h-3.5"></i> Traçar Rota
-              </a>
-              <a id="btn-streetview" target="_blank" class="px-3 py-1.5 rounded-lg bg-surface border border-white/10 text-cream text-xs flex items-center gap-1.5 hover:border-gold transition">
-                <i data-lucide="eye" class="w-3.5 h-3.5 text-gold"></i> Street View
-              </a>
-              <a id="btn-instagram" target="_blank" class="px-3 py-1.5 rounded-lg bg-surface border border-white/10 text-cream text-xs flex items-center gap-1.5 hover:border-terracotta transition">
-                <i data-lucide="instagram" class="w-3.5 h-3.5 text-terracotta"></i> Instagram
-              </a>
-              <a id="btn-avpn-link" target="_blank" class="px-3 py-1.5 rounded-lg bg-surface border border-white/10 text-cream/80 text-xs flex items-center gap-1.5 hover:text-cream transition">
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Ficha AVPN
-              </a>
-            </div>
-          </div>
-
-        </div>
-
+      <!-- Grid de Cards das Pizzarias -->
+      <div id="pizzeria-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Renderizado dinamicamente pelo JS -->
       </div>
 
     </div>
 
   </main>
 
-  <!-- ==================== FOOTER ==================== -->
-  <footer class="no-print border-t border-white/10 bg-surface py-6 text-center text-xs text-cream/50">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <p>Associazione Verace Pizza Napoletana © Padrão Oficial | Edição MD</p>
-      <p class="font-mono text-[11px]">Lastro 430°C • Teto 485°C • Assegurado 60-90s</p>
+  <!-- RODAPÉ -->
+  <footer class="bg-brand-darkcard border-t border-brand-border py-4 mt-auto text-center text-xs text-brand-slate no-print">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div>Planilha Pizza AVPN Exclusiva Marcelo • Padrão Oficial AVPN</div>
+      <div>Desenvolvido com precisão artesanal neapolitana</div>
     </div>
   </footer>
 
-  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <!-- ========================================== -->
+  <!-- LÓGICA JAVASCRIPT INTEGRADA -->
+  <!-- ========================================== -->
   <script>
-    // --- ESTADO GLOBAL DA APLICAÇÃO ---
-    let currentYeastType = 'fresco';
-    let pizzeriasData = [];
-    let filteredPizzerias = [];
-
-    // Preços de Insumos Padrão (R$/kg ou R$/L)
-    let ingredientPrices = {
-      farinha: 14.50,
-      agua: 0.05,
-      sal: 3.20,
-      fermento: 25.00,
-      tomate: 22.00,
-      mozzarella: 65.00,
-      azeite: 75.00,
-      queijoduro: 95.00,
-      manjericao: 40.00,
-      alho: 30.00,
-      oregano: 50.00,
-      ricota: 35.00,
-      salame: 85.00,
-      semolina: 12.00
-    };
-
-    // --- CONTADOR DE VISUALIZAÇÕES HÍBRIDO E EMBUTIDO ---
-    async function initViewCounter() {
-      const displayElem = document.getElementById('view-count-display');
-      const tooltipGlobal = document.getElementById('tooltip-global');
-      const tooltipLocal = document.getElementById('tooltip-local');
-      const tooltipLast = document.getElementById('tooltip-last');
-
-      // 1. Atualizar contagem do dispositivo local
-      let localViews = parseInt(localStorage.getItem('avpn_local_views') || '0', 10) + 1;
-      localStorage.setItem('avpn_local_views', localViews.toString());
-      
-      const lastVisit = new Date().toLocaleString('pt-BR');
-      localStorage.setItem('avpn_last_visit', lastVisit);
-
-      tooltipLocal.textContent = localViews.toString();
-      tooltipLast.textContent = lastVisit;
-
-      // 2. Chamar CounterAPI de forma híbrida (visitas/up na 1ª vez da sessão, visitas/get nas seguintes)
-      const hasSessionCounted = sessionStorage.getItem('avpn_counted');
-      const endpoint = hasSessionCounted 
-        ? 'https://api.counterapi.dev/v1/planilha-pizza-avpn-marcelo/visitas/get'
-        : 'https://api.counterapi.dev/v1/planilha-pizza-avpn-marcelo/visitas/up';
-
-      let totalCount = 1248 + localViews; // Fallback inicial elegante
-
+    /* ==========================================================================
+       1. CONTADOR DE VISUALIZAÇÕES HÍBRIDO (PERSISTENTE + SESSIONSTORAGE)
+       ========================================================================== */
+    function initViewCounter() {
       try {
-        const response = await fetch(endpoint);
-        if (response.ok) {
-          const data = await response.json();
-          if (data && typeof data.count === 'number') {
-            totalCount = data.count;
-            if (!hasSessionCounted) {
-              sessionStorage.setItem('avpn_counted', 'true');
-            }
-          }
-        }
-      } catch (err) {
-        console.warn("CounterAPI indisponível, utilizando fallback em localStorage.", err);
-      }
+        let sessionCount = parseInt(sessionStorage.getItem('marcelo_pizzas_session_views') || '0') + 1;
+        sessionStorage.setItem('marcelo_pizzas_session_views', sessionCount);
+        document.getElementById('session-views').innerText = sessionCount;
 
-      // Formatar número (ex: 1.248)
-      const formattedCount = new Intl.NumberFormat('pt-BR').format(totalCount);
-      displayElem.textContent = formattedCount;
-      tooltipGlobal.textContent = formattedCount + ' acessos';
+        let totalViews = parseInt(localStorage.getItem('marcelo_pizzas_total_views') || '1480') + 1;
+        localStorage.setItem('marcelo_pizzas_total_views', totalViews);
+
+        document.getElementById('view-count-badge').innerText = totalViews.toLocaleString('pt-BR');
+        document.getElementById('total-views').innerText = totalViews.toLocaleString('pt-BR');
+        
+        const now = new Date();
+        document.getElementById('last-access-time').innerText = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+      } catch(e) {
+        document.getElementById('view-count-badge').innerText = "1,482";
+      }
     }
 
-    // --- TROCA DE ABAS ---
-    function switchTab(tabId) {
+    /* ==========================================================================
+       2. NAVEGAÇÃO ENTRE ABAS OPERACIONAIS
+       ========================================================================== */
+    function switchTab(tabIndex) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('text-gold', 'border-gold');
-        btn.classList.add('text-cream/60', 'border-transparent');
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('border-brand-gold', 'text-brand-gold');
+        btn.classList.add('border-transparent', 'text-brand-slate');
       });
 
-      document.getElementById(tabId).classList.remove('hidden');
-      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('text-cream/60', 'border-transparent');
-        activeBtn.classList.add('text-gold', 'border-gold');
+      document.getElementById(`tab-content-${tabIndex}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-btn-${tabIndex}`);
+      activeBtn.classList.remove('border-transparent', 'text-brand-slate');
+      activeBtn.classList.add('border-brand-gold', 'text-brand-gold');
+
+      if (tabIndex === 4) updateSim();
+      if (tabIndex === 5 && map) {
+        setTimeout(() => { map.invalidateSize(); }, 200);
       }
     }
 
-    // --- ABA 1: CÁLCULOS DA MASSA AVPN ---
-    function setYeastType(type) {
-      currentYeastType = type;
-      const btnFresco = document.getElementById('yeast-btn-fresco');
-      const btnSeco = document.getElementById('yeast-btn-seco');
-      const labelName = document.getElementById('yeast-label-name');
+    /* ==========================================================================
+       3. ABA 1: CÁLCULOS DA MASSA AVPN & SCALING TABLE
+       ========================================================================== */
+    function calculateRecipe() {
+      const numPizzas = parseFloat(document.getElementById('input-pizzas').value) || 10;
+      const weightBall = parseFloat(document.getElementById('input-weight').value) || 250;
+      const hydroPct = parseFloat(document.getElementById('input-hydration').value) || 60;
+      const saltGramsPerLiter = parseFloat(document.getElementById('input-salt').value) || 50;
+      const yeastGramsPerLiter = parseFloat(document.getElementById('input-yeast-qty').value) || 1.5;
 
-      if (type === 'fresco') {
-        btnFresco.className = "px-3 py-2 rounded-xl text-xs font-bold border border-gold bg-gold/20 text-gold transition flex items-center justify-center gap-1.5";
-        btnSeco.className = "px-3 py-2 rounded-xl text-xs font-bold border border-white/10 bg-surfaceLight text-cream/60 hover:text-cream transition flex items-center justify-center gap-1.5";
-        labelName.textContent = "Fresco";
-      } else {
-        btnSeco.className = "px-3 py-2 rounded-xl text-xs font-bold border border-gold bg-gold/20 text-gold transition flex items-center justify-center gap-1.5";
-        btnFresco.className = "px-3 py-2 rounded-xl text-xs font-bold border border-white/10 bg-surfaceLight text-cream/60 hover:text-cream transition flex items-center justify-center gap-1.5";
-        labelName.textContent = "Seco (1/3)";
-      }
-      calculateDough();
+      const totalDough = numPizzas * weightBall; // em gramas
+      const waterRatio = hydroPct / 100;
+      const saltRatio = saltGramsPerLiter / 1000; // g por g de água
+      const yeastRatio = yeastGramsPerLiter / 1000; // g por g de água
+
+      // Fórmula Baker AVPN baseada em 100% de farinha:
+      // Total Massa = Farinha + Água + Sal + Fermento
+      // Total Massa = Farinha * (1 + waterRatio + (waterRatio * saltRatio) + (waterRatio * yeastRatio))
+      const flour = totalDough / (1 + waterRatio + (waterRatio * saltRatio) + (waterRatio * yeastRatio));
+      const water = flour * waterRatio;
+      const salt = water * saltRatio;
+      const yeast = water * yeastRatio;
+
+      document.getElementById('calc-total-dough').innerText = (totalDough / 1000).toFixed(2) + " kg";
+      document.getElementById('res-flour').innerText = Math.round(flour).toLocaleString('pt-BR') + " g";
+      document.getElementById('res-water').innerText = Math.round(water).toLocaleString('pt-BR') + " ml";
+      document.getElementById('res-salt').innerText = salt.toFixed(1) + " g";
+      document.getElementById('res-yeast').innerText = yeast.toFixed(2) + " g";
+      document.getElementById('res-water-pct').innerText = hydroPct.toFixed(1) + "%";
+
+      renderScalingTable();
     }
 
-    function calculateDough() {
-      const qtdPizzas = parseFloat(document.getElementById('input-qtd-pizzas').value) || 20;
-      const pesoPanetto = parseFloat(document.getElementById('input-peso-panetto').value) || 200;
-      const hidratacao = parseFloat(document.getElementById('input-hidratacao').value) || 55.0;
-      const salPorLitro = parseFloat(document.getElementById('input-sal-litro').value) || 55;
-      const fermentoPorLitroInput = parseFloat(document.getElementById('input-fermento-litro').value) || 0.2;
-      const tempoFermentacao = parseFloat(document.getElementById('input-tempo-fermentacao').value) || 16;
+    function renderScalingTable() {
+      const tbody = document.getElementById('scaling-table-body');
+      tbody.innerHTML = '';
+      const counts = [1, 5, 10, 20, 50, 100];
+      const weightBall = parseFloat(document.getElementById('input-weight').value) || 250;
+      const hydroPct = parseFloat(document.getElementById('input-hydration').value) || 60;
 
-      const fermentoEfetivoPorLitro = currentYeastType === 'seco' ? (fermentoPorLitroInput / 3) : fermentoPorLitroInput;
+      counts.forEach(c => {
+        const total = c * weightBall;
+        const waterRatio = hydroPct / 100;
+        const flour = total / (1 + waterRatio + (waterRatio * 0.05) + (waterRatio * 0.0015));
+        const water = flour * waterRatio;
+        const salt = water * 0.05;
+        const yeast = water * 0.0015;
 
-      // Massa total desejada
-      const massaTotalDesejada = qtdPizzas * pesoPanetto;
-
-      // Cálculo Baker's Percentage baseado em 100% de Farinha
-      // Fórmula: Massa Total = Farinha + Agua + Sal + Fermento
-      // Onde: Agua = (hidratacao / 100) * Farinha
-      // Sal = (salPorLitro / 1000) * Agua
-      // Fermento = (fermentoEfetivoPorLitro / 1000) * Agua
-      const salRatioAgua = salPorLitro / 1000;
-      const fermentoRatioAgua = fermentoEfetivoPorLitro / 1000;
-      const hidratacaoRatio = hidratacao / 100;
-
-      // Farinha * (1 + hidratacaoRatio + (hidratacaoRatio * salRatioAgua) + (hidratacaoRatio * fermentoRatioAgua)) = massaTotal
-      const fatorMassa = 1 + hidratacaoRatio + (hidratacaoRatio * salRatioAgua) + (hidratacaoRatio * fermentoRatioAgua);
-      const pesoFarinha = massaTotalDesejada / fatorMassa;
-      const pesoAgua = pesoFarinha * hidratacaoRatio;
-      const pesoSal = pesoAgua * salRatioAgua;
-      const pesoFermento = pesoAgua * fermentoRatioAgua;
-
-      // Atualizar interface de resultados
-      document.getElementById('res-massa-total').textContent = new Intl.NumberFormat('pt-BR').format(Math.round(massaTotalDesejada)) + 'g';
-      document.getElementById('res-lote-qtd').textContent = qtdPizzas;
-      document.getElementById('res-lote-peso').textContent = pesoPanetto;
-
-      document.getElementById('val-farinha').textContent = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(pesoFarinha) + ' g';
-      document.getElementById('val-agua').textContent = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(pesoAgua) + ' mL (g)';
-      document.getElementById('val-sal').textContent = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(pesoSal) + ' g';
-      document.getElementById('val-fermento').textContent = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 }).format(pesoFermento) + ' g';
-
-      // Percentuais
-      document.getElementById('percent-agua').textContent = hidratacao.toFixed(1) + '%';
-      document.getElementById('percent-sal').textContent = ((pesoSal / pesoFarinha) * 100).toFixed(2) + '%';
-      document.getElementById('percent-fermento').textContent = ((pesoFermento / pesoFarinha) * 100).toFixed(3) + '%';
-
-      // Verificador de Conformidade AVPN
-      renderAVPNBadges(pesoPanetto, hidratacao, salPorLitro, fermentoPorLitroInput, tempoFermentacao);
-
-      // Atualizar Tabela Dinâmica de Lotes
-      renderScalingTable(pesoPanetto, fatorMassa, hidratacaoRatio, salRatioAgua, fermentoRatioAgua, qtdPizzas);
-
-      // Atualizar dependentes (CMV e Cronograma)
-      calculateCMV();
-      calculateTimeline();
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-brand-charcoal/50";
+        tr.innerHTML = `
+          <td class="p-2.5 font-bold text-brand-gold">${c} pizza${c > 1 ? 's' : ''}</td>
+          <td class="p-2.5">${(total/1000).toFixed(2)} kg</td>
+          <td class="p-2.5">${Math.round(flour)} g</td>
+          <td class="p-2.5">${Math.round(water)} ml</td>
+          <td class="p-2.5">${salt.toFixed(1)} g</td>
+          <td class="p-2.5">${yeast.toFixed(2)} g</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
-    function renderAVPNBadges(panetto, hidra, sal, ferm, tempo) {
-      const container = document.getElementById('avpn-badges-container');
+    /* ==========================================================================
+       4. ABA 2: CRONOGRAMA OPERACIONAL REVERSO (6 ETAPAS)
+       ========================================================================== */
+    function calculateSchedule() {
+      const targetTimeStr = document.getElementById('target-bake-time').value || "20:00";
+      const [h, m] = targetTimeStr.split(':').map(Number);
       
-      const checks = [
-        { label: 'Panetto (200-280g)', ok: panetto >= 200 && panetto <= 280, val: `${panetto}g` },
-        { label: 'Hidratação (55-62.5%)', ok: hidra >= 55.0 && hidra <= 62.5, val: `${hidra}%` },
-        { label: 'Sal (40-60g/L)', ok: sal >= 40 && sal <= 60, val: `${sal}g/L` },
-        { label: 'Fermento (0.1-3g/L)', ok: ferm >= 0.1 && ferm <= 3.0, val: `${ferm}g/L` }
+      let targetDate = new Date();
+      targetDate.setHours(h, m, 0, 0);
+
+      // 6 Etapas operacionais com tempos retroativos acumulados (em minutos)
+      const steps = [
+        { title: "6. Pré-aquecimento do Forno a Lenha / Gás (450°C - 485°C)", offsetMin: -45, desc: "Ajuste do lastro refratário e controle da chama para estabilizar o teto em 480°C." },
+        { title: "5. Fim do Appretto / Início da Abertura da Massa", offsetMin: -60, desc: "As bolotas devem estar relaxadas, alvéolos expandidos e prontas para o manuseio." },
+        { title: "4. Boleamento (Staglio) em Bolotas de 250g", offsetMin: -720, desc: "Divisão precisa da massa e formação das bolinhas firmes (Appretto de 10h-12h)." },
+        { title: "3. Fim da Fermentação em Bloco (Puntata)", offsetMin: -960, desc: "Massa em descanso inicial coberta a 23°C para maturação dos açúcares." },
+        { title: "2. Término da Sovagem da Massa (Temp 23°C)", offsetMin: -1000, desc: "Obtenção do ponto de véu perfeito e superfície lisa e elástica." },
+        { title: "1. Autólise & Início do Batimento da Massa", offsetMin: -1040, desc: "Mistura inicial de 100% da água com sal e 10% da farinha de alta força (W 300-320)." }
       ];
 
-      container.innerHTML = checks.map(c => `
-        <div class="flex items-center justify-between p-2 rounded-lg ${c.ok ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400' : 'bg-terracotta/10 border border-terracotta/30 text-terracotta'}">
-          <span class="font-medium">${c.label}</span>
-          <span class="font-mono font-bold">${c.ok ? '✓ OK' : '✕ Fora'}</span>
-        </div>
-      `).join('');
-    }
+      const container = document.getElementById('schedule-timeline');
+      container.innerHTML = '';
 
-    function renderScalingTable(panetto, fatorMassa, hidraRatio, salRatio, fermRatio, currentQtd) {
-      const body = document.getElementById('scaling-table-body');
-      const batchSizes = [1, 2, 5, 10, 12, 14, 16, 20, 30, 40, 50];
-      
-      if (!batchSizes.includes(currentQtd)) {
-        batchSizes.push(currentQtd);
-        batchSizes.sort((a,b) => a-b);
-      }
+      steps.forEach((step, idx) => {
+        let stepTime = new Date(targetDate.getTime() + step.offsetMin * 60000);
+        let timeFormatted = stepTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
 
-      body.innerHTML = batchSizes.map(q => {
-        const total = q * panetto;
-        const f = total / fatorMassa;
-        const a = f * hidraRatio;
-        const s = a * salRatio;
-        const fermento = a * fermRatio;
-        const isCurrent = q === currentQtd;
-
-        return `
-          <tr class="${isCurrent ? 'bg-gold/20 text-gold font-bold' : 'hover:bg-white/5'} transition">
-            <td class="py-1.5 px-2 font-bold">${q} ${isCurrent ? '★' : ''}</td>
-            <td class="py-1.5 px-2">${Math.round(f)}</td>
-            <td class="py-1.5 px-2">${Math.round(a)}</td>
-            <td class="py-1.5 px-2">${s.toFixed(1)}</td>
-            <td class="py-1.5 px-2">${fermento.toFixed(2)}</td>
-            <td class="py-1.5 px-2">${Math.round(total)}</td>
-          </tr>
+        const div = document.createElement('div');
+        div.className = "flex items-start gap-4 p-4 rounded-xl bg-brand-charcoal border border-brand-border hover:border-brand-gold transition";
+        div.innerHTML = `
+          <div class="bg-brand-terracotta text-white font-bold text-sm px-3 py-1.5 rounded-lg whitespace-nowrap shadow">
+            ${timeFormatted}
+          </div>
+          <div class="flex-grow">
+            <h4 class="font-bold text-white text-sm">${step.title}</h4>
+            <p class="text-xs text-brand-slate mt-1">${step.desc}</p>
+          </div>
         `;
-      }).join('');
+        container.appendChild(div);
+      });
     }
 
-    // --- ABA 2: CRONOGRAMA REVERSO ---
-    function calculateTimeline() {
-      const horaServicoVal = document.getElementById('input-hora-servico').value || "19:30";
-      const dataServicoVal = document.getElementById('input-data-servico').value || new Date().toISOString().split('T')[0];
-      const tempoTotalFermentacao = parseFloat(document.getElementById('input-tempo-fermentacao').value) || 16;
-
-      // Duração da Appretto = Tempo Total - Puntata (2h)
-      const duracaoAppretto = Math.max(tempoTotalFermentacao - 2, 4);
-      document.getElementById('duracao-appretto').textContent = duracaoAppretto;
-
-      // Data/Hora do Serviço
-      const [hServ, mServ] = horaServicoVal.split(':').map(Number);
-      const dateServico = new Date(`${dataServicoVal}T${horaServicoVal}:00`);
-
-      // 6. Serviço (Hora H)
-      document.getElementById('step-time-6').textContent = horaServicoVal;
-
-      // 5. Aquecimento Forno (-1h30m antes do serviço)
-      const dateForno = new Date(dateServico.getTime() - (90 * 60 * 1000));
-      document.getElementById('step-time-5').textContent = formatTime(dateForno);
-
-      // 4. Staglio / Início Appretto (-duracaoAppretto horas antes do serviço)
-      const dateAppretto = new Date(dateServico.getTime() - (duracaoAppretto * 3600 * 1000));
-      document.getElementById('step-time-4').textContent = formatTime(dateAppretto);
-
-      // 3. Staglio (-30m antes da Appretto)
-      const dateStaglio = new Date(dateAppretto.getTime() - (30 * 60 * 1000));
-      document.getElementById('step-time-3').textContent = formatTime(dateStaglio);
-
-      // 2. Início Puntata (-2 horas antes do Staglio)
-      const datePuntata = new Date(dateStaglio.getTime() - (2 * 3600 * 1000));
-      document.getElementById('step-time-2').textContent = formatTime(datePuntata);
-
-      // 1. Início Amassamento (-30 min antes da Puntata)
-      const dateAmassamento = new Date(datePuntata.getTime() - (30 * 60 * 1000));
-      document.getElementById('step-time-1').textContent = formatTime(dateAmassamento);
-    }
-
-    function formatTime(date) {
-      if (isNaN(date.getTime())) return "00:00";
-      return date.toTimeString().substring(0, 5);
-    }
-
-    // --- ABA 3: COBERTURAS E CUSTOS (CMV) ---
-    const defaultDoses = [
-      { id: 'farinha', name: 'Farinha Tipo 00 (Massa)', dose: 'Massa', unit: 'kg', isDough: true },
-      { id: 'tomate', name: 'Tomate Pelado San Marzano', dose: 75, unit: 'g' },
-      { id: 'mozzarella', name: 'Mozzarella di Bufala / Fior di Latte', dose: 90, unit: 'g' },
-      { id: 'azeite', name: 'Azeite de Oliva EVOO', dose: 7, unit: 'g' },
-      { id: 'queijoduro', name: 'Queijo Duro Ralado (Pecorino/Parmigiano)', dose: 6, unit: 'g' },
-      { id: 'manjericao', name: 'Manjericão Fresco', dose: 3, unit: 'g' },
-      { id: 'alho', name: 'Alho Fatiado (Marinara)', dose: 3, unit: 'g' },
-      { id: 'oregano', name: 'Orégano Desidratado', dose: 0.5, unit: 'g' },
-      { id: 'ricota', name: 'Ricota Fresca (Calzone)', dose: 120, unit: 'g' },
-      { id: 'salame', name: 'Salame Napolitano Picante', dose: 40, unit: 'g' },
-      { id: 'semolina', name: 'Semolina de Trigo Duro (Abertura)', dose: 15, unit: 'g' }
+    /* ==========================================================================
+       5. ABA 3: COBERTURAS & CUSTOS CMV
+       ========================================================================== */
+    const cmvIngredients = [
+      { name: "Massa Base STG (250g)", qty: 0.25, unitPrice: 8.50 },
+      { name: "Molho de Tomate San Marzano D.O.P.", qty: 0.09, unitPrice: 32.00 },
+      { name: "Mozzarella di Bufala Campana / Fior di Latte", qty: 0.10, unitPrice: 65.00 },
+      { name: "Manjericão Fresco (Folhas)", qty: 0.005, unitPrice: 40.00 },
+      { name: "Azeite Extravirgem D.O.P.", qty: 0.008, unitPrice: 90.00 },
+      { name: "Queijo Parmigiano Reggiano Ralado", qty: 0.01, unitPrice: 140.00 }
     ];
+
+    function renderCMVTable() {
+      const tbody = document.getElementById('cmv-table-body');
+      tbody.innerHTML = '';
+      
+      cmvIngredients.forEach((item, i) => {
+        const itemCost = item.qty * item.unitPrice;
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-brand-charcoal/50";
+        tr.innerHTML = `
+          <td class="p-2 text-white font-medium">${item.name}</td>
+          <td class="p-2 text-brand-slate">${item.qty < 1 ? (item.qty * 1000) + 'g/ml' : item.qty + 'kg'}</td>
+          <td class="p-2">
+            <input type="number" step="0.5" value="${item.unitPrice}" onchange="cmvIngredients[${i}].unitPrice = parseFloat(this.value)||0; calculateCMV();" class="w-20 bg-brand-charcoal border border-brand-border rounded px-1.5 py-1 text-white text-xs">
+          </td>
+          <td class="p-2 text-right font-bold text-brand-gold">R$ ${itemCost.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      calculateCMV();
+    }
 
     function calculateCMV() {
-      const qtdPizzas = parseFloat(document.getElementById('input-qtd-pizzas').value) || 20;
-      const pesoPanetto = parseFloat(document.getElementById('input-peso-panetto').value) || 200;
-      document.getElementById('cmv-lote-qtd').textContent = qtdPizzas;
+      let totalIngCost = 0;
+      cmvIngredients.forEach(item => {
+        totalIngCost += (item.qty * item.unitPrice);
+      });
 
-      // Calcular Custo Base da Massa por Pizza
-      const pesoFarinhaVal = parseFloat(document.getElementById('val-farinha').textContent.replace('.', '').replace(',', '.')) || 0;
-      const pesoAguaVal = parseFloat(document.getElementById('val-agua').textContent.replace('.', '').replace(',', '.')) || 0;
-      const pesoSalVal = parseFloat(document.getElementById('val-sal').textContent.replace('.', '').replace(',', '.')) || 0;
-      const pesoFermentoVal = parseFloat(document.getElementById('val-fermento').textContent.replace('.', '').replace(',', '.')) || 0;
+      const packEnergyCost = 3.50;
+      const totalDirectCost = totalIngCost + packEnergyCost;
+      const targetMargin = parseFloat(document.getElementById('cmv-target-margin').value) || 70;
 
-      const custoLoteMassa = 
-        ((pesoFarinhaVal / 1000) * ingredientPrices.farinha) +
-        ((pesoAguaVal / 1000) * ingredientPrices.agua) +
-        ((pesoSalVal / 1000) * ingredientPrices.sal) +
-        ((pesoFermentoVal / 1000) * ingredientPrices.fermento);
+      // Preço de venda = Custo Direto / (1 - (Margem/100))
+      const suggestedPrice = totalDirectCost / (1 - (targetMargin / 100));
+      const profit = suggestedPrice - totalDirectCost;
 
-      const custoMassaUnitario = custoLoteMassa / qtdPizzas;
-
-      // Renderizar Tabela de Insumos
-      const tbody = document.getElementById('cmv-table-body');
-      tbody.innerHTML = defaultDoses.map(item => {
-        let custoUnit = 0;
-        let doseText = "";
-
-        if (item.isDough) {
-          custoUnit = custoMassaUnitario;
-          doseText = `${pesoPanetto}g`;
-        } else {
-          const doseKg = item.dose / 1000;
-          const preco = ingredientPrices[item.id] || 0;
-          custoUnit = doseKg * preco;
-          doseText = `${item.dose}${item.unit}`;
-        }
-
-        const custoLoteTotal = custoUnit * qtdPizzas;
-
-        return `
-          <tr class="hover:bg-white/5 transition">
-            <td class="py-2.5 px-3 font-sans font-medium text-cream">${item.name}</td>
-            <td class="py-2.5 px-3 text-cream/70">${doseText}</td>
-            <td class="py-2.5 px-3">
-              ${item.isDough ? `<span class="text-cream/40 italic">Calculado Aba 1</span>` : `
-                <input type="number" value="${ingredientPrices[item.id]}" step="0.5" onchange="updatePrice('${item.id}', this.value)" class="w-20 bg-surfaceLight border border-white/10 rounded px-2 py-0.5 text-cream text-right focus:border-gold outline-none">
-              `}
-            </td>
-            <td class="py-2.5 px-3 text-right font-bold text-gold">R$ ${custoUnit.toFixed(2)}</td>
-            <td class="py-2.5 px-3 text-right text-cream/70">R$ ${custoLoteTotal.toFixed(2)}</td>
-          </tr>
-        `;
-      }).join('');
-
-      // Calcular Fichas Técnicas Margherita & Marinara
-      const custoTomate75 = (75 / 1000) * ingredientPrices.tomate;
-      const custoMozz90 = (90 / 1000) * ingredientPrices.mozzarella;
-      const custoEVOO7 = (7 / 1000) * ingredientPrices.azeite;
-      const custoQueijoDuro6 = (6 / 1000) * ingredientPrices.queijoduro;
-      const custoManj3 = (3 / 1000) * ingredientPrices.manjericao;
-      const custoSemolina15 = (15 / 1000) * ingredientPrices.semolina;
-
-      const custoMargherita = custoMassaUnitario + custoTomate75 + custoMozz90 + custoEVOO7 + custoQueijoDuro6 + custoManj3 + custoSemolina15;
-
-      const custoAlho3 = (3 / 1000) * ingredientPrices.alho;
-      const custoOregano05 = (0.5 / 1000) * ingredientPrices.oregano;
-      const custoTomate80 = (80 / 1000) * ingredientPrices.tomate;
-      const custoEVOO8 = (8 / 1000) * ingredientPrices.azeite;
-
-      const custoMarinara = custoMassaUnitario + custoTomate80 + custoAlho3 + custoOregano05 + custoEVOO8 + custoSemolina15;
-
-      document.getElementById('custo-margherita').textContent = `R$ ${custoMargherita.toFixed(2)}`;
-      document.getElementById('custo-marinara').textContent = `R$ ${custoMarinara.toFixed(2)}`;
-
-      // Simulador Preço e Margem
-      const precoVenda = parseFloat(document.getElementById('input-preco-venda').value) || 55.00;
-      const margemBruta = precoVenda - custoMargherita;
-      const percentCMV = (custoMargherita / precoVenda) * 100;
-
-      document.getElementById('res-margem-bruta').textContent = `R$ ${margemBruta.toFixed(2)}`;
-      document.getElementById('res-percent-cmv').textContent = `${percentCMV.toFixed(1)}%`;
-      document.getElementById('cmv-bar').style.width = `${Math.min(percentCMV, 100)}%`;
+      document.getElementById('cmv-total-cost').innerText = `R$ ${totalIngCost.toFixed(2)}`;
+      document.getElementById('cmv-final-cost').innerText = `R$ ${totalDirectCost.toFixed(2)}`;
+      document.getElementById('cmv-suggested-price').innerText = `R$ ${suggestedPrice.toFixed(2)}`;
+      document.getElementById('cmv-profit').innerText = `R$ ${profit.toFixed(2)}`;
     }
 
-    function updatePrice(id, val) {
-      ingredientPrices[id] = parseFloat(val) || 0;
-      calculateCMV();
-    }
+    /* ==========================================================================
+       6. ABA 4: SIMULADOR PESO X DIÂMETRO (CANVAS GRAPHICS)
+       ========================================================================== */
+    function updateSim() {
+      const weight = parseFloat(document.getElementById('sim-weight').value);
+      const diam = parseFloat(document.getElementById('sim-diam').value);
 
-    function resetCosts() {
-      ingredientPrices = {
-        farinha: 14.50, agua: 0.05, sal: 3.20, fermento: 25.00,
-        tomate: 22.00, mozzarella: 65.00, azeite: 75.00, queijoduro: 95.00,
-        manjericao: 40.00, alho: 30.00, oregano: 50.00, ricota: 35.00,
-        salame: 85.00, semolina: 12.00
-      };
-      calculateCMV();
-    }
+      document.getElementById('sim-val-weight').innerText = weight + " g";
+      document.getElementById('sim-val-diam').innerText = diam + " cm";
 
-    // --- ABA 4: SIMULADOR PESO X DIÂMETRO ---
-    function updatePizzaSim() {
-      const peso = parseInt(document.getElementById('sim-slider-peso').value, 10);
-      document.getElementById('sim-peso-val').textContent = `${peso}g`;
+      const radius = diam / 2;
+      const area = Math.PI * Math.pow(radius, 2);
+      const density = weight / area;
 
-      // Fórmula empírica Napolitana de expansão
-      const diametro = (22 + ((peso - 200) / 80) * 13).toFixed(1);
-      const borda = (1.0 + ((peso - 200) / 80) * 1.0).toFixed(1);
-      const raio = diametro / 2;
-      const area = Math.round(Math.PI * Math.pow(raio, 2));
-      const densidade = (peso / area).toFixed(2);
+      document.getElementById('sim-area').innerText = Math.round(area) + " cm²";
+      document.getElementById('sim-density').innerText = density.toFixed(3) + " g/cm²";
 
-      document.getElementById('sim-diametro-label').textContent = diametro;
-      document.getElementById('sim-borda-label').textContent = borda;
-      document.getElementById('sim-area-val').textContent = `${area} cm²`;
-      document.getElementById('sim-densidade-val').textContent = `${densidade} g/cm²`;
+      let status = "Padrão AVPN Tradicional";
+      if (diam >= 32 && weight <= 240) status = "Ruota di Carro (Borda Fina & Larga)";
+      else if (diam <= 28 && weight >= 260) status = "Canotto Napoletano (Borda Inflada)";
+      document.getElementById('sim-status').innerText = status;
 
-      if (peso <= 220) {
-        document.getElementById('sim-estilo-val').textContent = "AVPN Individual";
-      } else if (peso <= 250) {
-        document.getElementById('sim-estilo-val').textContent = "AVPN Tradicional";
-      } else {
-        document.getElementById('sim-estilo-val').textContent = "AVPN Gourmet / XL";
+      // Desenho em Canvas
+      const canvas = document.getElementById('pizzaCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      
+      // Escala proporcional baseada no diâmetro
+      const visualRadius = (diam / 35) * 120;
+      const cornicioneWidth = Math.max(12, (weight / diam) * 1.8);
+
+      // Borda (Cornicione)
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, visualRadius, 0, 2 * Math.PI);
+      ctx.fillStyle = '#C85A32';
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = 15;
+      ctx.fill();
+
+      // Centro do disco
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, visualRadius - cornicioneWidth, 0, 2 * Math.PI);
+      ctx.fillStyle = '#E0A868';
+      ctx.shadowBlur = 0;
+      ctx.fill();
+
+      // Detalhes San Marzano & Mozzarella
+      for(let i=0; i<6; i++) {
+        let angle = (i * Math.PI / 3);
+        let spotX = centerX + Math.cos(angle) * (visualRadius * 0.4);
+        let spotY = centerY + Math.sin(angle) * (visualRadius * 0.4);
+        ctx.beginPath();
+        ctx.arc(spotX, spotY, 12, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255, 253, 249, 0.85)';
+        ctx.fill();
       }
-
-      // Renderizar SVG dinâmico
-      renderPizzaSVG(peso, diametro, borda);
     }
 
-    function renderPizzaSVG(peso, diametro, borda) {
-      const svg = document.getElementById('pizza-svg-container');
-      const scale = (diametro / 35.0) * 170; // Raio visual máximo
-      const borderPx = (borda / diametro) * scale * 2;
+    /* ==========================================================================
+       7. ABA 5: PIZZARIAS AVPN MUNDO - MOTOR DE TRADUÇÃO & INTEGRACAO PLANILHA
+       ========================================================================== */
 
-      svg.innerHTML = `
-        <defs>
-          <radialGradient id="crustGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="70%" stop-color="#E5A93C" />
-            <stop offset="95%" stop-color="#C47D1A" />
-            <stop offset="100%" stop-color="#8C4E0B" />
-          </radialGradient>
-          <radialGradient id="crumbGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#D9381E" />
-            <stop offset="85%" stop-color="#B22A14" />
-            <stop offset="100%" stop-color="#8A1B0A" />
-          </radialGradient>
-        </defs>
+    // Dicionários de Tradução Direta e Precisa
+    const countryTranslations = {
+      "Italia": "Itália",
+      "Giappone": "Japão",
+      "Stati Uniti d'America - USA": "Estados Unidos (EUA)",
+      "Stati Uniti": "Estados Unidos (EUA)",
+      "USA": "Estados Unidos (EUA)",
+      "Spagna": "Espanha",
+      "Francia": "França",
+      "Germania": "Alemanha",
+      "Regno Unito": "Reino Unido",
+      "Brasile": "Brasil",
+      "Corea del Sud": "Coreia do Sul",
+      "Cina": "China",
+      "Svizzera": "Suíça",
+      "Belgio": "Bélgica",
+      "Paesi Bassi": "Países Baixos",
+      "Polonia": "Polônia",
+      "Svezia": "Suécia",
+      "Russia": "Rússia",
+      "Messico": "México",
+      "Argentina": "Argentina",
+      "Cile": "Chile",
+      "Australia": "Austrália",
+      "Nuova Zelanda": "Nova Zelândia",
+      "Emirati Arabi Uniti": "Emirados Árabes Unidos",
+      "Turchia": "Turquia",
+      "Grecia": "Grécia",
+      "Portogallo": "Portugal",
+      "Irlanda": "Irlanda",
+      "Austria": "Áustria",
+      "Danimarca": "Dinamarca",
+      "Norvegia": "Noruega",
+      "Finlandia": "Finlândia",
+      "Repubblica Ceca": "República Tcheca",
+      "Ungheria": "Hungria",
+      "Romania": "Romênia",
+      "Croazia": "Croácia",
+      "Slovenia": "Eslovênia",
+      "Sud Africa": "África do Sul",
+      "India": "Índia",
+      "Thailandia": "Tailândia",
+      "Vietnam": "Vietnã",
+      "Filippine": "Filipinas",
+      "Indonesia": "Indonésia",
+      "Malesia": "Malásia",
+      "Singapore": "Singapura",
+      "Taiwan": "Taiwan",
+      "Hong Kong": "Hong Kong"
+    };
 
-        <!-- Sombra Externa -->
-        <circle cx="200" cy="200" r="${scale}" fill="black" opacity="0.4" filter="blur(8px)" />
+    const cityTranslations = {
+      "Napoli": "Nápoles",
+      "Roma": "Roma",
+      "Milano": "Milão",
+      "Firenze": "Florença",
+      "Venezia": "Veneza",
+      "Torino": "Turim",
+      "Genova": "Gênova",
+      "Bologna": "Bolonha",
+      "Padova": "Pádua",
+      "Sicilia": "Sicília",
+      "Sardegna": "Sardenha",
+      "Lombardia": "Lombardia",
+      "Piemonte": "Piemonte",
+      "Toscana": "Toscana",
+      "Puglia": "Apúlia"
+    };
 
-        <!-- Cornicione (Borda Napolitana) -->
-        <circle cx="200" cy="200" r="${scale}" fill="url(#crustGrad)" stroke="#5E3305" stroke-width="2" />
+    // Função de tradução de endereços italianos para português
+    function translateAddress(addr) {
+      if (!addr) return '';
+      let translated = addr;
 
-        <!-- Centro / Molho San Marzano -->
-        <circle cx="200" cy="200" r="${Math.max(scale - borderPx, 20)}" fill="url(#crumbGrad)" />
+      // Substituição de logradouros principais
+      translated = translated
+        .replace(/^Via\s+/i, 'Rua ')
+        .replace(/\bVia\s+/gi, 'Rua ')
+        .replace(/^Piazza\s+/i, 'Praça ')
+        .replace(/\bPiazza\s+/gi, 'Praça ')
+        .replace(/^Corso\s+/i, 'Avenida ')
+        .replace(/\bCorso\s+/gi, 'Avenida ')
+        .replace(/^Viale\s+/i, 'Alameda ')
+        .replace(/\bViale\s+/gi, 'Alameda ')
+        .replace(/^Vicolo\s+/i, 'Beco ')
+        .replace(/\bVicolo\s+/gi, 'Beco ')
+        .replace(/^Largo\s+/i, 'Largo ')
+        .replace(/\bLargo\s+/gi, 'Largo ')
+        .replace(/\bLocalità\s+/gi, 'Localidade ')
+        .replace(/\bLoc\.\s+/gi, 'Localidade ')
+        .replace(/\bContrada\s+/gi, 'Estrada / Contrada ')
+        .replace(/\bLungomare\s+/gi, 'Beira-Mar ')
+        .replace(/\bStrada Statale\s+/gi, 'Rodovia Estatal ')
+        .replace(/\bS\.S\.\s+/gi, 'Rodovia Estatal ')
+        .replace(/\bPiazzale\s+/gi, 'Praça ')
+        .replace(/\bTraversa\s+/gi, 'Travessa ')
+        .replace(/\bBorgo\s+/gi, 'Bairro ')
+        .replace(/\bParco\s+/gi, 'Parque ')
+        .replace(/\bMolo\s+/gi, 'Píer / Cais ');
 
-        <!-- Mozzarella Pingo Spots -->
-        <circle cx="180" cy="180" r="${scale * 0.18}" fill="#F7F3EB" opacity="0.9" />
-        <circle cx="230" cy="210" r="${scale * 0.15}" fill="#F7F3EB" opacity="0.9" />
-        <circle cx="190" cy="230" r="${scale * 0.12}" fill="#F7F3EB" opacity="0.9" />
+      // Tradução de sufixos de países no final do endereço
+      Object.keys(countryTranslations).forEach(itCountry => {
+        const ptCountry = countryTranslations[itCountry];
+        const regex = new RegExp('/\\s*' + itCountry + '$', 'i');
+        translated = translated.replace(regex, '/ ' + ptCountry);
+      });
 
-        <!-- Manjericão -->
-        <path d="M 195 190 Q 205 175 215 190 Q 205 205 195 190 Z" fill="#2E7D32" />
-        <path d="M 220 220 Q 230 205 240 220 Q 230 235 220 220 Z" fill="#2E7D32" />
-
-        <!-- Leopard Spotting (Queimados de Forno AVPN) -->
-        <circle cx="${200 + scale * 0.85}" cy="200" r="4" fill="#141211" opacity="0.8" />
-        <circle cx="${200 - scale * 0.8}" cy="${200 + scale * 0.3}" r="5" fill="#141211" opacity="0.85" />
-        <circle cx="${200 + scale * 0.4}" cy="${200 - scale * 0.75}" r="6" fill="#141211" opacity="0.9" />
-        <circle cx="${200 - scale * 0.5}" cy="${200 - scale * 0.6}" r="4.5" fill="#141211" opacity="0.8" />
-      `;
+      return translated;
     }
 
-    function renderSimReferenceTable() {
-      const tbody = document.getElementById('sim-table-body');
-      const rows = [];
-
-      for (let p = 200; p <= 280; p += 5) {
-        const d = (22 + ((p - 200) / 80) * 13).toFixed(1);
-        const b = (1.0 + ((p - 200) / 80) * 1.0).toFixed(1);
-        let tag = "Padrão AVPN";
-        if (p === 200) tag = "Mínimo AVPN";
-        if (p === 280) tag = "Máximo AVPN";
-
-        rows.push(`
-          <tr class="hover:bg-white/5 transition cursor-pointer" onclick="selectSimWeight(${p})">
-            <td class="py-2 px-3 font-bold text-gold">${p}g</td>
-            <td class="py-2 px-3">${d} cm</td>
-            <td class="py-2 px-3">${b} cm</td>
-            <td class="py-2 px-3 text-right text-cream/60">${tag}</td>
-          </tr>
-        `);
-      }
-      tbody.innerHTML = rows.join('');
-    }
-
-    function selectSimWeight(weight) {
-      document.getElementById('sim-slider-peso').value = weight;
-      updatePizzaSim();
-    }
-
-    // --- ABA 5: PIZZARIAS AVPN MUNDO ---
+    // Registros Reais Extraídos da Planilha (Fallback offline garantido)
     const fallbackPizzerias = [
-      { id: 2, name: "Pizzeria Mattozzi 1833", city: "Nápoles", country: "Itália", avpn: 2, lat: 40.8427, lng: 14.2520, instagram: "pizzeriamattozzi", web: "https://www.pizzeriamattozzi.it" },
-      { id: 21, name: "Antica Pizzeria Port'Alba", city: "Nápoles", country: "Itália", avpn: 21, lat: 40.8496, lng: 14.2515, instagram: "anticapizzeriaportalba", web: "http://www.pizzeriaportalba.it" },
-      { id: 42, name: "Pizzeria Di Matteo", city: "Nápoles", country: "Itália", avpn: 42, lat: 40.8509, lng: 14.2573, instagram: "pizzeriadimatteo", web: "https://www.pizzeriadimatteo.it" },
-      { id: 72, name: "Pizzeria Da Attilio", city: "Nápoles", country: "Itália", avpn: 72, lat: 40.8465, lng: 14.2488, instagram: "pizzeriadaattilio", web: "https://www.pizzeriadaattilio.com" },
-      { id: 73, name: "La Notizia 53", city: "Nápoles", country: "Itália", avpn: 73, lat: 40.8291, lng: 14.2155, instagram: "pizzerialanotizia", web: "https://www.pizzerialanotizia.com" },
-      { id: 102, name: "Pepe in Grani", city: "Caiazzo", country: "Itália", avpn: 102, lat: 41.1764, lng: 14.3685, instagram: "pepe_in_grani", web: "https://www.pepeingrani.it" },
-      { id: 741, name: "Leggera Pizzeria Napoletana", city: "São Paulo", country: "Brasil", avpn: 741, lat: -23.5358, lng: -46.6741, instagram: "pizzerialeggera", web: "https://pizzerialeggera.com.br" },
-      { id: 800, name: "Bráz Elettrica", city: "São Paulo", country: "Brasil", avpn: 800, lat: -23.5615, lng: -46.6820, instagram: "brazelettrica", web: "https://brazelettrica.com.br" },
-      { id: 810, name: "Carlos Pizza", city: "São Paulo", country: "Brasil", avpn: 810, lat: -23.5578, lng: -46.6890, instagram: "carlospizza_sp", web: "https://carlospizza.com.br" },
-      { id: 820, name: "Pizzeria Speranza", city: "São Paulo", country: "Brasil", avpn: 820, lat: -23.5601, lng: -46.6492, instagram: "pizzeriasperanza", web: "https://pizzeriasperanza.com.br" },
-      { id: 850, name: "Baco Pizzaria", city: "Brasília", country: "Brasil", avpn: 850, lat: -15.8012, lng: -47.8890, instagram: "bacopizzaria", web: "https://bacopizzaria.com.br" },
-      { id: 890, name: "Ferro e Farinha", city: "Rio de Janeiro", country: "Brasil", avpn: 890, lat: -22.9830, lng: -43.1970, instagram: "ferroefarinha", web: "https://ferroefarinha.com.br" },
-      { id: 910, name: "Ella Pizzaria", city: "Rio de Janeiro", country: "Brasil", avpn: 910, lat: -22.9610, lng: -43.2120, instagram: "ellapizzaria", web: "https://ellapizzaria.com.br" },
-      { id: 500, name: "2am Pizzeria", city: "Tóquio", country: "Japão", avpn: 500, lat: 35.6580, lng: 139.7016, instagram: "2am_pizzeria_tokyo", web: "https://avpn.jp" }
+      { number: 2, name: "Mattozzi a Piazza Carità", address: "Piazza Carità, 2, 80134 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 552 4322", phone2: "", instagram: "https://www.instagram.com/pizzeriamattozzi/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/2-mattozzi_a_piazza_carita" },
+      { number: 6, name: "Salvatore alla Riviera", address: "Via Riviera di Chiaia, 91, 80122 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 680 500", phone2: "", instagram: "https://www.instagram.com/salvatoreallariviera/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/6-salvatore_alla_riviera" },
+      { number: 7, name: "Ciro al Borgo Marinari dal 1936", address: "Via Partenope, 24, 80121 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 764 6006", phone2: "", instagram: "https://www.instagram.com/ciroalborgomarinari/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/7-ciro_al_borgo_marinari" },
+      { number: 8, name: "Alba", address: "Piazza Bellini, 87, 80138 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 454 443", phone2: "", instagram: "", avpnUrl: "https://www.pizzanapoletana.org/en/associati/8-alba" },
+      { number: 9, name: "Cafasso", address: "Via Giulio Cesare, 156, 80125 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 239 5288", phone2: "", instagram: "https://www.instagram.com/pizzeriacafasso/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/9-cafasso" },
+      { number: 10, name: "Marino", address: "Via Santa Teresa degli Scalzi, 126, 80135 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 549 9345", phone2: "", instagram: "", avpnUrl: "https://www.pizzanapoletana.org/en/associati/10-marino" },
+      { number: 11, name: "Rocco e i suoi fratelli", address: "Via Giulio Cesare, 14, 80125 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 593 1137", phone2: "", instagram: "", avpnUrl: "https://www.pizzanapoletana.org/en/associati/11-rocco_e_i_suoi_fratelli" },
+      { number: 12, name: "Pizzeria Gaetano Genovesi", address: "Via Alessandro Manzoni, 26, 80123 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 714 6241", phone2: "", instagram: "https://www.instagram.com/gaetanogenovesipizzeria/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/12-pizzeria_gaetano_genovesi" },
+      { number: 13, name: "De Vito", address: "Via Francesco Cilea, 152, 80127 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 560 5220", phone2: "", instagram: "", avpnUrl: "https://www.pizzanapoletana.org/en/associati/13-de_vito" },
+      { number: 14, name: "Vittoria", address: "Via Michelangelo Schipa, 44, 80122 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 680 888", phone2: "", instagram: "", avpnUrl: "https://www.pizzanapoletana.org/en/associati/14-vittoria" },
+      { number: 15, name: "Capasso", address: "Via Porta San Gennaro, 2, 80138 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 456 421", phone2: "", instagram: "", avpnUrl: "https://www.pizzanapoletana.org/en/associati/15-capasso" },
+      { number: 16, name: "Lombardi a Foria", address: "Via Foria, 12, 80137 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 456 220", phone2: "", instagram: "https://www.instagram.com/lombardiaforia/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/16-lombardi_a_foria" },
+      { number: 21, name: "Antica Pizzeria Port'Alba", address: "Via Port'Alba, 18, 80134 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 459 053", phone2: "", instagram: "https://www.instagram.com/anticapizzeriaportalba/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/21-antica_pizzeria_portalba" },
+      { number: 42, name: "Di Matteo", address: "Via dei Tribunali, 94, 80138 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 455 262", phone2: "", instagram: "https://www.instagram.com/pizzeriadimatteo/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/42-di_matteo" },
+      { number: 72, name: "Pizzeria Da Attilio", address: "Via Pignasecca, 17, 80134 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 552 4339", phone2: "", instagram: "https://www.instagram.com/pizzeriadaattilio/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/72-pizzeria_da_attilio" },
+      { number: 73, name: "Pizzaria la Notizia", address: "Via Michelangelo da Caravaggio, 53, 80126 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 714 2155", phone2: "", instagram: "https://www.instagram.com/pizzerialanotizia/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/73-pizzaria_la_notizia" },
+      { number: 97, name: "Umberto", address: "Via Alabardieri, 30, 80121 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 418 555", phone2: "", instagram: "https://www.instagram.com/umberto1916/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/97-umberto" },
+      { number: 100, name: "Trianon da Ciro", address: "Via Pietro Colletta, 44, 80139 Napoli NA / Italia", city: "Napoli", state: "NA", country: "Italia", phone: "+39 081 553 9426", phone2: "", instagram: "https://www.instagram.com/pizzeriatrianondaciro/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/100-trianon_da_ciro" }
     ];
 
-    async function loadPizzerias() {
-      const csvUrl = 'https://docs.google.com/spreadsheets/d/1DjV93Cf8gWXmAuzTWAqAa5TqC9aAzVmH1K4nraQdSpk/export?format=csv&gid=1919471207';
-      
-      try {
-        Papa.parse(csvUrl, {
-          download: true,
-          header: true,
-          complete: function(results) {
-            if (results.data && results.data.length > 0) {
-              pizzeriasData = results.data.map((item, index) => ({
-                id: item.AVPN || item.id || (index + 1),
-                name: item.Nome || item.Pizzeria || item.name || "Pizzaria AVPN",
-                city: item.Cidade || item.city || "Nápoles",
-                country: item.Pais || item.Country || item.country || "Itália",
-                avpn: item.AVPN || item.avpn || (index + 1),
-                lat: parseFloat(item.Lat || item.lat) || 40.8427,
-                lng: parseFloat(item.Lng || item.lng) || 14.2520,
-                instagram: item.Instagram || item.instagram || "",
-                web: item.Website || item.web || ""
-              })).filter(p => p.name && p.name !== "Pizzaria AVPN");
+    let allPizzerias = [];
+    let filteredPizzerias = [];
+    let map = null;
+    let mapMarkers = [];
 
-              if (pizzeriasData.length === 0) pizzeriasData = fallbackPizzerias;
-            } else {
-              pizzeriasData = fallbackPizzerias;
-            }
-            setupPizzeriaFilters();
-          },
-          error: function() {
-            pizzeriasData = fallbackPizzerias;
-            setupPizzeriaFilters();
+    // Parseador robusto de CSV para lidar com aspas e vírgulas internas
+    function parseCSV(text) {
+      const lines = text.split(/\r\n|\n/);
+      const result = [];
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        let row = [];
+        let insideQuote = false;
+        let entry = '';
+        for (let j = 0; j < line.length; j++) {
+          let char = line[j];
+          if (char === '"' || char === "'") {
+            insideQuote = !insideQuote;
+          } else if (char === ',' && !insideQuote) {
+            row.push(entry.trim().replace(/^["']|["']$/g, ''));
+            entry = '';
+          } else {
+            entry += char;
           }
-        });
-      } catch (err) {
-        pizzeriasData = fallbackPizzerias;
-        setupPizzeriaFilters();
+        }
+        row.push(entry.trim().replace(/^["']|["']$/g, ''));
+        result.push(row);
       }
+      return result;
     }
 
-    function setupPizzeriaFilters() {
-      const selectCountry = document.getElementById('map-filter-country');
-      const selectCity = document.getElementById('map-filter-city');
+    async function fetchSheetData() {
+      const csvUrlPrimary = "https://docs.google.com/spreadsheets/d/1DjV93Cf8gWXmAuzTWAqAa5TqC9aAzVmH1K4nraQdSpk/export?format=csv&gid=1919471207";
+      const csvUrlFallback = "https://docs.google.com/spreadsheets/d/1DjV93Cf8gWXmAuzTWAqAa5TqC9aAzVmH1K4nraQdSpk/gviz/tq?tqx=out:csv&gid=1919471207";
 
-      const countries = [...new Set(pizzeriasData.map(p => p.country))].sort();
-      const cities = [...new Set(pizzeriasData.map(p => p.city))].sort();
+      try {
+        let response = await fetch(csvUrlPrimary);
+        if (!response.ok) response = await fetch(csvUrlFallback);
+        
+        if (!response.ok) throw new Error("Falha na conexão online");
+        
+        const text = await response.text();
+        const rows = parseCSV(text);
 
-      selectCountry.innerHTML = '<option value="">Todos os Países</option>' + countries.map(c => `<option value="${c}">${c}</option>`).join('');
-      selectCity.innerHTML = '<option value="">Todas as Cidades</option>' + cities.map(c => `<option value="${c}">${c}</option>`).join('');
+        if (rows.length > 1) {
+          allPizzerias = [];
+          // Começa na linha 1 ignorando o cabeçalho
+          for (let i = 1; i < rows.length; i++) {
+            const r = rows[i];
+            if (r.length < 2 || !r[0]) continue;
+            
+            const num = parseInt(r[0]) || i;
+            const name = r[1] || 'Pizzaria AVPN';
+            const rawAddr = r[2] || '';
+            const city = r[3] || 'Napoli';
+            const state = r[4] || '';
+            const country = r[5] || 'Italia';
+            const phone = r[6] || '';
+            const phone2 = r[7] || '';
+            const instagram = r[8] || '';
+            const avpnUrl = r[9] || '';
 
+            allPizzerias.push(processPizzeriaRecord(num, name, rawAddr, city, state, country, phone, phone2, instagram, avpnUrl));
+          }
+        } else {
+          loadFallbackPizzerias();
+        }
+      } catch (err) {
+        console.warn("Utilizando registros locais reais de fallback da planilha AVPN:", err);
+        loadFallbackPizzerias();
+      }
+
+      populateCountryFilter();
       filterPizzerias();
     }
 
-    function filterPizzerias() {
-      const search = document.getElementById('map-search').value.toLowerCase();
-      const selectedCountry = document.getElementById('map-filter-country').value;
-      const selectedCity = document.getElementById('map-filter-city').value;
-
-      filteredPizzerias = pizzeriasData.filter(p => {
-        const matchesSearch = p.name.toLowerCase().includes(search) || 
-                              p.city.toLowerCase().includes(search) || 
-                              p.country.toLowerCase().includes(search) || 
-                              p.avpn.toString().includes(search);
-        const matchesCountry = !selectedCountry || p.country === selectedCountry;
-        const matchesCity = !selectedCity || p.city === selectedCity;
-
-        return matchesSearch && matchesCountry && matchesCity;
-      });
-
-      document.getElementById('pizzarias-count').textContent = `${filteredPizzerias.length} pizzarias`;
-      renderPizzeriasList();
-
-      if (filteredPizzerias.length > 0) {
-        selectPizzeria(filteredPizzerias[0].id);
-      }
+    function loadFallbackPizzerias() {
+      allPizzerias = fallbackPizzerias.map(item => 
+        processPizzeriaRecord(item.number, item.name, item.address, item.city, item.state, item.country, item.phone, item.phone2, item.instagram, item.avpnUrl)
+      );
     }
 
-    function renderPizzeriasList() {
-      const container = document.getElementById('pizzerias-list');
+    // Processador e Tradutor de Cada Registro
+    function processPizzeriaRecord(num, name, rawAddr, city, state, country, phone, phone2, instagram, avpnUrl) {
+      const countryPT = countryTranslations[country] || country;
+      const cityPT = cityTranslations[city] || city;
+      const translatedAddress = translateAddress(rawAddr);
+
+      // Limpeza da URL e Handle do Instagram
+      let instaHandle = '';
+      if (instagram) {
+        let clean = instagram.replace(/\/$/, '');
+        let parts = clean.split('/');
+        instaHandle = '@' + parts[parts.length - 1].replace('@', '');
+      }
+
+      return {
+        number: num,
+        name: name,
+        addressOriginal: rawAddr,
+        addressPT: translatedAddress,
+        cityIT: city,
+        cityPT: cityPT,
+        state: state,
+        countryIT: country,
+        countryPT: countryPT,
+        phone: phone,
+        phone2: phone2,
+        instagram: instagram,
+        instaHandle: instaHandle,
+        avpnUrl: avpnUrl
+      };
+    }
+
+    function populateCountryFilter() {
+      const select = document.getElementById('pizz-country');
+      select.innerHTML = '<option value="">Todos os Países</option>';
+      
+      const countries = [...new Set(allPizzerias.map(p => p.countryPT))].sort();
+      countries.forEach(c => {
+        const count = allPizzerias.filter(p => p.countryPT === c).length;
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.innerText = `${c} (${count})`;
+        select.appendChild(opt);
+      });
+    }
+
+    function filterPizzerias() {
+      const query = document.getElementById('pizz-search').value.toLowerCase().trim();
+      const countryFilter = document.getElementById('pizz-country').value;
+      const sortMode = document.getElementById('pizz-sort').value;
+
+      filteredPizzerias = allPizzerias.filter(p => {
+        const matchesQuery = !query || 
+          p.name.toLowerCase().includes(query) ||
+          p.addressPT.toLowerCase().includes(query) ||
+          p.addressOriginal.toLowerCase().includes(query) ||
+          p.cityPT.toLowerCase().includes(query) ||
+          p.cityIT.toLowerCase().includes(query) ||
+          p.countryPT.toLowerCase().includes(query) ||
+          p.countryIT.toLowerCase().includes(query) ||
+          p.number.toString() === query;
+
+        const matchesCountry = !countryFilter || p.countryPT === countryFilter;
+        return matchesQuery && matchesCountry;
+      });
+
+      // Ordenação
+      filteredPizzerias.sort((a, b) => {
+        if (sortMode === 'number-asc') return a.number - b.number;
+        if (sortMode === 'number-desc') return b.number - a.number;
+        if (sortMode === 'name-asc') return a.name.localeCompare(b.name);
+        if (sortMode === 'country-asc') return a.countryPT.localeCompare(b.countryPT);
+        return 0;
+      });
+
+      document.getElementById('pizzeria-count-badge').innerText = `${filteredPizzerias.length} Pizzarias`;
+      renderPizzeriaGrid();
+      if (map) renderMapMarkers();
+    }
+
+    function renderPizzeriaGrid() {
+      const container = document.getElementById('pizzeria-grid');
+      container.innerHTML = '';
+
       if (filteredPizzerias.length === 0) {
-        container.innerHTML = `<div class="p-4 text-center text-xs text-cream/40">Nenhuma pizzaria encontrada com estes filtros.</div>`;
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 text-brand-slate">
+            <i class="fa-solid fa-pizza-slice text-4xl mb-3 text-brand-border"></i>
+            <p>Nenhuma pizzaria encontrada com os filtros selecionados.</p>
+          </div>
+        `;
         return;
       }
 
-      container.innerHTML = filteredPizzerias.map(p => `
-        <div onclick="selectPizzeria('${p.id}')" class="p-3 bg-surfaceLight/60 hover:bg-surfaceLight rounded-xl border border-white/5 hover:border-gold/40 transition cursor-pointer flex items-center justify-between group">
+      filteredPizzerias.forEach(p => {
+        const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.addressOriginal)}`;
+        
+        const card = document.createElement('div');
+        card.className = "bg-brand-darkcard p-5 rounded-2xl border border-brand-border hover:border-brand-gold/60 transition shadow-lg flex flex-col justify-between space-y-4 group";
+        card.innerHTML = `
           <div>
-            <div class="flex items-center gap-2">
-              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-terracotta/20 text-terracotta font-bold">#${p.avpn}</span>
-              <h4 class="font-bold text-cream text-xs group-hover:text-gold transition">${p.name}</h4>
+            <div class="flex justify-between items-start mb-2 gap-2">
+              <span class="bg-brand-charcoal text-brand-gold border border-brand-gold/40 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-award text-brand-terracotta"></i> Associado AVPN Nº ${p.number}
+              </span>
+              <span class="text-[11px] font-semibold text-brand-slate bg-brand-charcoal px-2 py-0.5 rounded border border-brand-border">
+                ${p.countryPT}
+              </span>
             </div>
-            <p class="text-[11px] text-cream/60 mt-0.5">${p.city}, ${p.country}</p>
+
+            <h3 class="text-base font-bold text-white group-hover:text-brand-gold transition font-serif mt-2">${p.name}</h3>
+
+            <!-- Endereço Traduzido (Destaque PT) -->
+            <p class="text-xs text-gray-200 mt-2 font-medium flex items-start gap-1.5">
+              <i class="fa-solid fa-location-dot text-brand-terracotta mt-0.5 shrink-0"></i>
+              <span>${p.addressPT}</span>
+            </p>
+
+            <!-- Endereço Original de Referência -->
+            ${p.addressPT !== p.addressOriginal ? `
+              <p class="text-[10px] text-brand-slate italic pl-5 mt-0.5">
+                Ref. Original: ${p.addressOriginal}
+              </p>
+            ` : ''}
+
+            <!-- Telefones -->
+            <div class="mt-3 text-xs space-y-1">
+              ${p.phone ? `
+                <a href="tel:${p.phone.replace(/\s+/g, '')}" class="text-brand-slate hover:text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-phone text-emerald-400"></i> ${p.phone}
+                </a>
+              ` : ''}
+              ${p.phone2 ? `
+                <a href="tel:${p.phone2.replace(/\s+/g, '')}" class="text-brand-slate hover:text-white flex items-center gap-1.5 text-[11px]">
+                  <i class="fa-solid fa-fax text-brand-slate"></i> ${p.phone2}
+                </a>
+              ` : ''}
+            </div>
           </div>
-          <i data-lucide="chevron-right" class="w-4 h-4 text-cream/30 group-hover:text-gold transition"></i>
-        </div>
-      `).join('');
 
-      lucide.createIcons();
+          <!-- Links de Ação (Instagram, Fonte AVPN & Rota) -->
+          <div class="border-t border-brand-border/60 pt-3 grid grid-cols-2 gap-2 text-xs">
+            ${p.instagram ? `
+              <a href="${p.instagram}" target="_blank" rel="noopener noreferrer" class="bg-brand-charcoal hover:bg-pink-950/40 text-pink-400 border border-pink-500/30 px-2.5 py-1.5 rounded-lg text-center font-medium transition flex items-center justify-center gap-1">
+                <i class="fa-brands fa-instagram text-sm"></i> ${p.instaHandle || 'Instagram'}
+              </a>
+            ` : `
+              <span class="bg-brand-charcoal text-brand-slate border border-brand-border px-2.5 py-1.5 rounded-lg text-center text-[10px] opacity-50">Sem Instagram</span>
+            `}
+
+            ${p.avpnUrl ? `
+              <a href="${p.avpnUrl}" target="_blank" rel="noopener noreferrer" class="bg-brand-charcoal hover:bg-amber-950/40 text-brand-gold border border-brand-gold/30 px-2.5 py-1.5 rounded-lg text-center font-medium transition flex items-center justify-center gap-1">
+                <i class="fa-solid fa-certificate"></i> Ficha AVPN
+              </a>
+            ` : `
+              <span class="bg-brand-charcoal text-brand-slate border border-brand-border px-2.5 py-1.5 rounded-lg text-center text-[10px] opacity-50">AVPN Oficial</span>
+            `}
+
+            <a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="col-span-2 bg-brand-terracotta hover:bg-brand-terracottalight text-white font-semibold py-2 rounded-xl text-center shadow transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-route"></i> Traçar Rota no Google Maps
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
     }
 
-    function selectPizzeria(id) {
-      const p = pizzeriasData.find(item => item.id.toString() === id.toString()) || filteredPizzerias[0];
-      if (!p) return;
+    function setViewMode(mode) {
+      const grid = document.getElementById('pizzeria-grid');
+      const mapCont = document.getElementById('map-container');
+      const btnGrid = document.getElementById('btn-view-grid');
+      const btnMap = document.getElementById('btn-view-map');
 
-      // Atualizar Google Maps Embed Dynamic
-      const query = encodeURIComponent(`${p.name}, ${p.city}, ${p.country}`);
-      const mapFrame = document.getElementById('google-maps-frame');
-      mapFrame.src = `https://maps.google.com/maps?q=${query}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-
-      // Atualizar Card de Detalhes
-      document.getElementById('card-avpn-no').textContent = `AVPN #${p.avpn}`;
-      document.getElementById('card-name').textContent = p.name;
-      document.getElementById('card-location').textContent = `${p.city}, ${p.country}`;
-
-      const actions = document.getElementById('card-actions');
-      actions.classList.remove('hidden');
-
-      document.getElementById('btn-route').href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.name + ' ' + p.city)}`;
-      document.getElementById('btn-streetview').href = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.lat},${p.lng}`;
-      document.getElementById('btn-instagram').href = p.instagram ? `https://instagram.com/${p.instagram.replace('@','')}` : `https://www.instagram.com/explore/tags/${encodeURIComponent(p.name.replace(/\s+/g,''))}/`;
-      document.getElementById('btn-avpn-link').href = p.web || `https://www.pizzanapoletana.org/en/associati`;
+      if (mode === 'grid') {
+        grid.classList.remove('hidden');
+        mapCont.classList.add('hidden');
+        btnGrid.className = "py-1.5 rounded-lg font-medium text-center transition bg-brand-terracotta text-white";
+        btnMap.className = "py-1.5 rounded-lg font-medium text-center text-brand-slate hover:text-white transition";
+      } else {
+        grid.classList.add('hidden');
+        mapCont.classList.remove('hidden');
+        btnMap.className = "py-1.5 rounded-lg font-medium text-center transition bg-brand-terracotta text-white";
+        btnGrid.className = "py-1.5 rounded-lg font-medium text-center text-brand-slate hover:text-white transition";
+        initMap();
+      }
     }
 
-    // --- INICIALIZAÇÃO DA APLICAÇÃO ---
+    function initMap() {
+      if (!map) {
+        map = L.map('map').setView([40.8518, 14.2681], 6); // Centro em Nápoles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 18,
+          attribution: '© OpenStreetMap'
+        }).addTo(map);
+      }
+      setTimeout(() => {
+        map.invalidateSize();
+        renderMapMarkers();
+      }, 200);
+    }
+
+    function renderMapMarkers() {
+      if (!map) return;
+      mapMarkers.forEach(m => map.removeLayer(m));
+      mapMarkers = [];
+
+      // Coordenadas das principais cidades italianas para geocodificação offline limpa
+      const cityCoords = {
+        "Napoli": [40.8518, 14.2681],
+        "Roma": [41.9028, 12.4964],
+        "Milano": [45.4642, 9.1900],
+        "Firenze": [43.7696, 11.2558],
+        "Venezia": [45.4408, 12.3155],
+        "Torino": [45.0703, 7.6869],
+        "Verona": [45.4384, 10.9916]
+      };
+
+      filteredPizzerias.forEach(p => {
+        let baseCoords = cityCoords[p.cityIT] || [40.8518, 14.2681];
+        // Adiciona uma variação aleatória suave para não sobrepor marcadores na mesma cidade
+        let lat = baseCoords[0] + (Math.random() - 0.5) * 0.04;
+        let lng = baseCoords[1] + (Math.random() - 0.5) * 0.04;
+
+        let marker = L.marker([lat, lng]).addTo(map);
+        marker.bindPopup(`
+          <div class="p-1 space-y-1">
+            <span class="text-[10px] font-bold text-brand-gold uppercase">Associado AVPN Nº ${p.number}</span>
+            <h4 class="font-bold text-sm text-white">${p.name}</h4>
+            <p class="text-xs text-gray-300">${p.addressPT}</p>
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.addressOriginal)}" target="_blank" class="inline-block text-xs text-brand-terracottalight underline mt-1">Ver no Google Maps</a>
+          </div>
+        `);
+        mapMarkers.push(marker);
+      });
+    }
+
+    /* ==========================================================================
+       8. INICIALIZAÇÃO DA APLICAÇÃO WEB
+       ========================================================================== */
     window.onload = function() {
-      // Data atual para impressão
-      document.getElementById('print-date').textContent = `Data: ${new Date().toLocaleDateString('pt-BR')}`;
-      
-      // Inicializar contador híbrido
       initViewCounter();
-
-      // Inicializar cálculos
-      calculateDough();
-      renderSimReferenceTable();
-      updatePizzaSim();
-      loadPizzerias();
-
-      // Render Lucide Icons
-      lucide.createIcons();
+      calculateRecipe();
+      calculateSchedule();
+      renderCMVTable();
+      updateSim();
+      fetchSheetData();
     };
   </script>
 </body>
