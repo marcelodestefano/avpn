@@ -1,2 +1,0 @@
-# avpn
-APVN
