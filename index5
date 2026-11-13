@@ -1540,7 +1540,404 @@
             instagramUrl: "https://www.instagram.com/lombardi1892/",
             avpnUrl: "https://www.pizzanapoletana.org/en/associati/107-lombardi_a_foria"
           }
-          // -> Adicione os demais registros aqui mantendo esta exata estrutura de objeto
+// ==================== BRASIL (36 PIZZARIAS) ====================
+          {
+            id: "424",
+            name: "Baco Pizzaria",
+            address: "SCLS 408, Blocco C, Lj. 35, 70257-545 Brasilia, Goiás",
+            city: "Brasília",
+            country: "Brasil",
+            phone: "+556132442292",
+            instagram: "@bacopizzaria",
+            instagramUrl: "https://www.instagram.com/bacopizzaria/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/369-baco_pizzaria"
+          },
+          {
+            id: "440",
+            name: "CASA BACO - BRASILIA SHOPPING",
+            address: "SCN QUADRA 05 BLOCO A S/N LOJA 63L E 84L PISO TERREO - BRASILIA SHOPPING - ASA NORTE, 70.715-900 Brasilia, Goiás",
+            city: "Brasília",
+            country: "Brasil",
+            phone: "+556132748600",
+            instagram: "@bacopizzaria",
+            instagramUrl: "https://www.instagram.com/bacopizzaria/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/386-casa_baco__brasilia_shopping"
+          },
+          {
+            id: "441",
+            name: "Grazie Napoli",
+            address: "Rua das Aroeiras, 317, 09090-000 Santo André (São Paulo)",
+            city: "Santo André",
+            country: "Brasil",
+            phone: "+551144322308",
+            instagram: "",
+            instagramUrl: "",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/387-grazie_napoli"
+          },
+          {
+            id: "472",
+            name: "Leggera Pizza Napoletana",
+            address: "Rua Diana 80 - Perdizes, 05019-000 São Paulo",
+            city: "São Paulo",
+            country: "Brasil",
+            phone: "+551138622581",
+            instagram: "",
+            instagramUrl: "",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/417-leggera_pizza_napoletana"
+          },
+          {
+            id: "613",
+            name: "Napoli Centrale",
+            address: "Rua Pedro Cristi 89 Box 83184, 05421-040 São Paulo",
+            city: "São Paulo",
+            country: "Brasil",
+            phone: "+551130311689",
+            instagram: "@napolicentralepizza",
+            instagramUrl: "https://www.instagram.com/napolicentralepizza/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/566-napoli_centrale"
+          },
+          {
+            id: "705",
+            name: "430 Gradi",
+            address: "R. do Retiro, 324 Vila Virginia, 13209 Jundiaí (São Paulo)",
+            city: "Jundiaí",
+            country: "Brasil",
+            phone: "+551139644126",
+            instagram: "@430gradi",
+            instagramUrl: "https://www.instagram.com/430gradi/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/662-430_gradi"
+          },
+          {
+            id: "773",
+            name: "Ciao Pizzeria Napoletana",
+            address: "Rua General Joao Telles, 294 Bonfim, 90035-120 Porto Alegre (Rio Grande do Sul)",
+            city: "Porto Alegre",
+            country: "Brasil",
+            phone: "+555130946767",
+            instagram: "@pizzeriaciao",
+            instagramUrl: "https://www.instagram.com/pizzeriaciao/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/737-ciao_pizzeria_napoletana"
+          },
+          {
+            id: "774",
+            name: "Abbiamo Fatto Pizza Napoletana",
+            address: "Av. Josè Luiz Correia Pinto 299, 95680000 Canela (Rio Grande do Sul)",
+            city: "Canela",
+            country: "Brasil",
+            phone: "+555432828170",
+            instagram: "@abbiamopizzanapoletana",
+            instagramUrl: "https://www.instagram.com/abbiamopizzanapoletana/?hl=it",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/738-abbiamo_fatto_pizza_napoletana"
+          },
+          {
+            id: "815",
+            name: "Abbiamo",
+            address: "AV PARAGUASSU, 3435, 94690-060 CAPÃO DA CANOA (RIO GRANDE DO SUL)",
+            city: "Capão da Canoa",
+            country: "Brasil",
+            phone: "+5551993511000",
+            instagram: "@abbiamopizzanapoletana",
+            instagramUrl: "https://www.instagram.com/abbiamopizzanapoletana/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1789-abbiamo"
+          },
+          {
+            id: "816",
+            name: "Famiglia Bressani",
+            address: "Rua Recanto Das Aguas 299, 79046050 Campo Grande, Mato Grosso do Sul",
+            city: "Campo Grande",
+            country: "Brasil",
+            phone: "+556733443036",
+            instagram: "@amicipizzeria",
+            instagramUrl: "https://www.instagram.com/amicipizzeria/?hl=pt-br",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/782-famiglia_bressani"
+          },
+          {
+            id: "817",
+            name: "Wilma's Pizza",
+            address: "Av. Horácio Soares, 829 - Jardim Paulista, 19907020 Ourinhos, São Paulo",
+            city: "Ourinhos",
+            country: "Brasil",
+            phone: "+5514997366525",
+            instagram: "",
+            instagramUrl: "",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/784-wilma_s_pizza"
+          },
+          {
+            id: "881",
+            name: "Vinny's Pizzeria Napoletana",
+            address: "SCLS 205 Bloco \"A\" Loja 27, 70235510 Brasilia (D.F.)",
+            city: "Brasília",
+            country: "Brasil",
+            phone: "+5561999261463",
+            instagram: "@vinnyspizzerianapoletana",
+            instagramUrl: "https://www.instagram.com/vinnyspizzerianapoletana/?hl=it",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/847-vinny_s_pizzeria_napoletana"
+          },
+          {
+            id: "894",
+            name: "Della Brianza",
+            address: "Rua dos Vidoeiros, 455, 13101680 Campinas (São Paulo)",
+            city: "Campinas",
+            country: "Brasil",
+            phone: "+551932953979",
+            instagram: "@della.brianza",
+            instagramUrl: "https://www.instagram.com/della.brianza/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/861-della_brianza"
+          },
+          {
+            id: "923",
+            name: "Otto e Mezzo Pizza Verace",
+            address: "Rua Brasília, 329, 95700-584 Botafogo, Bento Gonçalves, Rio Grande do Sul",
+            city: "Bento Gonçalves",
+            country: "Brasil",
+            phone: "+5554992033643",
+            instagram: "@ottoemezzopizzaverace",
+            instagramUrl: "https://www.instagram.com/ottoemezzopizzaverace/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/888-otto_e_mezzo_pizza_verace"
+          },
+          {
+            id: "929",
+            name: "Vecchio Napoletana",
+            address: "R. Silva Jardim, 1043, 97010-491 Santa Maria (RS)",
+            city: "Santa Maria",
+            country: "Brasil",
+            phone: "Não informado",
+            instagram: "@vecchionapoletana",
+            instagramUrl: "https://www.instagram.com/vecchionapoletana/?hl=it",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/894-vecchio_napoletana"
+          },
+          {
+            id: "930",
+            name: "Leggera Pizzeria Napoletana Jardins",
+            address: "R. Cap. Pinto Ferreira, 248 - Jardim Paulista, 01423-020 São Paulo (SP)",
+            city: "São Paulo",
+            country: "Brasil",
+            phone: "+5511388846585",
+            instagram: "@leggerapizzanapoletana",
+            instagramUrl: "https://www.instagram.com/leggerapizzanapoletana/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/895-leggera_pizzeria_napoletana_jardins"
+          },
+          {
+            id: "940",
+            name: "Andolini Pizzeria",
+            address: "Av. Monsenhor Antonio Benedito Spoladori, 28 - Parque das Videiras, 13290-000 Louveira (SP)",
+            city: "Louveira",
+            country: "Brasil",
+            phone: "+5519996524371",
+            instagram: "@andolinipizzeria_",
+            instagramUrl: "https://www.instagram.com/andolinipizzeria_/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/906-andolini_pizzeria"
+          },
+          {
+            id: "942",
+            name: "Casa Baco - Mané",
+            address: "Setor SRPN Edificio Q Terreo, Loja 2, 505.521.041-91 Brasilia, Distrito Federal",
+            city: "Brasília",
+            country: "Brasil",
+            phone: "+556138799680",
+            instagram: "@casa.baco",
+            instagramUrl: "https://www.instagram.com/casa.baco/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/909-casa_baco_mane"
+          },
+          {
+            id: "943",
+            name: "Casa Baco - Casa Park",
+            address: "Shopping Casa park - SGCV SUL, lote 22 Guará, 505.521.041-91 Brasilia, Distrito Federal",
+            city: "Brasília",
+            country: "Brasil",
+            phone: "+556138799680",
+            instagram: "@casa.baco",
+            instagramUrl: "https://www.instagram.com/casa.baco/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/910-casa_baco_casa_park"
+          },
+          {
+            id: "944",
+            name: "Unica Pizzeria",
+            address: "Rua Gabriele D'Annunzio, 1254 Campo Belo, 04619-005 São Paulo (SP)",
+            city: "São Paulo",
+            country: "Brasil",
+            phone: "+551135642766",
+            instagram: "@unica.pizzeria",
+            instagramUrl: "https://www.instagram.com/unica.pizzeria/?hl=it",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/911-unica_pizzeria"
+          },
+          {
+            id: "950",
+            name: "Maria Italiana",
+            address: "Av. José Bento Ribeiro Dantas, 468, 28950-000 Armação dos Búzios (Búzios) Rio de Janeiro",
+            city: "Armação dos Búzios",
+            country: "Brasil",
+            phone: "+552233016144",
+            instagram: "@mariaitalianaristorante",
+            instagramUrl: "https://www.instagram.com/mariaitalianaristorante/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/918-maria_italiana"
+          },
+          {
+            id: "968",
+            name: "Vallino Pizzeria Napoletana",
+            address: "Rua Nona Elvira P. Modolo, 2, 29278-000 Pedra Azul (Domingos Martins) ES",
+            city: "Pedra Azul",
+            country: "Brasil",
+            phone: "Não informado",
+            instagram: "@vallinopizzeria",
+            instagramUrl: "https://www.instagram.com/vallinopizzeria/?hl=it",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/939-vallino_pizzeria_napoletana"
+          },
+          {
+            id: "998",
+            name: "Bontà",
+            address: "R. Antônio Ataíde, 218 - Centro de Vila Velha, 29100-290 Vila Velha, Espírito Santo",
+            city: "Vila Velha",
+            country: "Brasil",
+            phone: "+5527999467066",
+            instagram: "@bontafornoecucina",
+            instagramUrl: "https://www.instagram.com/bontafornoecucina/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/966-bonta"
+          },
+          {
+            id: "1032",
+            name: "Gesto",
+            address: "Rua Alfredo Chaves 998, 95020-460 Caxias do Sul, RGS",
+            city: "Caxias do Sul",
+            country: "Brasil",
+            phone: "+5437714744",
+            instagram: "@gesto.pizza",
+            instagramUrl: "https://www.instagram.com/gesto.pizza/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1011-gesto"
+          },
+          {
+            id: "1083",
+            name: "Bento Pizzeria Napoletana",
+            address: "Rua Afonso Pena, 71 - Loja c, 20270-242 Rio de Janeiro",
+            city: "Rio de Janeiro",
+            country: "Brasil",
+            phone: "+5521997033202",
+            instagram: "@bentopizzeria",
+            instagramUrl: "https://www.instagram.com/bentopizzeria/?ref=tw&hl=en",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1073-bento_pizzeria_napoletana"
+          },
+          {
+            id: "1088",
+            name: "Frasca",
+            address: "Rua Rio Branco 480 sala 3 Centro, 95185-000 Carlos Barbosa, RGS",
+            city: "Carlos Barbosa",
+            country: "Brasil",
+            phone: "Não informado",
+            instagram: "@frascapizzeriacb",
+            instagramUrl: "https://www.instagram.com/frascapizzeriacb/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1124-frasca"
+          },
+          {
+            id: "1094",
+            name: "Arvorecer Pizzaria & Forneria",
+            address: "Estrada de Bom Jardim para Jaguari de Cima - Sitio \"Encanto da Mantiqueira\", 250, 37650-000 Camanducaia (Minas Gerais)",
+            city: "Camanducaia",
+            country: "Brasil",
+            phone: "+5535999826497",
+            instagram: "@arvorecerpizzaria",
+            instagramUrl: "https://www.instagram.com/arvorecerpizzaria/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1126-arvorecer_pizzaria__forneria"
+          },
+          {
+            id: "1103",
+            name: "Mamma Mia que Pizza",
+            address: "Rua Antonio Augusto, 1576, 60110371 Fortaleza (Ceará)",
+            city: "Fortaleza",
+            country: "Brasil",
+            phone: "+5585997268223",
+            instagram: "@mammamiafortaleza",
+            instagramUrl: "https://www.instagram.com/mammamiafortaleza/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1133-mamma_mia_que_pizza"
+          },
+          {
+            id: "1149",
+            name: "La Farina Pizzeria Napoletana",
+            address: "Marechal Floriano, 273, 96506750 Cachoeira Do Sul (Rio Grande Do Sul)",
+            city: "Cachoeira do Sul",
+            country: "Brasil",
+            phone: "+555137231196",
+            instagram: "@lafarinapizzeria",
+            instagramUrl: "https://www.instagram.com/lafarinapizzeria/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1415-la_farina_pizzeria_napoletana"
+          },
+          {
+            id: "1157",
+            name: "430 Gradi Itu",
+            address: "R convenção, 204, 13309-000 ITU (São Paulo)",
+            city: "Itu",
+            country: "Brasil",
+            phone: "+551124291406",
+            instagram: "@430gradi.itu",
+            instagramUrl: "https://www.instagram.com/430gradi.itu/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1467-430_gradi_itu"
+          },
+          {
+            id: "1166",
+            name: "GIO PIZZERIA NAPOLETANA",
+            address: "Avenida Quintino Bocaiuva, 127 loja 102, 24360022 Niterói (Rio de Janeiro)",
+            city: "Niterói",
+            country: "Brasil",
+            phone: "+5521999915664",
+            instagram: "@gio.pizzeria",
+            instagramUrl: "https://www.instagram.com/gio.pizzeria/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1474-gio_pizzeria_napoletana"
+          },
+          {
+            id: "1177",
+            name: "Vicoli Pizzeria",
+            address: "Rua Marechal Floriano Peixoto 121, Bairro: Cavaleiros, 27920-200 Macaé (RJ)",
+            city: "Macaé",
+            country: "Brasil",
+            phone: "+5522991026116",
+            instagram: "@vicoli_macae",
+            instagramUrl: "https://www.instagram.com/vicoli_macae/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1485-vicoli_pizzeria"
+          },
+          {
+            id: "1230",
+            name: "430 Gradi Bauru",
+            address: "RUA ARAÚJO LEITE, 34-59, 17012432 Bauru (SÃO PAULO)",
+            city: "Bauru",
+            country: "Brasil",
+            phone: "+5532232656",
+            instagram: "@430gradi.bauru",
+            instagramUrl: "https://www.instagram.com/430gradi.bauru/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1545-430_gradi_bauru"
+          },
+          {
+            id: "1241",
+            name: "Pizza Gromboni",
+            address: "Avenida Nene Galvão, 2763, 17209-657 Jaú (SP)",
+            city: "Jaú",
+            country: "Brasil",
+            phone: "+5514997426334",
+            instagram: "@grombonipizza",
+            instagramUrl: "https://www.instagram.com/grombonipizza/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1318-pizza_gromboni"
+          },
+          {
+            id: "1254",
+            name: "Artegiano Pizzeria e Trattoria",
+            address: "Rua Luiz Changas 101, 49037430 Aracaju (Sergipe)",
+            city: "Aracaju",
+            country: "Brasil",
+            phone: "+5579981083237",
+            instagram: "@artegiano_pizzeria",
+            instagramUrl: "https://www.instagram.com/artegiano_pizzeria/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1730-artegiano_pizzeria_e_trattoria"
+          },
+          {
+            id: "1274",
+            name: "Giro Pizzeria Napoletana",
+            address: "Avenida Maria Antônia Camargo de Oliveira 1086, 14800-370 Araraquara (São Paulo)",
+            city: "Araraquara",
+            country: "Brasil",
+            phone: "+5516996310707",
+            instagram: "@giro.pizzeria",
+            instagramUrl: "https://www.instagram.com/giro.pizzeria?igsh=YnBtdmRzM3FvdXkz",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1732-giro_pizzeria_napoletana"
+          },
+Aqui
         ];
 
         // Motor de Tradução para Português
