@@ -1401,92 +1401,152 @@
       console.error('Erro no simulador de massa:', err);
     }
 
-    /* ==========================================================================
+/* ==========================================================================
        MÓDULO 5: PIZZARIAS AVPN MUNDO & GOOGLE MAPS DIRETÓRIO TRADUZIDO
        ========================================================================== */
     try {
       (function initPizzeriasMap() {
-        // Base de Dados Oficial Embarcada
+        // Base de Dados Oficial Embarcada (Extraída do PDF AVPN)
         const databaseOriginal = [
           {
-            id: "156",
-            name: "L'Antica Pizzeria Da Michele",
-            address: "Via Cesare Sersale 1, 80139 Napoli, Italy",
+            id: "2",
+            name: "Mattozzi a Piazza Carità",
+            address: "Piazza Carità, 2, 80134 Napoli Campania",
             city: "Napoli",
-            country: "Italia",
-            lat: 40.8498,
-            lng: 14.2633,
-            phone: "+39 081 553 9204",
-            instagram: "@damichelenapoli",
-            avpnUrl: "https://www.pizzanapoletana.org/associati/156"
+            country: "Itália",
+            phone: "+390815524322",
+            instagram: "@mattozzi.ristorante.pizzeria",
+            instagramUrl: "https://www.instagram.com/mattozzi.ristorante.pizzeria/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/113-mattozzi_a_piazza_carita"
           },
           {
-            id: "1",
-            name: "Pizzeria Port'Alba",
-            address: "Via Port'Alba 18, 80134 Napoli, Italy",
+            id: "6",
+            name: "Salvatore alla Riviera",
+            address: "Via Riviera di chiaia, 91, 80121 Napoli Campania",
             city: "Napoli",
-            country: "Italia",
-            lat: 40.8493,
-            lng: 14.2525,
-            phone: "+39 081 459713",
-            instagram: "@pizzeriaportalba",
-            avpnUrl: "https://www.pizzanapoletana.org/associati/1"
+            country: "Itália",
+            phone: "+39081680490",
+            instagram: "@salvatoreallariviera",
+            instagramUrl: "https://www.instagram.com/salvatoreallariviera/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/149-salvatore_alla_riviera"
           },
           {
-            id: "340",
-            name: "Leggera Pizzeria Napoletana",
-            address: "Rua Diana 94, Perdizes, São Paulo - SP, Brasil",
-            city: "São Paulo",
-            country: "Brasil",
-            lat: -23.5325,
-            lng: -46.6749,
-            phone: "+55 11 3862-2589",
-            instagram: "@leggerapizzerianapoletana",
-            avpnUrl: "https://www.pizzanapoletana.org/associati/340"
+            id: "7",
+            name: "Ciro al Borgo Marinari dal 1936",
+            address: "Via Luculliana, 29/30 - Borgo Marinari a, 80132 Napoli Campania",
+            city: "Napoli",
+            country: "Itália",
+            phone: "+390817646006",
+            instagram: "@ciroalborgomarinari",
+            instagramUrl: "https://www.instagram.com/ciroalborgomarinari/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/36-ciro_al_borgo_marinari_dal_1936"
           },
           {
-            id: "720",
-            name: "Grazie Napoli",
-            address: "Rua Haddock Lobo 355, Santo André - SP, Brasil",
-            city: "Santo André",
-            country: "Brasil",
-            lat: -23.6542,
-            lng: -46.5321,
-            phone: "+55 11 4432-2110",
-            instagram: "@grazienapoli",
-            avpnUrl: "https://www.pizzanapoletana.org/associati/720"
+            id: "8",
+            name: "Alba",
+            address: "Piazza dell'Immacolata, 14/a-b, 80129 Napoli Campania",
+            city: "Napoli",
+            country: "Itália",
+            phone: "+390815787800",
+            instagram: "@alba_ristorante_pizzeria",
+            instagramUrl: "https://www.instagram.com/alba_ristorante_pizzeria/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/9-alba"
           },
           {
-            id: "450",
-            name: "Pizzeria Peppe Napoletana",
-            address: "2-16-1 Kamiyoga, Setagaya-ku, Tokyo, Japan",
-            city: "Tóquio",
-            country: "Giappone",
-            lat: 35.6321,
-            lng: 139.6341,
-            phone: "+81 3 6411 4545",
-            instagram: "@peppenapoletana",
-            avpnUrl: "https://www.pizzanapoletana.org/associati/450"
+            id: "9",
+            name: "Cafasso",
+            address: "Via Giulio Cesare, 156-158, 80125 Napoli Campania",
+            city: "Napoli",
+            country: "Itália",
+            phone: "+390812395281",
+            instagram: "@pizzeriacafassofuorigrotta",
+            instagramUrl: "https://www.instagram.com/pizzeriacafassofuorigrotta/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/29-cafasso"
           },
           {
-            id: "512",
-            name: "Ribalta Pizzeria",
-            address: "48 E 12th St, New York, NY 10003, United States",
-            city: "Nova York",
-            country: "Stati Uniti",
-            lat: 40.7335,
-            lng: -73.9918,
-            phone: "+1 212 777 7781",
-            instagram: "@ribaltapizza",
-            avpnUrl: "https://www.pizzanapoletana.org/associati/512"
+            id: "10",
+            name: "Marino",
+            address: "Via Santa Lucia 118-120, 80100 Napoli Campania",
+            city: "Napoli",
+            country: "Itália",
+            phone: "+390817640280",
+            instagram: "@ristorantepizzeriamarino",
+            instagramUrl: "https://www.instagram.com/ristorantepizzeriamarino/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/111-marino"
+          },
+          {
+            id: "11",
+            name: "Rocco e i suoi fratelli",
+            address: "Via San Giacomo dei Capri, 155-157, 80131 Napoli Campania",
+            city: "Napoli",
+            country: "Itália",
+            phone: "+390815465302",
+            instagram: "@roccoeisuoifrlli",
+            instagramUrl: "https://www.instagram.com/roccoeisuoifrlli/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/146-rocco_e_i_suoi_fratelli"
+          },
+          {
+            id: "12",
+            name: "Pizzeria Gaetano Genovesi",
+            address: "Via Manzoni 26/i, 80126 Napoli Campania",
+            city: "Napoli",
+            country: "Itália",
+            phone: "+390817146634",
+            instagram: "Instagram",
+            instagramUrl: "https://www.instagram.com/explore/locations/335756592/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/439-pizzeria_gaetano_genovesi"
+          },
+          {
+            id: "13",
+            name: "De Vito",
+            address: "Via Contrada Patacca, 112, 80056 Ercolano (Napoli) Campania",
+            city: "Ercolano",
+            country: "Itália",
+            phone: "+390819227441",
+            instagram: "@ristorantepizzeria_devito",
+            instagramUrl: "https://www.instagram.com/ristorantepizzeria_devito/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/48-de_vito"
+          },
+          {
+            id: "14",
+            name: "Vittoria",
+            address: "Via Piscicelli, 34-36, 80128 Napoli Campania",
+            city: "Napoli",
+            country: "Itália",
+            phone: "+390815795771",
+            instagram: "",
+            instagramUrl: "",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/167-vittoria"
+          },
+          {
+            id: "15",
+            name: "Capasso",
+            address: "Via Porta San Gennaro, 2/3, 80137 Napoli Campania",
+            city: "Napoli",
+            country: "Itália",
+            phone: "+39081456421",
+            instagram: "",
+            instagramUrl: "",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/31-capasso"
+          },
+          {
+            id: "16",
+            name: "Lombardi a Foria",
+            address: "Via Foria 12, 80137 Napoli Campania",
+            city: "Napoli",
+            country: "Itália",
+            phone: "+39081456220",
+            instagram: "@lombardi1892",
+            instagramUrl: "https://www.instagram.com/lombardi1892/",
+            avpnUrl: "https://www.pizzanapoletana.org/en/associati/107-lombardi_a_foria"
           }
+          // -> Adicione os demais registros aqui mantendo esta exata estrutura de objeto
         ];
 
         // Motor de Tradução para Português
         function traduzirEndereco(origAddress, origCountry, origCity) {
-          let addr = origAddress;
+          let addr = origAddress || '';
 
-          // Tradução de Países
           const paisesMap = {
             'Italia': 'Itália',
             'Giappone': 'Japão',
@@ -1497,28 +1557,48 @@
             'Germania': 'Alemanha'
           };
 
-          // Tradução de Cidades
           const cidadesMap = {
             'Napoli': 'Nápoles',
             'Roma': 'Roma',
             'Milano': 'Milão',
             'Firenze': 'Florença',
             'Venezia': 'Veneza',
-            'Torino': 'Turim'
+            'Torino': 'Turim',
+            'Lisbona': 'Lisboa',
+            'Londra': 'Londres',
+            'Parigi': 'Paris',
+            'Barcellona': 'Barcelona',
+            'Atene': 'Atenas',
+            'Ginevra': 'Genebra',
+            'Zurigo': 'Zurique',
+            'San Paolo': 'São Paulo',
+            'San Pietroburgo': 'São Petersburgo',
+            'Mosca': 'Moscou',
+            'Varsavia': 'Varsóvia',
+            'Cracovia': 'Cracóvia',
+            'Dublino': 'Dublin',
+            'Edimburgo': 'Edimburgo',
+            'Stoccolma': 'Estocolmo',
+            'Bruxelles': 'Bruxelas',
+            'Anversa': 'Antuérpia',
+            'Zagabria': 'Zagreb',
+            'Lubiana': 'Liubliana'
           };
 
-          // Substituições Vocabulário de Logradouros
-          addr = addr.replace(/\bVia\b/g, 'Rua')
-                     .replace(/\bPiazza\b/g, 'Praça')
-                     .replace(/\bCorso\b/g, 'Avenida')
-                     .replace(/\bViale\b/g, 'Alameda')
-                     .replace(/\bLungomare\b/g, 'Beira-Mar');
+          // Substituições de Vocabulário de Logradouros
+          addr = addr.replace(/\bVia\b/gi, 'Rua')
+                     .replace(/\bPiazza\b/gi, 'Praça')
+                     .replace(/\bPiazzetta\b/gi, 'Praceta')
+                     .replace(/\bCorso\b/gi, 'Avenida')
+                     .replace(/\bViale\b/gi, 'Alameda')
+                     .replace(/\bVicolo\b/gi, 'Beco')
+                     .replace(/\bLungomare\b/gi, 'Beira-Mar');
 
           const paisPt = paisesMap[origCountry] || origCountry;
           const cidadePt = cidadesMap[origCity] || origCity;
 
-          // Substitui o país em inglês/italiano na string se existir
-          addr = addr.replace(origCountry, paisPt).replace(origCity, cidadePt);
+          if (origCountry) addr = addr.replace(origCountry, paisPt);
+          if (origCity) addr = addr.replace(origCity, cidadePt);
 
           return {
             enderecoTraduzido: addr,
@@ -1556,19 +1636,25 @@
         const btnNext = document.getElementById('btn-next-page');
 
         function updateMapIframe(pizzeria) {
+          if (!pizzeria) return;
           selectedPizzeria = pizzeria;
           mapTitle.textContent = `Selecionado: ${pizzeria.name} — ${pizzeria.cityPt}, ${pizzeria.countryPt}`;
 
           const mode = mapSatelliteMode ? 'k' : 'm';
-          const query = encodeURIComponent(`${pizzeria.name}, ${pizzeria.addressPt}`);
+          const destinationText = `${pizzeria.name}, ${pizzeria.address}, ${pizzeria.country}`;
+          const query = encodeURIComponent(destinationText);
           iframe.src = `https://maps.google.com/maps?q=${query}&t=${mode}&z=16&output=embed`;
 
-          routeBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${pizzeria.lat},${pizzeria.lng}`;
+          // Usa lat/lng se existir, senão usa o endereço completo para traçar rota
+          const destParam = (pizzeria.lat && pizzeria.lng)
+            ? `${pizzeria.lat},${pizzeria.lng}`
+            : query;
+          routeBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${destParam}`;
         }
 
         function populateFilters() {
-          const countries = Array.from(new Set(pizzeriasData.map(p => p.countryPt))).sort();
-          countryFilter.innerHTML = '<option value="ALL">Todos os Países</option>' + 
+          const countries = Array.from(new Set(pizzeriasData.map(p => p.countryPt))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+          countryFilter.innerHTML = '<option value="ALL">Todos os Países</option>' +
             countries.map(c => `<option value="${c}">${c}</option>`).join('');
 
           populateCities();
@@ -1580,8 +1666,8 @@
           if (selectedCountry !== 'ALL') {
             filtered = pizzeriasData.filter(p => p.countryPt === selectedCountry);
           }
-          const cities = Array.from(new Set(filtered.map(p => p.cityPt))).sort();
-          cityFilter.innerHTML = '<option value="ALL">Todas as Cidades</option>' + 
+          const cities = Array.from(new Set(filtered.map(p => p.cityPt))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+          cityFilter.innerHTML = '<option value="ALL">Todas as Cidades</option>' +
             cities.map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
@@ -1593,7 +1679,9 @@
           const filtered = pizzeriasData.filter(p => {
             const matchesSearch = p.name.toLowerCase().includes(term) ||
                                   p.id.includes(term) ||
-                                  p.addressPt.toLowerCase().includes(term);
+                                  p.addressPt.toLowerCase().includes(term) ||
+                                  p.address.toLowerCase().includes(term) ||
+                                  p.cityPt.toLowerCase().includes(term);
             const matchesCountry = countryVal === 'ALL' || p.countryPt === countryVal;
             const matchesCity = cityVal === 'ALL' || p.cityPt === cityVal;
             return matchesSearch && matchesCountry && matchesCity;
@@ -1613,6 +1701,15 @@
           } else {
             pageItems.forEach(p => {
               const isSelected = selectedPizzeria && selectedPizzeria.id === p.id;
+              const igLink = p.instagramUrl || (p.instagram ? `https://instagram.com/${p.instagram.replace('@', '')}` : '');
+              const igHtml = igLink
+                ? `<a href="${igLink}" target="_blank" rel="noopener noreferrer" class="text-terracotta hover:underline font-semibold truncate max-w-[140px]">${p.instagram || 'Instagram'}</a>`
+                : `<span class="text-gray-600 text-[11px]">Sem Instagram</span>`;
+
+              const phoneHtml = (p.phone && p.phone !== 'Não informado')
+                ? `<span>📞 <a href="tel:${p.phone}" class="hover:underline">${p.phone}</a></span>`
+                : `<span class="text-gray-500">📞 Não informado</span>`;
+
               html += `
                 <div class="bg-charcoalCard p-5 rounded-xl border ${isSelected ? 'border-terracotta ring-1 ring-terracotta' : 'border-gray-800'} hover:border-gold/40 transition flex flex-col justify-between space-y-3">
                   <div>
@@ -1629,16 +1726,16 @@
                   </div>
 
                   <div class="pt-3 border-t border-gray-800 space-y-2">
-                    <div class="flex justify-between items-center text-xs text-gray-300">
-                      <span>📞 <a href="tel:${p.phone}" class="hover:underline">${p.phone}</a></span>
-                      <a href="https://instagram.com/${p.instagram.replace('@','')}" target="_blank" class="text-terracotta hover:underline font-semibold">${p.instagram}</a>
+                    <div class="flex justify-between items-center text-xs text-gray-300 gap-2">
+                      ${phoneHtml}
+                      ${igHtml}
                     </div>
 
                     <div class="flex gap-2 pt-1">
                       <button onclick="window.focusPizzeria('${p.id}')" class="flex-1 px-2.5 py-1.5 bg-terracotta hover:bg-terracotta/80 text-cream text-xs font-semibold rounded text-center transition">
                         Ver no Google Maps
                       </button>
-                      <a href="${p.avpnUrl}" target="_blank" class="px-2.5 py-1.5 bg-charcoal hover:bg-gray-800 border border-gray-700 text-gray-300 text-xs rounded text-center">
+                      <a href="${p.avpnUrl}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 bg-charcoal hover:bg-gray-800 border border-gray-700 text-gray-300 text-xs rounded text-center">
                         Ficha AVPN
                       </a>
                     </div>
@@ -1675,46 +1772,6 @@
           mapSatelliteMode = !mapSatelliteMode;
           this.textContent = mapSatelliteMode ? 'Modo: Vetorial' : 'Modo: Satélite';
           updateMapIframe(selectedPizzeria);
-        });
-
-        // Suporte a Importação Manual de CSV
-        document.getElementById('csv-file-input').addEventListener('change', function(e) {
-          const file = e.target.files[0];
-          if (!file) return;
-
-          const reader = new FileReader();
-          reader.onload = function(evt) {
-            try {
-              const lines = evt.target.result.split('\n');
-              const newItems = [];
-              for (let i = 1; i < lines.length; i++) {
-                const cols = lines[i].split(',');
-                if (cols.length >= 4) {
-                  const id = cols[0].trim();
-                  const name = cols[1].trim();
-                  const address = cols[2].trim();
-                  const city = cols[3].trim();
-                  const country = cols[4] ? cols[4].trim() : 'Italia';
-                  const t = traduzirEndereco(address, country, city);
-
-                  newItems.push({
-                    id, name, address, city, country,
-                    lat: 40.85, lng: 14.26, phone: '+39 081 0000', instagram: '@avpn', avpnUrl: '#',
-                    addressPt: t.enderecoTraduzido, countryPt: t.paisTraduzido, cityPt: t.cidadeTraduzida
-                  });
-                }
-              }
-              if (newItems.length > 0) {
-                pizzeriasData = newItems;
-                populateFilters();
-                updateMapIframe(pizzeriasData[0]);
-                renderCards();
-              }
-            } catch (err) {
-              console.error('Erro ao ler CSV:', err);
-            }
-          };
-          reader.readAsText(file);
         });
 
         // Inicializa
