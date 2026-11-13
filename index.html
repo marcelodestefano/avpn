@@ -644,7 +644,7 @@
       </div>
 
       <!-- Pesquisa e Filtros -->
-      <div class="bg-charcoalCard p-5 rounded-xl border border-gray-800 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-charcoalCard p-5 rounded-xl border border-gray-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
           <label class="text-xs font-medium text-gray-400 block mb-1">Pesquisar por Nome, ID ou Endereço:</label>
           <input type="text" id="map-search-input" placeholder="Ex: Michele, 156, São Paulo..." class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-xs text-cream focus:border-terracotta outline-none">
@@ -659,6 +659,12 @@
           <label class="text-xs font-medium text-gray-400 block mb-1">Filtrar por Cidade:</label>
           <select id="map-city-filter" class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-xs text-cream focus:border-terracotta outline-none">
             <option value="ALL">Todas as Cidades</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-gray-400 block mb-1">Filtrar por Estado / Província:</label>
+          <select id="map-state-filter" class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-xs text-cream focus:border-terracotta outline-none">
+            <option value="ALL">Todos os Estados / Províncias</option>
           </select>
         </div>
       </div>
@@ -762,43 +768,94 @@
         const STORAGE_KEY_TOTAL = 'avpn_total_visits';
         const STORAGE_KEY_LAST = 'avpn_last_visit_date';
         const SESSION_KEY = 'avpn_session_logged';
+        const INITIAL_TOTAL = 1420;
 
-        let visits = parseInt(localStorage.getItem(STORAGE_KEY_TOTAL) || '1420', 10);
-        let lastVisit = localStorage.getItem(STORAGE_KEY_LAST) || new Date().toLocaleString('pt-BR');
-
-        // Incrementa apenas uma vez por sessão de navegação para evitar inflar no F5
-        if (!sessionStorage.getItem(SESSION_KEY)) {
-          visits += 1;
-          localStorage.setItem(STORAGE_KEY_TOTAL, visits.toString());
-          localStorage.setItem(STORAGE_KEY_LAST, new Date().toLocaleString('pt-BR'));
-          sessionStorage.setItem(SESSION_KEY, '1');
-        }
-
-        // Atualiza DOM
         const display = document.getElementById('counter-display');
         const tooltipVisits = document.getElementById('tooltip-session-visits');
         const tooltipLast = document.getElementById('tooltip-last-visit');
 
-        if (display) display.textContent = visits.toLocaleString('pt-BR');
-        if (tooltipVisits) tooltipVisits.textContent = `Acessos neste dispositivo: ${visits}`;
-        if (tooltipLast) tooltipLast.textContent = `Última visita: ${lastVisit}`;
+        const readStorage = (storage, key, fallback = null) => {
+          try {
+            return storage.getItem(key) ?? fallback;
+          } catch (error) {
+            return fallback;
+          }
+        };
 
-        // Tentativa silenciosa de sync remoto com timeout curto
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1200);
-        fetch('https://api.countapi.xyz/hit/planilha-pizza-marcelo-avpn/visits', { signal: controller.signal })
-          .then(res => res.json())
-          .then(data => {
-            clearTimeout(timeoutId);
-            if (data && data.value && display) {
-              display.textContent = data.value.toLocaleString('pt-BR');
-            }
+        const writeStorage = (storage, key, value) => {
+          try {
+            storage.setItem(key, String(value));
+          } catch (error) {
+            // Alguns navegadores bloqueiam storage; o contador ainda deve aparecer.
+          }
+        };
+
+        const parseVisits = value => {
+          const parsed = Number.parseInt(value, 10);
+          return Number.isFinite(parsed) && parsed >= 0 ? parsed : INITIAL_TOTAL;
+        };
+
+        let visits = parseVisits(readStorage(localStorage, STORAGE_KEY_TOTAL, INITIAL_TOTAL));
+        let lastVisit = readStorage(localStorage, STORAGE_KEY_LAST, null);
+        const isNewSession = readStorage(sessionStorage, SESSION_KEY, null) !== '1';
+
+        // Incrementa uma vez por sessão de navegação, não a cada atualização da página.
+        if (isNewSession) {
+          visits += 1;
+          lastVisit = new Date().toLocaleString('pt-BR');
+          writeStorage(localStorage, STORAGE_KEY_TOTAL, visits);
+          writeStorage(localStorage, STORAGE_KEY_LAST, lastVisit);
+          writeStorage(sessionStorage, SESSION_KEY, '1');
+        }
+
+        if (!lastVisit) {
+          lastVisit = 'Ainda não registrado';
+          writeStorage(localStorage, STORAGE_KEY_LAST, lastVisit);
+        }
+
+        const renderCounter = total => {
+          const safeTotal = parseVisits(total);
+          if (display) display.textContent = safeTotal.toLocaleString('pt-BR');
+          if (tooltipVisits) tooltipVisits.textContent = `Acessos neste dispositivo: ${safeTotal.toLocaleString('pt-BR')}`;
+          if (tooltipLast) tooltipLast.textContent = `Última visita: ${lastVisit}`;
+        };
+
+        // O fallback local é exibido imediatamente, mesmo sem rede ou serviço remoto.
+        renderCounter(visits);
+
+        // A sincronização remota é opcional e nunca impede o contador local.
+        if (typeof fetch === 'function' && typeof AbortController === 'function') {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+          fetch('https://api.countapi.xyz/hit/planilha-pizza-marcelo-avpn/visits', {
+            signal: controller.signal,
+            cache: 'no-store'
           })
-          .catch(() => {
-            /* Fallback gracioso para localStorage */
-          });
+            .then(response => {
+              if (!response.ok) throw new Error(`Contador remoto indisponível (${response.status})`);
+              return response.json();
+            })
+            .then(data => {
+              const remoteTotal = Number(data && data.value);
+              if (!Number.isFinite(remoteTotal) || remoteTotal < 0) return;
+
+              // Nunca substitui um valor local maior por uma resposta remota antiga.
+              const synchronizedTotal = Math.max(visits, Math.trunc(remoteTotal));
+              visits = synchronizedTotal;
+              writeStorage(localStorage, STORAGE_KEY_TOTAL, synchronizedTotal);
+              renderCounter(synchronizedTotal);
+            })
+            .catch(() => {
+              // O serviço remoto é auxiliar; o valor local continua válido.
+            })
+            .finally(() => clearTimeout(timeoutId));
+        }
       })();
     } catch (err) {
+      // Falhas de storage/rede não podem deixar o badge preso em "---".
+      const fallbackDisplay = document.getElementById('counter-display');
+      if (fallbackDisplay) fallbackDisplay.textContent = '1.421';
       console.error('Erro no contador de visitas:', err);
     }
 
@@ -2843,13 +2900,54 @@
           };
         }
 
+        const normalizeFilterText = value => String(value || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .trim();
+
+        const brazilianStates = [
+          'Acre', 'Alagoas', 'Amapá', 'Amazonas', 'Bahia', 'Ceará', 'Distrito Federal',
+          'Espírito Santo', 'Goiás', 'Maranhão', 'Mato Grosso', 'Mato Grosso do Sul',
+          'Minas Gerais', 'Pará', 'Paraíba', 'Paraná', 'Pernambuco', 'Piauí',
+          'Rio de Janeiro', 'Rio Grande do Norte', 'Rio Grande do Sul', 'Rondônia',
+          'Roraima', 'Santa Catarina', 'São Paulo', 'Sergipe', 'Tocantins'
+        ];
+
+        function deriveState(p) {
+          if (p.state || p.province) return p.state || p.province;
+
+          const address = String(p.address || '');
+          const normalizedAddress = normalizeFilterText(address);
+          const brazilianState = brazilianStates.find(state =>
+            normalizedAddress.includes(normalizeFilterText(state))
+          );
+          if (brazilianState) return brazilianState;
+
+          const parentheticalParts = [...address.matchAll(/\(([^)]+)\)/g)]
+            .map(match => match[1].trim())
+            .filter(Boolean);
+          if (parentheticalParts.length > 0) return parentheticalParts[parentheticalParts.length - 1];
+
+          const cityIndex = normalizeFilterText(address).lastIndexOf(normalizeFilterText(p.city));
+          if (cityIndex >= 0) {
+            const suffix = address.slice(cityIndex + String(p.city || '').length)
+              .replace(/^[\s,;()/-]+|[\s,;()/-]+$/g, '')
+              .trim();
+            if (suffix && !/^\d/.test(suffix)) return suffix;
+          }
+
+          return 'Não informado';
+        }
+
         let pizzeriasData = databaseOriginal.map(p => {
           const t = traduzirEndereco(p.address, p.country, p.city);
           return {
             ...p,
             addressPt: t.enderecoTraduzido,
             countryPt: t.paisTraduzido,
-            cityPt: t.cidadeTraduzida
+            cityPt: t.cidadeTraduzida,
+            statePt: deriveState(p)
           };
         });
 
@@ -2866,6 +2964,7 @@
         const searchInput = document.getElementById('map-search-input');
         const countryFilter = document.getElementById('map-country-filter');
         const cityFilter = document.getElementById('map-city-filter');
+        const stateFilter = document.getElementById('map-state-filter');
         const cardsGrid = document.getElementById('pizzeria-cards-grid');
         const paginationInfo = document.getElementById('pizzeria-pagination-info');
         const btnPrev = document.getElementById('btn-prev-page');
@@ -2893,24 +2992,36 @@
           countryFilter.innerHTML = '<option value="ALL">Todos os Países</option>' +
             countries.map(c => `<option value="${c}">${c}</option>`).join('');
 
-          populateCities();
+          populateLocationFilters();
         }
 
-        function populateCities() {
+        function populateLocationFilters() {
           const selectedCountry = countryFilter.value;
+          const selectedState = stateFilter.value;
           let filtered = pizzeriasData;
           if (selectedCountry !== 'ALL') {
             filtered = pizzeriasData.filter(p => p.countryPt === selectedCountry);
           }
+          if (selectedState !== 'ALL') {
+            filtered = filtered.filter(p => p.statePt === selectedState);
+          }
+
           const cities = Array.from(new Set(filtered.map(p => p.cityPt))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
           cityFilter.innerHTML = '<option value="ALL">Todas as Cidades</option>' +
             cities.map(c => `<option value="${c}">${c}</option>`).join('');
+
+          const states = Array.from(new Set(filtered.map(p => p.statePt))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+          const currentState = stateFilter.value;
+          stateFilter.innerHTML = '<option value="ALL">Todos os Estados / Províncias</option>' +
+            states.map(state => `<option value="${state}">${state}</option>`).join('');
+          if (states.includes(currentState)) stateFilter.value = currentState;
         }
 
         function renderCards() {
           const term = searchInput.value.toLowerCase();
           const countryVal = countryFilter.value;
           const cityVal = cityFilter.value;
+          const stateVal = stateFilter.value;
 
           const filtered = pizzeriasData.filter(p => {
             const matchesSearch = p.name.toLowerCase().includes(term) ||
@@ -2920,7 +3031,8 @@
                                   p.cityPt.toLowerCase().includes(term);
             const matchesCountry = countryVal === 'ALL' || p.countryPt === countryVal;
             const matchesCity = cityVal === 'ALL' || p.cityPt === cityVal;
-            return matchesSearch && matchesCountry && matchesCity;
+            const matchesState = stateVal === 'ALL' || p.statePt === stateVal;
+            return matchesSearch && matchesCountry && matchesCity && matchesState;
           });
 
           // Paginação
@@ -2998,8 +3110,9 @@
 
         // Eventos
         searchInput.addEventListener('input', () => { currentPage = 1; renderCards(); });
-        countryFilter.addEventListener('change', () => { currentPage = 1; populateCities(); renderCards(); });
+        countryFilter.addEventListener('change', () => { currentPage = 1; populateLocationFilters(); renderCards(); });
         cityFilter.addEventListener('change', () => { currentPage = 1; renderCards(); });
+        stateFilter.addEventListener('change', () => { currentPage = 1; populateLocationFilters(); renderCards(); });
 
         btnPrev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderCards(); } });
         btnNext.addEventListener('click', () => { currentPage++; renderCards(); });
