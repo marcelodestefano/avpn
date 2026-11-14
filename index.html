@@ -339,7 +339,7 @@
         <div>
           <h2 class="text-xl font-bold text-cream">Cronograma Operacional Reverso de Produção</h2>
           <p class="text-xs text-gray-400 mt-1">
-            Defina o momento do serviço para calcular exatamente a hora de iniciar a massa, puntata e boleamento.
+            Defina o momento do serviço e os blocos de fermentação para calcular exatamente quando iniciar cada etapa.
           </p>
         </div>
         <div class="text-right">
@@ -352,7 +352,7 @@
       <div class="bg-charcoalCard p-6 rounded-xl border border-gray-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
           <label class="text-xs font-medium text-gray-300 block mb-1">Data do Evento:</label>
-          <input type="date" id="crono-date" value="2026-11-08" class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-sm text-gold font-bold focus:border-terracotta outline-none">
+          <input type="date" id="crono-date" class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-sm text-gold font-bold focus:border-terracotta outline-none">
         </div>
         <div>
           <label class="text-xs font-medium text-gray-300 block mb-1">Horário das Pizzas no Forno:</label>
@@ -364,6 +364,23 @@
             <option value="1">1 hora</option>
             <option value="2" selected>2 horas (Padrão AVPN)</option>
             <option value="4">4 horas</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-gray-300 block mb-1">Tempo de Preparação/Fermentação:</label>
+          <select id="crono-preparation-hours" class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-sm text-cream focus:border-terracotta outline-none">
+            <option value="12">12 horas</option>
+            <option value="16">16 horas</option>
+            <option value="20">20 horas</option>
+            <option value="24" selected>24 horas (máximo AVPN)</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-gray-300 block mb-1">Finalização após o serviço:</label>
+          <select id="crono-finalization-hours" class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-sm text-cream focus:border-terracotta outline-none">
+            <option value="0">Sem janela adicional</option>
+            <option value="2">Até 2 horas</option>
+            <option value="4" selected>Até 4 horas (máximo AVPN)</option>
           </select>
         </div>
         <div>
@@ -390,6 +407,7 @@
           </div>
         </div>
 
+        <div id="crono-validation-message" class="hidden rounded-lg border border-yellow-700/60 bg-yellow-900/20 px-3 py-2 text-xs text-yellow-200"></div>
         <div id="crono-timeline-container" class="space-y-4">
           <!-- Preenchido dinamicamente com os 6 passos reversos -->
         </div>
@@ -636,7 +654,7 @@
       </div>
 
       <!-- Pesquisa e Filtros -->
-      <div class="bg-charcoalCard p-5 rounded-xl border border-gray-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-charcoalCard p-5 rounded-xl border border-gray-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         <div>
           <label class="text-xs font-medium text-gray-400 block mb-1">Pesquisar por Nome, ID ou Endereço:</label>
           <input type="text" id="map-search-input" placeholder="Ex: Michele, 156, São Paulo..." class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-xs text-cream focus:border-terracotta outline-none">
@@ -658,6 +676,18 @@
           <select id="map-city-filter" class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-xs text-cream focus:border-terracotta outline-none">
             <option value="ALL">Todas as Cidades</option>
           </select>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-gray-400 block mb-1">Ordenar resultados:</label>
+          <select id="map-sort-filter" class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-xs text-cream focus:border-terracotta outline-none">
+            <option value="name">Nome (A–Z)</option>
+            <option value="city">Cidade (A–Z)</option>
+            <option value="country">País (A–Z)</option>
+            <option value="id">ID AVPN</option>
+          </select>
+        </div>
+        <div class="flex items-end">
+          <button id="map-clear-filters" type="button" class="w-full px-3 py-1.5 bg-charcoal border border-gray-700 rounded text-xs text-gray-300 hover:text-white hover:border-gold/50 transition">Limpar filtros</button>
         </div>
       </div>
 
@@ -753,7 +783,7 @@
 
   <script>
     /* ==========================================================================
-       MÓDULO 0: CONTADOR DE VISITAS HÍBRIDO
+       MÓDULO 0: CONTADOR DE VISITAS LOCAL
        ========================================================================== */
     try {
       (function initCounter() {
@@ -812,37 +842,8 @@
           if (tooltipLast) tooltipLast.textContent = `Última visita: ${lastVisit}`;
         };
 
-        // O fallback local é exibido imediatamente, mesmo sem rede ou serviço remoto.
+        // O contador é deliberadamente local: funciona sem rede, CORS ou serviço de terceiros.
         renderCounter(visits);
-
-        // A sincronização remota é opcional e nunca impede o contador local.
-        if (typeof fetch === 'function' && typeof AbortController === 'function') {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 2500);
-
-          fetch('https://api.countapi.xyz/hit/planilha-pizza-marcelo-avpn/visits', {
-            signal: controller.signal,
-            cache: 'no-store'
-          })
-            .then(response => {
-              if (!response.ok) throw new Error(`Contador remoto indisponível (${response.status})`);
-              return response.json();
-            })
-            .then(data => {
-              const remoteTotal = Number(data && data.value);
-              if (!Number.isFinite(remoteTotal) || remoteTotal < 0) return;
-
-              // Nunca substitui um valor local maior por uma resposta remota antiga.
-              const synchronizedTotal = Math.max(visits, Math.trunc(remoteTotal));
-              visits = synchronizedTotal;
-              writeStorage(localStorage, STORAGE_KEY_TOTAL, synchronizedTotal);
-              renderCounter(synchronizedTotal);
-            })
-            .catch(() => {
-              // O serviço remoto é auxiliar; o valor local continua válido.
-            })
-            .finally(() => clearTimeout(timeoutId));
-        }
       })();
     } catch (err) {
       // Falhas de storage/rede não podem deixar o badge preso em "---".
@@ -985,14 +986,28 @@
         const dateInput = document.getElementById('crono-date');
         const timeInput = document.getElementById('crono-time');
         const puntataSelect = document.getElementById('crono-puntata');
+        const preparationSelect = document.getElementById('crono-preparation-hours');
+        const finalizationSelect = document.getElementById('crono-finalization-hours');
         const fornoSelect = document.getElementById('crono-forno-prep');
         const totalHoursDisplay = document.getElementById('crono-total-hours');
         const container = document.getElementById('crono-timeline-container');
         const progressBar = document.getElementById('crono-progress-bar');
         const progressText = document.getElementById('crono-progress-text');
+        const validationMessage = document.getElementById('crono-validation-message');
 
         // Estado do Checklist
         const checkedStages = new Set();
+
+        function getNextBusinessDate() {
+          const date = new Date();
+          date.setHours(12, 0, 0, 0);
+          do {
+            date.setDate(date.getDate() + 1);
+          } while (date.getDay() === 0 || date.getDay() === 6);
+          return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        if (!dateInput.value) dateInput.value = getNextBusinessDate();
 
         function recalcularCronograma() {
           const dateStr = dateInput.value;
@@ -1001,13 +1016,19 @@
 
           const targetDate = new Date(`${dateStr}T${timeStr}:00`);
           const puntataHours = parseFloat(puntataSelect.value);
-          const preparationHours = 24; // Limite máximo de preparação/fermentação considerado pelo cronograma.
-          const finalizationHours = 4; // Janela adicional para abertura, forneamento e finalização.
-          const totalFermentationHours = preparationHours; // Ex.: 2h puntata + 22h appretto.
-            const apprettoHours = totalFermentationHours - puntataHours;
+          const preparationHours = Math.min(24, Math.max(1, parseFloat(preparationSelect.value)));
+          const finalizationHours = Math.min(4, Math.max(0, parseFloat(finalizationSelect.value)));
+          const totalFermentationHours = preparationHours;
+          const apprettoHours = totalFermentationHours - puntataHours;
           const fornoMinutes = parseInt(fornoSelect.value, 10);
 
           totalHoursDisplay.textContent = `${preparationHours}h preparação + até ${finalizationHours}h finalização`;
+          if (apprettoHours < 0) {
+            validationMessage.textContent = 'A duração da puntata não pode ultrapassar o tempo total de preparação. Selecione um período maior.';
+            validationMessage.classList.remove('hidden');
+            return;
+          }
+          validationMessage.classList.add('hidden');
 
           // Cálculo dos 6 Passos Operacionais Reversos:
           // 6. Serviço (Target Date; a finalização pode se estender por até 4h)
@@ -1102,6 +1123,7 @@
                   <span class="text-xs font-bold text-terracotta bg-terracotta/10 px-2.5 py-1 rounded border border-terracotta/20">
                     ${formatDate(st.timeStart)}
                   </span>
+                  <span class="text-[10px] text-gray-500 block mt-1">até ${formatDate(st.timeEnd)}</span>
                 </div>
               </div>
             `;
@@ -1126,7 +1148,7 @@
           progressText.textContent = `${pct}%`;
         }
 
-        [dateInput, timeInput, puntataSelect, fornoSelect].forEach(el => {
+        [dateInput, timeInput, puntataSelect, preparationSelect, finalizationSelect, fornoSelect].forEach(el => {
           el.addEventListener('change', recalcularCronograma);
         });
 
@@ -2959,6 +2981,8 @@
         const countryFilter = document.getElementById('map-country-filter');
         const cityFilter = document.getElementById('map-city-filter');
         const stateFilter = document.getElementById('map-state-filter');
+        const sortFilter = document.getElementById('map-sort-filter');
+        const clearFiltersBtn = document.getElementById('map-clear-filters');
         const cardsGrid = document.getElementById('pizzeria-cards-grid');
         const paginationInfo = document.getElementById('pizzeria-pagination-info');
         const btnPrev = document.getElementById('btn-prev-page');
@@ -3000,9 +3024,11 @@
             filtered = filtered.filter(p => p.statePt === selectedState);
           }
 
+          const previousCity = cityFilter.value;
           const cities = Array.from(new Set(filtered.map(p => p.cityPt))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
           cityFilter.innerHTML = '<option value="ALL">Todas as Cidades</option>' +
             cities.map(c => `<option value="${c}">${c}</option>`).join('');
+          if (cities.includes(previousCity)) cityFilter.value = previousCity;
 
           const states = Array.from(new Set(filtered.map(p => p.statePt))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
           const currentState = stateFilter.value;
@@ -3012,21 +3038,26 @@
         }
 
         function renderCards() {
-          const term = searchInput.value.toLowerCase();
+          const term = normalizeFilterText(searchInput.value);
           const countryVal = countryFilter.value;
           const cityVal = cityFilter.value;
           const stateVal = stateFilter.value;
 
           const filtered = pizzeriasData.filter(p => {
-            const matchesSearch = p.name.toLowerCase().includes(term) ||
-                                  p.id.includes(term) ||
-                                  p.addressPt.toLowerCase().includes(term) ||
-                                  p.address.toLowerCase().includes(term) ||
-                                  p.cityPt.toLowerCase().includes(term);
+            const searchable = [p.name, p.id, p.addressPt, p.address, p.cityPt, p.statePt, p.countryPt]
+              .map(normalizeFilterText).join(' ');
+            const matchesSearch = searchable.includes(term);
             const matchesCountry = countryVal === 'ALL' || p.countryPt === countryVal;
             const matchesCity = cityVal === 'ALL' || p.cityPt === cityVal;
             const matchesState = stateVal === 'ALL' || p.statePt === stateVal;
             return matchesSearch && matchesCountry && matchesCity && matchesState;
+          });
+
+          const sortValue = sortFilter.value;
+          filtered.sort((a, b) => {
+            if (sortValue === 'id') return Number(a.id) - Number(b.id);
+            const field = sortValue === 'city' ? 'cityPt' : sortValue === 'country' ? 'countryPt' : 'name';
+            return String(a[field] || '').localeCompare(String(b[field] || ''), 'pt-BR');
           });
 
           // Paginação
@@ -3063,6 +3094,7 @@
                     
                     <!-- Endereço Traduzido -->
                     <p class="text-xs text-gold/90 font-medium mt-1">${p.addressPt}</p>
+                    <p class="text-[11px] text-gray-400 mt-1">Estado / província: <span class="text-gray-300">${p.statePt}</span></p>
                     <!-- Endereço Original Referência -->
                     <p class="text-[10px] text-gray-500 italic mt-0.5">Orig: ${p.address}</p>
                   </div>
@@ -3104,9 +3136,26 @@
 
         // Eventos
         searchInput.addEventListener('input', () => { currentPage = 1; renderCards(); });
-        countryFilter.addEventListener('change', () => { currentPage = 1; populateLocationFilters(); renderCards(); });
+        countryFilter.addEventListener('change', () => {
+          currentPage = 1;
+          stateFilter.value = 'ALL';
+          cityFilter.value = 'ALL';
+          populateLocationFilters();
+          renderCards();
+        });
         cityFilter.addEventListener('change', () => { currentPage = 1; renderCards(); });
         stateFilter.addEventListener('change', () => { currentPage = 1; populateLocationFilters(); renderCards(); });
+        sortFilter.addEventListener('change', () => { currentPage = 1; renderCards(); });
+        clearFiltersBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          countryFilter.value = 'ALL';
+          stateFilter.value = 'ALL';
+          cityFilter.value = 'ALL';
+          sortFilter.value = 'name';
+          currentPage = 1;
+          populateLocationFilters();
+          renderCards();
+        });
 
         btnPrev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderCards(); } });
         btnNext.addEventListener('click', () => { currentPage++; renderCards(); });
