@@ -343,8 +343,8 @@
           </p>
         </div>
         <div class="text-right">
-          <span class="text-xs text-gray-400 block">Tempo Total de Fermentação:</span>
-          <span id="crono-total-hours" class="text-lg font-bold text-gold">16 Horas Totais</span>
+          <span class="text-xs text-gray-400 block">Limite AVPN de Preparação:</span>
+          <span id="crono-total-hours" class="text-lg font-bold text-gold">24h preparação + até 4h finalização</span>
         </div>
       </div>
 
@@ -1001,14 +1001,16 @@
 
           const targetDate = new Date(`${dateStr}T${timeStr}:00`);
           const puntataHours = parseFloat(puntataSelect.value);
-          const totalFermentationHours = 16; // Padrão da calculadora (ex: 2h puntata + 14h appretto)
-          const apprettoHours = totalFermentationHours - puntataHours;
+          const preparationHours = 24; // Limite máximo de preparação/fermentação considerado pelo cronograma.
+          const finalizationHours = 4; // Janela adicional para abertura, forneamento e finalização.
+          const totalFermentationHours = preparationHours; // Ex.: 2h puntata + 22h appretto.
+            const apprettoHours = totalFermentationHours - puntataHours;
           const fornoMinutes = parseInt(fornoSelect.value, 10);
 
-          totalHoursDisplay.textContent = `${totalFermentationHours} Horas Totais`;
+          totalHoursDisplay.textContent = `${preparationHours}h preparação + até ${finalizationHours}h finalização`;
 
           // Cálculo dos 6 Passos Operacionais Reversos:
-          // 6. Serviço (Target Date)
+          // 6. Serviço (Target Date; a finalização pode se estender por até 4h)
           // 5. Aquecimento do Forno: (Target Date - FornoMinutes)
           // 4. Appretto (Segunda Fermentação): (Target Date - ApprettoHours)
           // 3. Staglio (Boleamento): 30 min antes do Appretto
@@ -1065,11 +1067,11 @@
             },
             {
               id: 6,
-              title: "6. Abertura, Forneamento e Serviço",
-              desc: "Abertura manual do disco a partir do centro (stenditura à mão na semolina), cobertura rápida e assamento em 60–90 segundos.",
+              title: "6. Abertura, Forneamento e Finalização do Serviço",
+              desc: "Abertura manual do disco a partir do centro (stenditura à mão na semolina), cobertura rápida e assamento em 60–90 segundos. Esta etapa pode se estender por até 4 horas para concluir o serviço.",
               timeStart: tService,
-              timeEnd: new Date(tService.getTime() + (3 * 60 * 60 * 1000)),
-              tecnica: "Girar a pizza 180° no forno com a pá de virar (palino)."
+              timeEnd: new Date(tService.getTime() + (finalizationHours * 60 * 60 * 1000)),
+              tecnica: `Janela de finalização: até ${finalizationHours}h • Girar a pizza 180° no forno com a pá de virar (palino).`
             }
           ];
 
