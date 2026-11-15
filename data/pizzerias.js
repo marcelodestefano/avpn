@@ -477,7 +477,7 @@ const AVPN_DATABASE = [
           {
             id: "1177",
             name: "Vicoli Pizzeria",
-            address: "Rua Marechal Floriano Peixoto 121, Bairro: Cavaleiros, 27920-200 Macaé (RJ)",
+            address: "Rua Marechal Floriano Peixoto 121, Bairro: Cavaleiros, 27920-200 Macaé, Rio de Janeiro",
             city: "Macaé",
             country: "Brasil",
             phone: "+5522991026116",
@@ -507,28 +507,8 @@ const AVPN_DATABASE = [
             instagramUrl: "https://www.instagram.com/grombonipizza/",
             avpnUrl: "https://www.pizzanapoletana.org/en/associati/1318-pizza_gromboni"
           },
-          {
-            id: "1254",
-            name: "Artegiano Pizzeria e Trattoria",
-            address: "Rua Luiz Changas 101, 49037430 Aracaju (Sergipe)",
-            city: "Aracaju",
-            country: "Brasil",
-            phone: "+5579981083237",
-            instagram: "@artegiano_pizzeria",
-            instagramUrl: "https://www.instagram.com/artegiano_pizzeria/",
-            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1730-artegiano_pizzeria_e_trattoria"
-          },
-          {
-            id: "1274",
-            name: "Giro Pizzeria Napoletana",
-            address: "Avenida Maria Antônia Camargo de Oliveira 1086, 14800-370 Araraquara (São Paulo)",
-            city: "Araraquara",
-            country: "Brasil",
-            phone: "+5516996310707",
-            instagram: "@giro.pizzeria",
-            instagramUrl: "https://www.instagram.com/giro.pizzeria?igsh=YnBtdmRzM3FvdXkz",
-            avpnUrl: "https://www.pizzanapoletana.org/en/associati/1732-giro_pizzeria_napoletana"
-          },
+          {id: "1254", name: "Artegiano Pizzeria e Trattoria" address: "Rua Luiz Changas 101, 49037430 Aracaju (Sergipe)", city: "Aracaju", country: "Brasil", phone: "+5579981083237", instagram: "@artegiano_pizzeria", instagramUrl: "https://www.instagram.com/artegiano_pizzeria/", avpnUrl: "https://www.pizzanapoletana.org/en/associati/1730-artegiano_pizzeria_e_trattoria"},
+          {id: "1274", name: "Giro Pizzeria Napoletana", address: "Avenida Maria Antônia Camargo de Oliveira 1086, 14800-370 Araraquara (São Paulo)", city: "Araraquara", country: "Brasil", phone: "+5516996310707", instagram: "@giro.pizzeria", instagramUrl: "https://www.instagram.com/giro.pizzeria?igsh=YnBtdmRzM3FvdXkz", avpnUrl: "https://www.pizzanapoletana.org/en/associati/1732-giro_pizzeria_napoletana"},
           {"id": "17", "name": "Gianni al Vesuvio", "address": "Via Vesuvio, 10, 80056 Ercolano (Napoli) Campania", "city": "Ercolano", "country": "Itália", "phone": "+390817395684", "instagram": "", "instagramUrl": "", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/63-gianni_al_vesuvio"},
           {"id": "19", "name": "Il Salotto Arcadia", "address": "Via Nicolardi, 5 - Parco Arcadia, 80131 Napoli Campania", "city": "Napoli", "country": "Itália", "phone": "+390817430300", "instagram": "", "instagramUrl": "", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/76-il_salotto_arcadia"},
           {"id": "21", "name": "Antica Pizzeria Port'Alba", "address": "Via Portalba, 18, 80134 Napoli Campania", "city": "Napoli", "country": "Itália", "phone": "+39081459713", "instagram": "", "instagramUrl": "", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/140-antica_pizzeria_port_alba"},
