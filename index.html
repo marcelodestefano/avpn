@@ -477,6 +477,39 @@
         </div>
       </div>
 
+      <!-- Calculadora de Tempo de Fermentação -->
+      <section class="bg-charcoalCard p-5 rounded-xl border border-gold/30 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-gray-800 pb-3">
+          <div>
+            <h3 class="text-base font-semibold text-gold">Calculador de Tempo de Fermentação</h3>
+            <p class="text-xs text-gray-400 mt-1">Estimativa operacional baseada em temperatura, hidratação e concentração de fermento fresco.</p>
+          </div>
+          <span class="text-[10px] text-gray-500 max-w-xs">Referência prática, não substitui teste de bancada nem avaliação da massa.</span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <label class="text-xs text-gray-300">Temperatura ambiente (°C):
+            <input id="ferm-temp" type="number" value="22" min="10" max="35" step="0.5" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold font-bold focus:border-terracotta outline-none">
+          </label>
+          <label class="text-xs text-gray-300">Fermento fresco (g/L):
+            <input id="ferm-yeast" type="number" value="0.20" min="0.05" max="5" step="0.05" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold font-bold focus:border-terracotta outline-none">
+          </label>
+          <label class="text-xs text-gray-300">Hidratação (%):
+            <input id="ferm-hydration" type="number" value="55" min="50" max="75" step="0.5" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold font-bold focus:border-terracotta outline-none">
+          </label>
+          <label class="text-xs text-gray-300">Puntata (h):
+            <input id="ferm-puntata" type="number" value="2" min="0.5" max="8" step="0.5" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold font-bold focus:border-terracotta outline-none">
+          </label>
+          <div class="flex items-end"><button id="ferm-apply-btn" type="button" class="w-full px-3 py-2 rounded bg-terracotta text-cream text-xs font-semibold hover:bg-terracotta/80">Aplicar ao cronograma</button></div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+          <div class="bg-charcoal rounded border border-gray-800 p-3"><span class="block text-[10px] text-gray-500">Tempo total sugerido</span><strong id="ferm-total-result" class="text-lg text-gold">24h</strong></div>
+          <div class="bg-charcoal rounded border border-gray-800 p-3"><span class="block text-[10px] text-gray-500">Appretto estimado</span><strong id="ferm-appretto-result" class="text-lg text-cream">22h</strong></div>
+          <div class="bg-charcoal rounded border border-gray-800 p-3"><span class="block text-[10px] text-gray-500">Faixa prática</span><strong id="ferm-range-result" class="text-sm text-blue-300">20–24h</strong></div>
+          <div class="bg-charcoal rounded border border-gray-800 p-3"><span class="block text-[10px] text-gray-500">Leitura</span><strong id="ferm-status-result" class="text-sm text-green-400">Equilibrada</strong></div>
+        </div>
+        <p id="ferm-explanation" class="text-xs text-gray-400 bg-charcoal/50 rounded border border-gray-800 p-3"></p>
+      </section>
+
       <!-- Linha do Tempo e Checklist -->
       <div class="bg-charcoalCard p-6 rounded-xl border border-gray-800 space-y-6">
         <div class="flex justify-between items-center border-b border-gray-800 pb-3">
@@ -568,6 +601,146 @@
         </div>
 
       </div>
+
+      <!-- Biblioteca de Receitas, Ficha Técnica e Lista de Compras -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <section class="bg-charcoalCard p-5 rounded-xl border border-gold/30 space-y-4">
+          <div class="border-b border-gray-800 pb-2">
+            <h3 class="text-base font-semibold text-gold">Biblioteca de Receitas</h3>
+            <p class="text-xs text-gray-400 mt-1">Salve e recupere os parâmetros da calculadora da Aba 1 neste dispositivo.</p>
+          </div>
+          <label class="text-xs text-gray-300 block">Nome da receita:
+            <input id="recipe-library-name" type="text" placeholder="Ex.: Massa da casa — 24h" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-3 py-2 text-sm text-cream focus:border-terracotta outline-none">
+          </label>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="recipe-save-btn" type="button" class="px-3 py-2 rounded bg-terracotta text-cream text-xs font-semibold hover:bg-terracotta/80">Salvar receita atual</button>
+            <button id="recipe-new-btn" type="button" class="px-3 py-2 rounded bg-charcoal border border-gray-700 text-gray-300 text-xs hover:text-white">Limpar nome</button>
+          </div>
+          <label class="text-xs text-gray-300 block">Receitas salvas:
+            <select id="recipe-library-select" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-3 py-2 text-sm text-cream focus:border-terracotta outline-none">
+              <option value="">Nenhuma receita salva</option>
+            </select>
+          </label>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="recipe-load-btn" type="button" class="px-3 py-2 rounded bg-charcoal border border-gold/40 text-gold text-xs hover:bg-gold/10">Carregar receita</button>
+            <button id="recipe-delete-btn" type="button" class="px-3 py-2 rounded bg-charcoal border border-red-900/60 text-red-300 text-xs hover:bg-red-900/20">Excluir</button>
+          </div>
+          <p id="recipe-library-status" class="text-[11px] text-gray-500 min-h-4" aria-live="polite"></p>
+        </section>
+
+        <section class="bg-charcoalCard p-5 rounded-xl border border-terracotta/30 space-y-4">
+          <div class="border-b border-gray-800 pb-2">
+            <h3 class="text-base font-semibold text-gold">Ficha Técnica por Sabor</h3>
+            <p class="text-xs text-gray-400 mt-1">Informe o sabor, o volume do lote e o preço de venda.</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <label class="text-xs text-gray-300">Sabor:
+              <select id="flavor-select" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-cream focus:border-terracotta outline-none">
+                <option value="margherita">Margherita D.O.P.</option>
+                <option value="marinara">Marinara Classica</option>
+                <option value="calzone">Calzone / Ripieno</option>
+              </select>
+            </label>
+            <label class="text-xs text-gray-300">Quantidade:
+              <input id="flavor-quantity" type="number" value="12" min="0" step="1" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold font-bold focus:border-terracotta outline-none">
+            </label>
+            <label class="text-xs text-gray-300">Preço de venda (R$):
+              <input id="flavor-price" type="number" value="45" min="0" step="0.50" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold font-bold focus:border-terracotta outline-none">
+            </label>
+          </div>
+          <div id="flavor-sheet-body" class="overflow-x-auto"></div>
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-charcoal rounded border border-gray-800 p-2"><span class="block text-[10px] text-gray-500">Custo da ficha</span><strong id="flavor-sheet-cost" class="text-cream text-sm">R$ 0,00</strong></div>
+            <div class="bg-charcoal rounded border border-gray-800 p-2"><span class="block text-[10px] text-gray-500">Custo unitário</span><strong id="flavor-sheet-unit-cost" class="text-terracotta text-sm">R$ 0,00</strong></div>
+            <div class="bg-charcoal rounded border border-gray-800 p-2"><span class="block text-[10px] text-gray-500">Margem estimada</span><strong id="flavor-sheet-margin" class="text-green-400 text-sm">R$ 0,00</strong></div>
+          </div>
+        </section>
+
+        <section class="bg-charcoalCard p-5 rounded-xl border border-avpnGreen/30 space-y-4">
+          <div class="border-b border-gray-800 pb-2">
+            <h3 class="text-base font-semibold text-gold">Lista de Compras do Sabor</h3>
+            <p class="text-xs text-gray-400 mt-1">Quantidade consolidada para o sabor e lote selecionados.</p>
+          </div>
+          <div id="shopping-list-body" class="space-y-2"></div>
+          <div class="flex justify-between border-t border-gray-800 pt-3 text-sm font-semibold">
+            <span class="text-gray-400">Investimento estimado:</span>
+            <span id="shopping-list-total" class="text-gold">R$ 0,00</span>
+          </div>
+          <button id="shopping-print-btn" type="button" class="w-full px-3 py-2 rounded bg-avpnGreen/30 border border-avpnGreen text-green-300 text-xs font-semibold hover:bg-avpnGreen/50">Imprimir ficha e lista</button>
+        </section>
+      </div>
+
+      <!-- Controle de Estoque de Ingredientes -->
+      <section class="bg-charcoalCard p-5 rounded-xl border border-avpnGreen/30 space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b border-gray-800 pb-3">
+          <div>
+            <h3 class="text-base font-semibold text-gold">Controle de Estoque de Ingredientes</h3>
+            <p class="text-xs text-gray-400 mt-1">Registre saldo, estoque mínimo e custo médio. Os dados ficam salvos neste dispositivo.</p>
+          </div>
+          <div class="flex items-center gap-3 text-xs"><span class="text-gray-400">Valor estimado em estoque:</span><strong id="stock-total-value" class="text-gold">R$ 0,00</strong></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <input id="stock-new-name" type="text" placeholder="Novo ingrediente" class="bg-charcoal border border-gray-700 rounded px-3 py-2 text-xs text-cream focus:border-terracotta outline-none">
+          <input id="stock-new-unit" type="text" value="kg" placeholder="Unidade (kg, L, un)" class="bg-charcoal border border-gray-700 rounded px-3 py-2 text-xs text-cream focus:border-terracotta outline-none">
+          <input id="stock-new-price" type="number" value="0" min="0" step="0.01" placeholder="Preço por unidade" class="bg-charcoal border border-gray-700 rounded px-3 py-2 text-xs text-gold focus:border-terracotta outline-none">
+          <button id="stock-add-btn" type="button" class="px-3 py-2 rounded bg-avpnGreen/40 border border-avpnGreen text-green-300 text-xs font-semibold hover:bg-avpnGreen/60">Adicionar ingrediente</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-charcoal text-gray-400 uppercase border-b border-gray-700"><tr><th class="p-3">Ingrediente</th><th class="p-3">Unidade</th><th class="p-3">Saldo atual</th><th class="p-3">Estoque mínimo</th><th class="p-3">Preço / unidade</th><th class="p-3">Status</th><th class="p-3 text-right">Ação</th></tr></thead>
+            <tbody id="stock-table-body" class="divide-y divide-gray-800"></tbody>
+          </table>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded border border-gold/20 bg-gold/5 p-3">
+          <p id="stock-low-alert" class="text-xs text-gray-400">Nenhum alerta de estoque.</p>
+          <button id="stock-deduct-btn" type="button" class="px-3 py-2 rounded bg-terracotta text-cream text-xs font-semibold hover:bg-terracotta/80">Dar baixa na lista do sabor atual</button>
+        </div>
+      </section>
+
+      <!-- Relatório de Custos de Produção e Precificação -->
+      <section class="bg-charcoalCard p-5 rounded-xl border border-terracotta/40 space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b border-gray-800 pb-3">
+          <div>
+            <h3 class="text-base font-semibold text-gold">Relatório de Custos de Produção e Preço de Venda</h3>
+            <p class="text-xs text-gray-400 mt-1">Simule o custo completo do lote e o preço mínimo sugerido por pizza.</p>
+          </div>
+          <button id="cost-report-print-btn" type="button" class="px-3 py-2 rounded bg-charcoal border border-gold/40 text-gold text-xs font-semibold hover:bg-gold/10">Imprimir relatório</button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <label class="text-xs text-gray-300">Mão de obra do lote (R$):
+            <input id="cost-labor" type="number" value="0" min="0" step="10" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold focus:border-terracotta outline-none">
+          </label>
+          <label class="text-xs text-gray-300">Energia / gás / lenha (R$):
+            <input id="cost-energy" type="number" value="0" min="0" step="5" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold focus:border-terracotta outline-none">
+          </label>
+          <label class="text-xs text-gray-300">Embalagem por pizza (R$):
+            <input id="cost-packaging" type="number" value="0" min="0" step="0.10" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold focus:border-terracotta outline-none">
+          </label>
+          <label class="text-xs text-gray-300">Perdas / desperdício (%):
+            <input id="cost-waste" type="number" value="5" min="0" max="50" step="1" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold focus:border-terracotta outline-none">
+          </label>
+          <label class="text-xs text-gray-300">Taxas de venda (%):
+            <input id="cost-fees" type="number" value="0" min="0" max="50" step="0.5" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold focus:border-terracotta outline-none">
+          </label>
+          <label class="text-xs text-gray-300">Margem desejada (%):
+            <input id="cost-margin" type="number" value="30" min="0" max="80" step="1" class="mt-1 w-full bg-charcoal border border-gray-700 rounded px-2 py-2 text-sm text-gold focus:border-terracotta outline-none">
+          </label>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-center">
+          <div class="bg-charcoal rounded border border-gray-800 p-3"><span class="block text-[10px] text-gray-500">Pizzas no lote</span><strong id="report-total-pizzas" class="text-lg text-cream">0</strong></div>
+          <div class="bg-charcoal rounded border border-gray-800 p-3"><span class="block text-[10px] text-gray-500">Custos variáveis</span><strong id="report-variable-cost" class="text-sm text-cream">R$ 0,00</strong></div>
+          <div class="bg-charcoal rounded border border-gray-800 p-3"><span class="block text-[10px] text-gray-500">Custos do lote</span><strong id="report-total-cost" class="text-sm text-terracotta">R$ 0,00</strong></div>
+          <div class="bg-charcoal rounded border border-gray-800 p-3"><span class="block text-[10px] text-gray-500">Custo médio / pizza</span><strong id="report-unit-cost" class="text-sm text-gold">R$ 0,00</strong></div>
+          <div class="bg-charcoal rounded border border-avpnGreen/40 p-3"><span class="block text-[10px] text-green-400">Preço sugerido médio</span><strong id="report-average-price" class="text-sm text-green-400">R$ 0,00</strong></div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-charcoal text-gray-400 uppercase border-b border-gray-700"><tr><th class="p-3">Sabor</th><th class="p-3">Qtd.</th><th class="p-3">Custo unitário</th><th class="p-3">Custo do sabor</th><th class="p-3">Preço sugerido / pizza</th><th class="p-3 text-right">Margem estimada</th></tr></thead>
+            <tbody id="cost-report-body" class="divide-y divide-gray-800"></tbody>
+          </table>
+        </div>
+        <p id="cost-report-note" class="text-xs text-gray-400 bg-charcoal/50 rounded border border-gray-800 p-3"></p>
+      </section>
 
       <!-- Tabela Completa de Insumos e Doses -->
       <div class="bg-charcoalCard p-6 rounded-xl border border-gray-800 space-y-4 overflow-hidden">
@@ -738,7 +911,7 @@
       </div>
 
       <!-- Pesquisa e Filtros -->
-      <div class="bg-charcoalCard p-5 rounded-xl border border-gray-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+      <div class="bg-charcoalCard p-5 rounded-xl border border-gray-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-4">
         <div>
           <label class="text-xs font-medium text-gray-400 block mb-1">Pesquisar por Nome, ID ou Endereço:</label>
           <input type="text" id="map-search-input" placeholder="Ex: Michele, 156, São Paulo..." class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-xs text-cream focus:border-terracotta outline-none">
@@ -773,12 +946,29 @@
         <div class="flex items-end">
           <button id="map-clear-filters" type="button" class="w-full px-3 py-1.5 bg-charcoal border border-gray-700 rounded text-xs text-gray-300 hover:text-white hover:border-gold/50 transition">Limpar filtros</button>
         </div>
+        <div>
+          <label class="text-xs font-medium text-gray-400 block mb-1">Favoritos:</label>
+          <select id="map-favorites-filter" class="w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-xs text-cream focus:border-terracotta outline-none">
+            <option value="ALL">Todos os registros</option>
+            <option value="FAVORITES">Somente favoritos</option>
+          </select>
+        </div>
       </div>
 
       <!-- Grid de Cards das Pizzarias -->
       <div id="pizzeria-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Cards renderizados via JS -->
       </div>
+
+      <section class="bg-charcoalCard p-5 rounded-xl border border-gold/30 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-gray-800 pb-3">
+          <div><h3 class="text-base font-semibold text-gold">Ferramentas do Diretório</h3><p class="text-xs text-gray-400 mt-1">Compare até três pizzarias ou confira a qualidade dos registros carregados.</p></div>
+          <button id="directory-validate-btn" type="button" class="px-3 py-2 rounded bg-charcoal border border-gold/40 text-gold text-xs font-semibold hover:bg-gold/10">Validar base</button>
+        </div>
+        <div id="directory-compare-list" class="flex flex-wrap gap-2 text-xs text-gray-400"><span>Nenhuma pizzaria selecionada para comparação.</span></div>
+        <div id="directory-compare-result" class="hidden overflow-x-auto"></div>
+        <div id="directory-validation-result" class="hidden text-xs text-gray-300 bg-charcoal/60 rounded border border-gray-800 p-3"></div>
+      </section>
 
       <!-- Paginação -->
       <div class="flex justify-between items-center bg-charcoalCard p-4 rounded-xl border border-gray-800">
@@ -3105,6 +3295,10 @@
         const itemsPerPage = 6;
         let selectedPizzeria = pizzeriasData.find(p => p.id === '1083') || pizzeriasData[0];
         let mapSatelliteMode = false;
+        const favoritesKey = 'avpn_pizzeria_favorites_v1';
+        let favoriteIds = new Set();
+        let compareIds = new Set();
+        try { favoriteIds = new Set(JSON.parse(localStorage.getItem(favoritesKey) || '[]')); } catch (error) {}
 
         // Elementos DOM
         const iframe = document.getElementById('google-maps-iframe');
@@ -3116,10 +3310,14 @@
         const stateFilter = document.getElementById('map-state-filter');
         const sortFilter = document.getElementById('map-sort-filter');
         const clearFiltersBtn = document.getElementById('map-clear-filters');
+        const favoritesFilter = document.getElementById('map-favorites-filter');
         const cardsGrid = document.getElementById('pizzeria-cards-grid');
         const paginationInfo = document.getElementById('pizzeria-pagination-info');
         const btnPrev = document.getElementById('btn-prev-page');
         const btnNext = document.getElementById('btn-next-page');
+        const compareList = document.getElementById('directory-compare-list');
+        const compareResult = document.getElementById('directory-compare-result');
+        const validationResult = document.getElementById('directory-validation-result');
 
         function updateMapIframe(pizzeria) {
           if (!pizzeria) return;
@@ -3175,6 +3373,7 @@
           const countryVal = countryFilter.value;
           const cityVal = cityFilter.value;
           const stateVal = stateFilter.value;
+          const favoritesVal = favoritesFilter.value;
 
           const filtered = pizzeriasData.filter(p => {
             const searchable = [p.name, p.id, p.addressPt, p.address, p.cityPt, p.statePt, p.countryPt]
@@ -3183,7 +3382,8 @@
             const matchesCountry = countryVal === 'ALL' || p.countryPt === countryVal;
             const matchesCity = cityVal === 'ALL' || p.cityPt === cityVal;
             const matchesState = stateVal === 'ALL' || p.statePt === stateVal;
-            return matchesSearch && matchesCountry && matchesCity && matchesState;
+            const matchesFavorite = favoritesVal !== 'FAVORITES' || favoriteIds.has(String(p.id));
+            return matchesSearch && matchesCountry && matchesCity && matchesState && matchesFavorite;
           });
 
           const sortValue = sortFilter.value;
@@ -3207,6 +3407,8 @@
           } else {
             pageItems.forEach(p => {
               const isSelected = selectedPizzeria && selectedPizzeria.id === p.id;
+              const isFavorite = favoriteIds.has(String(p.id));
+              const isCompared = compareIds.has(String(p.id));
               const igLink = p.instagramUrl || (p.instagram ? `https://instagram.com/${p.instagram.replace('@', '')}` : '');
               const igHtml = igLink
                 ? `<a href="${igLink}" target="_blank" rel="noopener noreferrer" class="text-terracotta hover:underline font-semibold truncate max-w-[140px]">${p.instagram || 'Instagram'}</a>`
@@ -3219,9 +3421,9 @@
               html += `
                 <div class="bg-charcoalCard p-5 rounded-xl border ${isSelected ? 'border-terracotta ring-1 ring-terracotta' : 'border-gray-800'} hover:border-gold/40 transition flex flex-col justify-between space-y-3">
                   <div>
-                    <div class="flex justify-between items-start">
+                    <div class="flex justify-between items-start gap-2">
                       <span class="text-[10px] font-mono font-bold bg-gold/20 text-gold px-2 py-0.5 rounded border border-gold/30">AVPN #${p.id}</span>
-                      <span class="text-xs text-gray-400 font-medium">${p.countryPt}</span>
+                      <div class="flex items-center gap-2"><span class="text-xs text-gray-400 font-medium">${p.countryPt}</span><button type="button" onclick="window.togglePizzeriaFavorite('${p.id}')" class="text-base ${isFavorite ? 'text-gold' : 'text-gray-600'} hover:text-gold" title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}">${isFavorite ? '★' : '☆'}</button></div>
                     </div>
                     <h3 class="font-bold text-cream text-base mt-2">${p.name}</h3>
                     
@@ -3246,6 +3448,7 @@
                         Ficha AVPN
                       </a>
                     </div>
+                    <label class="flex items-center gap-2 text-[11px] text-gray-400 cursor-pointer"><input type="checkbox" ${isCompared ? 'checked' : ''} onchange="window.togglePizzeriaCompare('${p.id}', this.checked)" class="accent-terracotta"> Comparar esta pizzaria</label>
                   </div>
                 </div>
               `;
@@ -3256,7 +3459,46 @@
           paginationInfo.textContent = `Exibindo ${totalItems > 0 ? startIdx + 1 : 0}-${Math.min(startIdx + itemsPerPage, totalItems)} de ${totalItems} pizzarias`;
           btnPrev.disabled = currentPage === 1;
           btnNext.disabled = currentPage === totalPages;
+          renderComparePanel();
         }
+
+        function renderComparePanel() {
+          const selected = pizzeriasData.filter(p => compareIds.has(String(p.id)));
+          compareList.innerHTML = selected.length
+            ? selected.map(p => `<span class="px-2 py-1 rounded bg-gold/10 border border-gold/30 text-gold">${p.name} <button type="button" onclick="window.togglePizzeriaCompare('${p.id}', false)" class="ml-1 text-gray-400 hover:text-white">×</button></span>`).join('')
+            : '<span>Nenhuma pizzaria selecionada para comparação.</span>';
+          if (!selected.length) { compareResult.classList.add('hidden'); compareResult.innerHTML = ''; return; }
+          compareResult.classList.remove('hidden');
+          compareResult.innerHTML = `<table class="w-full text-xs text-left"><thead><tr class="border-b border-gray-700 text-gray-500 uppercase"><th class="p-2">Campo</th>${selected.map(p => `<th class="p-2 text-gold">${p.name}</th>`).join('')}</tr></thead><tbody>${[
+            ['ID AVPN', p => p.id], ['País', p => p.countryPt], ['Estado / Província', p => p.statePt], ['Cidade', p => p.cityPt], ['Endereço', p => p.addressPt], ['Telefone', p => p.phone || 'Não informado'], ['Instagram', p => p.instagram || 'Não informado']
+          ].map(([label, getter]) => `<tr class="border-b border-gray-800"><td class="p-2 text-gray-400">${label}</td>${selected.map(p => `<td class="p-2 text-cream">${getter(p) || 'Não informado'}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+        }
+
+        window.togglePizzeriaFavorite = function(id) {
+          const key = String(id);
+          if (favoriteIds.has(key)) favoriteIds.delete(key); else favoriteIds.add(key);
+          try { localStorage.setItem(favoritesKey, JSON.stringify([...favoriteIds])); } catch (error) {}
+          renderCards();
+        };
+
+        window.togglePizzeriaCompare = function(id, shouldAdd) {
+          const key = String(id);
+          if (shouldAdd) {
+            if (compareIds.size >= 3 && !compareIds.has(key)) { window.alert('É possível comparar até três pizzarias.'); renderCards(); return; }
+            compareIds.add(key);
+          } else compareIds.delete(key);
+          renderCards();
+        };
+
+        document.getElementById('directory-validate-btn').addEventListener('click', () => {
+          const duplicateIds = pizzeriasData.filter((p, index, all) => all.findIndex(other => String(other.id) === String(p.id)) !== index).map(p => p.id);
+          const withoutAddress = pizzeriasData.filter(p => !p.address || p.address === 'Não informado');
+          const withoutPhone = pizzeriasData.filter(p => !p.phone || p.phone === 'Não informado');
+          const withoutState = pizzeriasData.filter(p => !p.statePt || p.statePt === 'Não informado');
+          const withoutMap = pizzeriasData.filter(p => !p.lat || !p.lng);
+          validationResult.classList.remove('hidden');
+          validationResult.innerHTML = `<strong class="text-gold">Auditoria local da base:</strong><ul class="mt-2 space-y-1"><li>Registros analisados: ${pizzeriasData.length}</li><li>IDs duplicados: ${new Set(duplicateIds).size}</li><li>Sem endereço: ${withoutAddress.length}</li><li>Sem telefone: ${withoutPhone.length}</li><li>Sem estado / província identificado: ${withoutState.length}</li><li>Sem coordenadas geográficas: ${withoutMap.length}</li></ul>`;
+        });
 
         window.focusPizzeria = function(id) {
           const found = pizzeriasData.find(p => p.id === id);
@@ -3279,12 +3521,14 @@
         cityFilter.addEventListener('change', () => { currentPage = 1; renderCards(); });
         stateFilter.addEventListener('change', () => { currentPage = 1; populateLocationFilters(); renderCards(); });
         sortFilter.addEventListener('change', () => { currentPage = 1; renderCards(); });
+        favoritesFilter.addEventListener('change', () => { currentPage = 1; renderCards(); });
         clearFiltersBtn.addEventListener('click', () => {
           searchInput.value = '';
           countryFilter.value = 'ALL';
           stateFilter.value = 'ALL';
           cityFilter.value = 'ALL';
           sortFilter.value = 'name';
+          favoritesFilter.value = 'ALL';
           currentPage = 1;
           populateLocationFilters();
           renderCards();
@@ -3306,6 +3550,382 @@
       })();
     } catch (err) {
       console.error('Erro no módulo de pizzarias e mapas:', err);
+    }
+  </script>
+
+  <script>
+    /* ==========================================================================
+       MÓDULO 5: BIBLIOTECA DE RECEITAS, FICHA TÉCNICA E LISTA DE COMPRAS
+       ========================================================================== */
+    try {
+      (function initFase1() {
+        const storageKey = 'avpn_saved_recipes_v1';
+        const recipeName = document.getElementById('recipe-library-name');
+        const recipeSelect = document.getElementById('recipe-library-select');
+        const recipeStatus = document.getElementById('recipe-library-status');
+        const flavorSelect = document.getElementById('flavor-select');
+        const flavorQuantity = document.getElementById('flavor-quantity');
+        const flavorPrice = document.getElementById('flavor-price');
+        const flavorSheetBody = document.getElementById('flavor-sheet-body');
+        const shoppingBody = document.getElementById('shopping-list-body');
+        const shoppingTotal = document.getElementById('shopping-list-total');
+        const flavorCost = document.getElementById('flavor-sheet-cost');
+        const flavorUnitCost = document.getElementById('flavor-sheet-unit-cost');
+        const flavorMargin = document.getElementById('flavor-sheet-margin');
+
+        const inputs = ['input-agua', 'input-hidratacao', 'input-sal', 'input-fermento', 'input-qtd', 'input-peso'];
+        const ingredientCatalog = {
+          tomate: { name: 'Tomate pelado / molho', unit: 'g', doses: { margherita: 75, marinara: 75, calzone: 50 }, prices: 28 },
+          mozzarella: { name: 'Mozzarella / Fior di Latte', unit: 'g', doses: { margherita: 90, marinara: 0, calzone: 90 }, prices: 65 },
+          evoo: { name: 'Azeite extravirgem', unit: 'g', doses: { margherita: 7, marinara: 7, calzone: 5 }, prices: 60 },
+          grana: { name: 'Queijo duro ralado', unit: 'g', doses: { margherita: 6, marinara: 0, calzone: 6 }, prices: 90 },
+          basilico: { name: 'Manjericão fresco', unit: 'g', doses: { margherita: 3, marinara: 2, calzone: 0 }, prices: 40 },
+          alho: { name: 'Alho fresco laminado', unit: 'g', doses: { margherita: 0, marinara: 3, calzone: 0 }, prices: 30 },
+          oregano: { name: 'Orégano seco', unit: 'g', doses: { margherita: 0, marinara: 0.5, calzone: 0 }, prices: 80 },
+          ricota: { name: 'Ricota fresca', unit: 'g', doses: { margherita: 0, marinara: 0, calzone: 120 }, prices: 35 },
+          salame: { name: 'Salame napolitano', unit: 'g', doses: { margherita: 0, marinara: 0, calzone: 40 }, prices: 85 },
+          semolina: { name: 'Semolina de abertura', unit: 'g', doses: { margherita: 15, marinara: 15, calzone: 15 }, prices: 18 }
+        };
+
+        const readRecipes = () => {
+          try { return JSON.parse(localStorage.getItem(storageKey) || '[]'); }
+          catch (error) { return []; }
+        };
+        const writeRecipes = recipes => {
+          try { localStorage.setItem(storageKey, JSON.stringify(recipes)); return true; }
+          catch (error) { return false; }
+        };
+        const money = value => `R$ ${Number(value || 0).toFixed(2).replace('.', ',')}`;
+
+        function refreshRecipeSelect() {
+          const recipes = readRecipes();
+          recipeSelect.innerHTML = '';
+          const placeholder = document.createElement('option');
+          placeholder.value = '';
+          placeholder.textContent = recipes.length ? 'Selecione uma receita salva' : 'Nenhuma receita salva';
+          recipeSelect.appendChild(placeholder);
+          recipes.forEach((recipe, index) => {
+            const option = document.createElement('option');
+            option.value = String(index);
+            option.textContent = recipe.name;
+            recipeSelect.appendChild(option);
+          });
+        }
+
+        function captureCurrentRecipe() {
+          const values = {};
+          inputs.forEach(id => { const el = document.getElementById(id); if (el) values[id] = el.value; });
+          const mode = document.getElementById('recipe-mode');
+          return { name: recipeName.value.trim(), mode: mode ? mode.value : 'ingredients', values, savedAt: new Date().toISOString() };
+        }
+
+        function saveCurrentRecipe() {
+          const recipe = captureCurrentRecipe();
+          if (!recipe.name) { recipeStatus.textContent = 'Informe um nome antes de salvar.'; recipeName.focus(); return; }
+          const recipes = readRecipes();
+          const existing = recipes.findIndex(item => item.name.toLowerCase() === recipe.name.toLowerCase());
+          if (existing >= 0) recipes[existing] = recipe; else recipes.push(recipe);
+          if (writeRecipes(recipes)) {
+            refreshRecipeSelect();
+            recipeStatus.textContent = existing >= 0 ? 'Receita atualizada com sucesso.' : 'Receita salva neste dispositivo.';
+          } else recipeStatus.textContent = 'Não foi possível salvar. Verifique o armazenamento do navegador.';
+        }
+
+        function loadSelectedRecipe() {
+          const index = Number.parseInt(recipeSelect.value, 10);
+          const recipe = readRecipes()[index];
+          if (!recipe) { recipeStatus.textContent = 'Selecione uma receita salva.'; return; }
+          const mode = document.getElementById('recipe-mode');
+          if (mode && recipe.mode) { mode.value = recipe.mode; mode.dispatchEvent(new Event('change')); }
+          Object.entries(recipe.values || {}).forEach(([id, value]) => {
+            const el = document.getElementById(id);
+            if (el) { el.value = value; el.dispatchEvent(new Event('input', { bubbles: true })); }
+          });
+          recipeName.value = recipe.name;
+          recipeStatus.textContent = `Receita “${recipe.name}” carregada.`;
+        }
+
+        function deleteSelectedRecipe() {
+          const index = Number.parseInt(recipeSelect.value, 10);
+          if (!Number.isInteger(index)) { recipeStatus.textContent = 'Selecione uma receita para excluir.'; return; }
+          const recipes = readRecipes();
+          const removed = recipes.splice(index, 1)[0];
+          writeRecipes(recipes); refreshRecipeSelect();
+          recipeStatus.textContent = removed ? `Receita “${removed.name}” excluída.` : 'Receita não encontrada.';
+        }
+
+        function renderFlavorSheet() {
+          const flavor = flavorSelect.value;
+          const quantity = Math.max(0, Number(flavorQuantity.value) || 0);
+          const price = Math.max(0, Number(flavorPrice.value) || 0);
+          let total = 0;
+          let rows = '';
+          let shopping = '';
+          Object.values(ingredientCatalog).forEach(item => {
+            const dose = item.doses[flavor] || 0;
+            const totalGrams = dose * quantity;
+            const cost = (totalGrams / 1000) * item.prices;
+            total += cost;
+            if (dose > 0) {
+              rows += `<tr class="border-b border-gray-800"><td class="py-2 pr-3 text-cream">${item.name}</td><td class="py-2 pr-3 text-gray-400">${dose} ${item.unit}/pizza</td><td class="py-2 text-gold font-semibold">${totalGrams.toFixed(totalGrams < 10 ? 1 : 0)} ${item.unit}</td></tr>`;
+              shopping += `<div class="flex justify-between gap-3 text-xs"><span class="text-gray-300">${item.name}</span><span class="text-gold font-semibold">${totalGrams.toFixed(totalGrams < 10 ? 1 : 0)} g</span></div>`;
+            }
+          });
+          flavorSheetBody.innerHTML = `<table class="w-full text-xs text-left"><thead><tr class="text-gray-500 uppercase border-b border-gray-700"><th class="py-2 pr-3">Ingrediente</th><th class="py-2 pr-3">Dose unitária</th><th class="py-2">Total do lote</th></tr></thead><tbody>${rows || '<tr><td colspan="3" class="py-3 text-gray-500">Informe uma quantidade maior que zero.</td></tr>'}</tbody></table>`;
+          shoppingBody.innerHTML = shopping || '<p class="text-xs text-gray-500">Nenhum item para este lote.</p>';
+          const doughCost = quantity * 3.20;
+          const fullCost = total + doughCost;
+          flavorCost.textContent = money(fullCost);
+          flavorUnitCost.textContent = money(quantity ? fullCost / quantity : 0);
+          flavorMargin.textContent = money((price * quantity) - fullCost);
+          shoppingTotal.textContent = money(fullCost);
+        }
+
+        document.getElementById('recipe-save-btn').addEventListener('click', saveCurrentRecipe);
+        document.getElementById('recipe-load-btn').addEventListener('click', loadSelectedRecipe);
+        document.getElementById('recipe-delete-btn').addEventListener('click', deleteSelectedRecipe);
+        document.getElementById('recipe-new-btn').addEventListener('click', () => { recipeName.value = ''; recipeStatus.textContent = 'Nome limpo. A receita atual continua disponível para edição.'; recipeName.focus(); });
+        [flavorSelect, flavorQuantity, flavorPrice].forEach(el => el.addEventListener('input', renderFlavorSheet));
+        document.getElementById('shopping-print-btn').addEventListener('click', () => window.print());
+        document.querySelectorAll('#aba1 input, #aba1 select').forEach(el => el.addEventListener('input', renderFlavorSheet));
+        refreshRecipeSelect();
+        renderFlavorSheet();
+      })();
+    } catch (error) {
+      console.error('Erro na biblioteca de receitas e ficha técnica:', error);
+    }
+  </script>
+  <script>
+    /* ==========================================================================
+       MÓDULO 6: FERMENTAÇÃO E ESTOQUE
+       ========================================================================== */
+    try {
+      (function initFase2() {
+        // Calculador de fermentação: estimativa prática limitada ao teto AVPN de 24h.
+        const fermTemp = document.getElementById('ferm-temp');
+        const fermYeast = document.getElementById('ferm-yeast');
+        const fermHydration = document.getElementById('ferm-hydration');
+        const fermPuntata = document.getElementById('ferm-puntata');
+        const fermTotal = document.getElementById('ferm-total-result');
+        const fermAppretto = document.getElementById('ferm-appretto-result');
+        const fermRange = document.getElementById('ferm-range-result');
+        const fermStatus = document.getElementById('ferm-status-result');
+        const fermExplanation = document.getElementById('ferm-explanation');
+
+        function calculateFermentation() {
+          const temperature = Math.min(35, Math.max(10, Number(fermTemp.value) || 22));
+          const yeast = Math.min(5, Math.max(0.05, Number(fermYeast.value) || 0.2));
+          const hydration = Math.min(75, Math.max(50, Number(fermHydration.value) || 55));
+          const puntata = Math.min(8, Math.max(0.5, Number(fermPuntata.value) || 2));
+          const temperatureFactor = Math.pow(2, (22 - temperature) / 10);
+          const yeastFactor = Math.sqrt(0.2 / yeast);
+          const hydrationFactor = 1 + ((hydration - 55) / 100) * 0.25;
+          const rawHours = 24 * temperatureFactor * yeastFactor * hydrationFactor;
+          const totalHours = Math.round(Math.min(24, Math.max(4, rawHours)));
+          const appretto = Math.max(0, totalHours - puntata);
+          const lower = Math.max(4, totalHours - 2);
+          const upper = Math.min(24, totalHours + 2);
+          const status = totalHours <= 10 ? 'Rápida' : totalHours >= 22 ? 'Longa / fria' : 'Equilibrada';
+          const statusClass = totalHours <= 10 ? 'text-yellow-300' : totalHours >= 22 ? 'text-blue-300' : 'text-green-400';
+
+          fermTotal.textContent = `${totalHours}h`;
+          fermAppretto.textContent = `${appretto.toFixed(1)}h`;
+          fermRange.textContent = `${lower}–${upper}h`;
+          fermStatus.textContent = status;
+          fermStatus.className = `text-sm ${statusClass}`;
+          fermExplanation.textContent = `Estimativa: ${totalHours}h totais, com aproximadamente ${appretto.toFixed(1)}h de appretto após ${puntata.toFixed(1)}h de puntata. Temperaturas mais altas e mais fermento aceleram a fermentação; hidratação maior tende a prolongá-la. O resultado deve ser validado pelo volume e pela textura da massa.`;
+          return totalHours;
+        }
+
+        [fermTemp, fermYeast, fermHydration, fermPuntata].forEach(el => el.addEventListener('input', calculateFermentation));
+        document.getElementById('ferm-apply-btn').addEventListener('click', () => {
+          const total = calculateFermentation();
+          const preparationSelect = document.getElementById('crono-preparation-hours');
+          const allowed = [12, 16, 20, 24];
+          const closest = allowed.reduce((best, value) => Math.abs(value - total) < Math.abs(best - total) ? value : best, allowed[0]);
+          preparationSelect.value = String(closest);
+          preparationSelect.dispatchEvent(new Event('change'));
+          const message = document.getElementById('crono-validation-message');
+          if (message) {
+            message.textContent = `Tempo de preparação ajustado para ${closest}h no cronograma. Confira a massa durante a fermentação.`;
+            message.classList.remove('hidden');
+            message.classList.remove('text-yellow-200');
+            message.classList.add('text-green-300');
+          }
+        });
+        calculateFermentation();
+
+        // Controle de estoque persistente no dispositivo.
+        const stockKey = 'avpn_ingredient_stock_v1';
+        const stockBody = document.getElementById('stock-table-body');
+        const stockTotal = document.getElementById('stock-total-value');
+        const stockAlert = document.getElementById('stock-low-alert');
+        const stockDefaults = {
+          tomate: { name: 'Tomate pelado / molho', unit: 'kg', quantity: 2, minimum: 0.5, price: 28 },
+          mozzarella: { name: 'Mozzarella / Fior di Latte', unit: 'kg', quantity: 2, minimum: 0.5, price: 65 },
+          evoo: { name: 'Azeite extravirgem', unit: 'L', quantity: 1, minimum: 0.25, price: 60 },
+          grana: { name: 'Queijo duro ralado', unit: 'kg', quantity: 0.5, minimum: 0.1, price: 90 },
+          basilico: { name: 'Manjericão fresco', unit: 'kg', quantity: 0.2, minimum: 0.05, price: 40 },
+          alho: { name: 'Alho fresco laminado', unit: 'kg', quantity: 0.2, minimum: 0.05, price: 30 },
+          oregano: { name: 'Orégano seco', unit: 'kg', quantity: 0.1, minimum: 0.02, price: 80 },
+          ricota: { name: 'Ricota fresca', unit: 'kg', quantity: 1, minimum: 0.2, price: 35 },
+          salame: { name: 'Salame napolitano', unit: 'kg', quantity: 1, minimum: 0.2, price: 85 },
+          semolina: { name: 'Semolina de abertura', unit: 'kg', quantity: 2, minimum: 0.5, price: 18 }
+        };
+        const readStock = () => {
+          try {
+            const saved = JSON.parse(localStorage.getItem(stockKey) || 'null');
+            return saved && typeof saved === 'object' ? saved : JSON.parse(JSON.stringify(stockDefaults));
+          } catch (error) { return JSON.parse(JSON.stringify(stockDefaults)); }
+        };
+        const writeStock = stock => { try { localStorage.setItem(stockKey, JSON.stringify(stock)); } catch (error) {} };
+        let stock = readStock();
+        const stockMoney = value => `R$ ${Number(value || 0).toFixed(2).replace('.', ',')}`;
+        const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+
+        window.updateStockField = function(key, field, value) {
+          if (!stock[key]) return;
+          stock[key][field] = field === 'name' || field === 'unit' ? String(value) : Math.max(0, Number(value) || 0);
+          writeStock(stock); renderStock();
+        };
+
+        function renderStock() {
+          let totalValue = 0;
+          const lowItems = [];
+          stockBody.innerHTML = Object.entries(stock).map(([key, item]) => {
+            const quantity = Number(item.quantity) || 0;
+            const minimum = Number(item.minimum) || 0;
+            const price = Number(item.price) || 0;
+            totalValue += quantity * price;
+            const isLow = quantity <= minimum;
+            if (isLow) lowItems.push(item.name);
+            return `<tr class="${isLow ? 'bg-red-950/20' : 'hover:bg-charcoal/50'}">
+              <td class="p-2 text-cream font-medium">${escapeHtml(item.name)}</td>
+              <td class="p-2 text-gray-400">${escapeHtml(item.unit)}</td>
+              <td class="p-2"><input type="number" min="0" step="0.01" value="${quantity}" onchange="window.updateStockField('${key}', 'quantity', this.value)" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold"></td>
+              <td class="p-2"><input type="number" min="0" step="0.01" value="${minimum}" onchange="window.updateStockField('${key}', 'minimum', this.value)" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gray-300"></td>
+              <td class="p-2"><input type="number" min="0" step="0.01" value="${price}" onchange="window.updateStockField('${key}', 'price', this.value)" class="w-24 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold"></td>
+              <td class="p-2"><span class="px-2 py-1 rounded text-[10px] ${isLow ? 'bg-red-900/40 text-red-300' : 'bg-avpnGreen/30 text-green-300'}">${isLow ? 'BAIXO' : 'OK'}</span></td>
+              <td class="p-2 text-right"><button type="button" onclick="window.updateStockField('${key}', 'quantity', ${(quantity + 1).toFixed(2)})" class="text-xs text-gold hover:underline">+1 ${escapeHtml(item.unit)}</button></td>
+            </tr>`;
+          }).join('');
+          stockTotal.textContent = stockMoney(totalValue);
+          stockAlert.textContent = lowItems.length ? `Atenção: estoque abaixo do mínimo para ${lowItems.join(', ')}.` : 'Estoque dentro dos mínimos configurados.';
+          stockAlert.className = lowItems.length ? 'text-xs text-red-300' : 'text-xs text-green-300';
+        }
+
+        document.getElementById('stock-add-btn').addEventListener('click', () => {
+          const nameEl = document.getElementById('stock-new-name');
+          const unitEl = document.getElementById('stock-new-unit');
+          const priceEl = document.getElementById('stock-new-price');
+          const name = nameEl.value.trim();
+          if (!name) { nameEl.focus(); return; }
+          const key = `custom_${Date.now()}`;
+          stock[key] = { name, unit: unitEl.value.trim() || 'kg', quantity: 0, minimum: 0, price: Math.max(0, Number(priceEl.value) || 0) };
+          writeStock(stock); renderStock(); nameEl.value = ''; priceEl.value = '0';
+        });
+
+        document.getElementById('stock-deduct-btn').addEventListener('click', () => {
+          const flavor = document.getElementById('flavor-select').value;
+          const quantity = Math.max(0, Number(document.getElementById('flavor-quantity').value) || 0);
+          const doses = {
+            tomate: { margherita: 75, marinara: 75, calzone: 50 }, mozzarella: { margherita: 90, marinara: 0, calzone: 90 },
+            evoo: { margherita: 7, marinara: 7, calzone: 5 }, grana: { margherita: 6, marinara: 0, calzone: 6 },
+            basilico: { margherita: 3, marinara: 2, calzone: 0 }, alho: { margherita: 0, marinara: 3, calzone: 0 },
+            oregano: { margherita: 0, marinara: 0.5, calzone: 0 }, ricota: { margherita: 0, marinara: 0, calzone: 120 },
+            salame: { margherita: 0, marinara: 0, calzone: 40 }, semolina: { margherita: 15, marinara: 15, calzone: 15 }
+          };
+          Object.entries(doses).forEach(([key, flavorDoses]) => {
+            if (stock[key]) stock[key].quantity = Math.max(0, Number(stock[key].quantity || 0) - ((flavorDoses[flavor] || 0) * quantity / 1000));
+          });
+          writeStock(stock); renderStock();
+          stockAlert.textContent = `Baixa registrada para ${quantity} unidade(s) de ${flavor}.`;
+          stockAlert.className = 'text-xs text-gold';
+        });
+        renderStock();
+      })();
+    } catch (error) {
+      console.error('Erro no módulo de fermentação e estoque:', error);
+    }
+  </script>
+  <script>
+    /* ==========================================================================
+       MÓDULO 7: RELATÓRIO DE CUSTOS DE PRODUÇÃO E PRECIFICAÇÃO
+       ========================================================================== */
+    try {
+      (function initRelatorioCustos() {
+        const settingsKey = 'avpn_cost_report_settings_v1';
+        const ids = ['cost-labor', 'cost-energy', 'cost-packaging', 'cost-waste', 'cost-fees', 'cost-margin'];
+        const get = id => document.getElementById(id);
+        const money = value => `R$ ${Number(value || 0).toFixed(2).replace('.', ',')}`;
+        const flavorNames = { margherita: 'Margherita D.O.P.', marinara: 'Marinara Classica', calzone: 'Calzone / Ripieno' };
+        const doses = {
+          tomate: { margherita: 75, marinara: 75, calzone: 50, price: 28 },
+          mozzarella: { margherita: 90, marinara: 0, calzone: 90, price: 65 },
+          evoo: { margherita: 7, marinara: 7, calzone: 5, price: 60 },
+          grana: { margherita: 6, marinara: 0, calzone: 6, price: 90 },
+          basilico: { margherita: 3, marinara: 2, calzone: 0, price: 40 },
+          alho: { margherita: 0, marinara: 3, calzone: 0, price: 30 },
+          oregano: { margherita: 0, marinara: 0.5, calzone: 0, price: 80 },
+          ricota: { margherita: 0, marinara: 0, calzone: 120, price: 35 },
+          salame: { margherita: 0, marinara: 0, calzone: 40, price: 85 },
+          semolina: { margherita: 15, marinara: 15, calzone: 15, price: 18 }
+        };
+        const mixInputs = { margherita: get('mix-margherita'), marinara: get('mix-marinara'), calzone: get('mix-calzone') };
+        const savedSettings = (() => { try { return JSON.parse(localStorage.getItem(settingsKey) || '{}'); } catch (error) { return {}; } })();
+        ids.forEach(id => { if (savedSettings[id] !== undefined) get(id).value = savedSettings[id]; });
+
+        function calculateCoverageCost(flavor) {
+          return Object.values(doses).reduce((sum, item) => sum + ((item[flavor] || 0) / 1000) * item.price, 0);
+        }
+
+        function renderReport() {
+          const labor = Math.max(0, Number(get('cost-labor').value) || 0);
+          const energy = Math.max(0, Number(get('cost-energy').value) || 0);
+          const packaging = Math.max(0, Number(get('cost-packaging').value) || 0);
+          const waste = Math.min(50, Math.max(0, Number(get('cost-waste').value) || 0)) / 100;
+          const fees = Math.min(50, Math.max(0, Number(get('cost-fees').value) || 0)) / 100;
+          const margin = Math.min(80, Math.max(0, Number(get('cost-margin').value) || 0)) / 100;
+          const quantities = Object.fromEntries(Object.entries(mixInputs).map(([key, el]) => [key, Math.max(0, Number(el.value) || 0)]));
+          const totalPizzas = Object.values(quantities).reduce((sum, value) => sum + value, 0);
+          const fixedPerPizza = totalPizzas ? (labor + energy) / totalPizzas : 0;
+          const denominator = 1 - fees - margin;
+          let variableTotal = 0;
+          let productionTotal = 0;
+          let suggestedRevenue = 0;
+          let rows = '';
+
+          Object.entries(quantities).forEach(([flavor, quantity]) => {
+            const ingredientCost = calculateCoverageCost(flavor);
+            const baseVariable = 3.20 + ingredientCost + packaging;
+            const wasteCost = baseVariable * waste;
+            const unitCost = baseVariable + wasteCost + fixedPerPizza;
+            const suggestedPrice = denominator > 0 ? unitCost / denominator : unitCost;
+            const flavorTotal = unitCost * quantity;
+            const estimatedMargin = suggestedPrice - unitCost - (suggestedPrice * fees);
+            variableTotal += (baseVariable + wasteCost) * quantity;
+            productionTotal += flavorTotal;
+            suggestedRevenue += suggestedPrice * quantity;
+            rows += `<tr class="hover:bg-charcoal/50"><td class="p-3 text-cream font-medium">${flavorNames[flavor]}</td><td class="p-3 text-gold">${quantity}</td><td class="p-3">${money(unitCost)}</td><td class="p-3">${money(flavorTotal)}</td><td class="p-3 text-green-400 font-semibold">${money(suggestedPrice)}</td><td class="p-3 text-right text-green-300">${money(estimatedMargin)}</td></tr>`;
+          });
+
+          get('cost-report-body').innerHTML = rows;
+          get('report-total-pizzas').textContent = totalPizzas;
+          get('report-variable-cost').textContent = money(variableTotal);
+          get('report-total-cost').textContent = money(productionTotal);
+          get('report-unit-cost').textContent = money(totalPizzas ? productionTotal / totalPizzas : 0);
+          get('report-average-price').textContent = money(totalPizzas ? suggestedRevenue / totalPizzas : 0);
+          get('cost-report-note').textContent = `O relatório considera R$ ${labor.toFixed(2)} de mão de obra, R$ ${energy.toFixed(2)} de energia/gás/lenha, ${Number(get('cost-waste').value || 0).toFixed(1)}% de perdas, ${Number(get('cost-fees').value || 0).toFixed(1)}% de taxas e ${Number(get('cost-margin').value || 0).toFixed(1)}% de margem desejada. A massa foi estimada em R$ 3,20 por pizza; substitua esse valor na composição real quando houver custo detalhado da massa.`;
+          const settings = {}; ids.forEach(id => { settings[id] = get(id).value; });
+          try { localStorage.setItem(settingsKey, JSON.stringify(settings)); } catch (error) {}
+        }
+
+        [...ids.map(get), ...Object.values(mixInputs)].forEach(el => el.addEventListener('input', renderReport));
+        get('cost-report-print-btn').addEventListener('click', () => window.print());
+        renderReport();
+      })();
+    } catch (error) {
+      console.error('Erro no relatório de custos:', error);
     }
   </script>
 </body>
