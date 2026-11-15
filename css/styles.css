@@ -1,1 +1,95 @@
+/* Ocultamento estrito de abas inativas */
+    .tab-panel {
+      display: none !important;
+    }
+    .tab-panel.active {
+      display: block !important;
+    }
 
+    /* Scrollbar personalizada dark */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #141211;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #C84B31;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4A373;
+    }
+
+    /* Navegação de abas confortável em telas pequenas */
+    #tab-navigation {
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+    #tab-navigation::-webkit-scrollbar {
+      display: none;
+    }
+    #tab-navigation .tab-btn {
+      background: #1E1B18;
+      border-color: rgba(107, 114, 128, 0.75);
+      color: #D1D5DB;
+      box-shadow: inset 0 -1px 0 rgba(212, 163, 115, 0.12);
+    }
+    #tab-navigation .tab-btn:hover {
+      background: rgba(200, 75, 49, 0.16);
+      border-color: rgba(212, 163, 115, 0.75);
+      color: #F8F5F2;
+    }
+    #tab-navigation .tab-btn.active {
+      background: rgba(200, 75, 49, 0.22);
+      border-color: #C84B31;
+      color: #D4A373;
+      box-shadow: inset 0 -3px 0 #C84B31, 0 0 0 1px rgba(200, 75, 49, 0.18);
+    }
+    @media (max-width: 640px) {
+      #tab-navigation {
+        gap: 0.35rem;
+        padding-bottom: 0.5rem;
+        margin-left: -0.25rem;
+        margin-right: -0.25rem;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+        scroll-snap-type: x proximity;
+      }
+      #tab-navigation .tab-btn {
+        min-height: 2.75rem;
+        min-width: max-content;
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
+        scroll-snap-align: center;
+        -webkit-tap-highlight-color: transparent;
+      }
+    }
+
+    /* Regras de impressão limpa da Ficha Técnica de Bancada */
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .tab-panel {
+        display: block !important;
+        page-break-after: always;
+      }
+      .bg-charcoal, .bg-charcoalCard {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #ccc !important;
+      }
+      text, span, h1, h2, h3, h4, td, th, p {
+        color: #000000 !important;
+      }
+    }
