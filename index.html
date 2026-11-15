@@ -64,6 +64,23 @@
     #tab-navigation::-webkit-scrollbar {
       display: none;
     }
+    #tab-navigation .tab-btn {
+      background: #1E1B18;
+      border-color: rgba(107, 114, 128, 0.75);
+      color: #D1D5DB;
+      box-shadow: inset 0 -1px 0 rgba(212, 163, 115, 0.12);
+    }
+    #tab-navigation .tab-btn:hover {
+      background: rgba(200, 75, 49, 0.16);
+      border-color: rgba(212, 163, 115, 0.75);
+      color: #F8F5F2;
+    }
+    #tab-navigation .tab-btn.active {
+      background: rgba(200, 75, 49, 0.22);
+      border-color: #C84B31;
+      color: #D4A373;
+      box-shadow: inset 0 -3px 0 #C84B31, 0 0 0 1px rgba(200, 75, 49, 0.18);
+    }
     @media (max-width: 640px) {
       #tab-navigation {
         gap: 0.35rem;
@@ -190,22 +207,22 @@
           <span>Calculadora de Massa</span>
         </button>
 
-        <button onclick="switchTab('aba2')" data-tab="aba2" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
+        <button onclick="switchTab('aba2')" data-tab="aba2" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-gray-700/80 text-gray-300 bg-charcoalCard flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span>Cronograma Reverso</span>
         </button>
 
-        <button onclick="switchTab('aba3')" data-tab="aba3" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
+        <button onclick="switchTab('aba3')" data-tab="aba3" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-gray-700/80 text-gray-300 bg-charcoalCard flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
           <span>Coberturas & Custos (CMV)</span>
         </button>
 
-        <button onclick="switchTab('aba4')" data-tab="aba4" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
+        <button onclick="switchTab('aba4')" data-tab="aba4" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-gray-700/80 text-gray-300 bg-charcoalCard flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-2V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
           <span>Simulador Peso × Diâmetro</span>
         </button>
 
-        <button onclick="switchTab('aba5')" data-tab="aba5" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
+        <button onclick="switchTab('aba5')" data-tab="aba5" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-gray-700/80 text-gray-300 bg-charcoalCard flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           <span>Pizzarias AVPN Mundo</span>
         </button>
@@ -810,13 +827,13 @@
         const allButtons = document.querySelectorAll('.tab-btn');
         allButtons.forEach(btn => {
           btn.classList.remove('active', 'border-terracotta', 'text-terracotta', 'bg-terracotta/10');
-          btn.classList.add('border-transparent', 'text-gray-400');
+          btn.classList.add('border-gray-700/80', 'text-gray-300', 'bg-charcoalCard');
         });
 
         const selectedBtn = document.querySelector(`[data-tab="${tabId}"]`);
         if (selectedBtn) {
           selectedBtn.classList.add('active', 'border-terracotta', 'text-terracotta', 'bg-terracotta/10');
-          selectedBtn.classList.remove('border-transparent', 'text-gray-400');
+          selectedBtn.classList.remove('border-gray-700/80', 'text-gray-300', 'bg-charcoalCard');
           selectedBtn.setAttribute('aria-selected', 'true');
           if (window.matchMedia && window.matchMedia('(max-width: 640px)').matches) {
             selectedBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
