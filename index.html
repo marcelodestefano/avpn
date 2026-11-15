@@ -55,6 +55,35 @@
       background: #D4A373;
     }
 
+    /* Navegação de abas confortável em telas pequenas */
+    #tab-navigation {
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+    #tab-navigation::-webkit-scrollbar {
+      display: none;
+    }
+    @media (max-width: 640px) {
+      #tab-navigation {
+        gap: 0.35rem;
+        padding-bottom: 0.5rem;
+        margin-left: -0.25rem;
+        margin-right: -0.25rem;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+        scroll-snap-type: x proximity;
+      }
+      #tab-navigation .tab-btn {
+        min-height: 2.75rem;
+        min-width: max-content;
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
+        scroll-snap-align: center;
+        -webkit-tap-highlight-color: transparent;
+      }
+    }
+
     /* Regras de impressão limpa da Ficha Técnica de Bancada */
     @media print {
       body {
@@ -105,8 +134,23 @@
           </div>
         </div>
 
-        <!-- Ferramentas e Contador de Visualizações Híbrido -->
+        <!-- Ferramentas e Contador de Visualizações Local -->
         <div class="flex items-center space-x-3 self-end md:self-auto">
+
+          <!-- Menu geral de funções -->
+          <details class="relative">
+            <summary class="list-none cursor-pointer px-3.5 py-1.5 bg-charcoal border border-gold/30 text-gold text-xs sm:text-sm font-semibold rounded-lg shadow transition flex items-center gap-1.5 hover:border-gold focus:outline-none focus:ring-2 focus:ring-gold/50">
+              <span aria-hidden="true">☰</span><span>Funções</span>
+            </summary>
+            <div class="absolute right-0 top-full mt-2 w-72 bg-charcoalCard border border-gold/40 rounded-lg shadow-2xl p-2 z-[60]">
+              <p class="text-[10px] uppercase tracking-wider text-gray-500 px-3 py-2">Menu principal</p>
+              <button type="button" onclick="switchTab('aba1'); this.closest('details').removeAttribute('open')" class="w-full text-left px-3 py-2 rounded hover:bg-terracotta/15 text-sm text-cream">Calculadora de Massa <span class="block text-[10px] text-gray-500">Ingredientes, hidratação e escalonamento</span></button>
+              <button type="button" onclick="switchTab('aba2'); this.closest('details').removeAttribute('open')" class="w-full text-left px-3 py-2 rounded hover:bg-terracotta/15 text-sm text-cream">Cronograma Reverso <span class="block text-[10px] text-gray-500">Planejamento de fermentação e serviço</span></button>
+              <button type="button" onclick="switchTab('aba3'); this.closest('details').removeAttribute('open')" class="w-full text-left px-3 py-2 rounded hover:bg-terracotta/15 text-sm text-cream">Coberturas e Custos (CMV) <span class="block text-[10px] text-gray-500">Insumos, compras e margem</span></button>
+              <button type="button" onclick="switchTab('aba4'); this.closest('details').removeAttribute('open')" class="w-full text-left px-3 py-2 rounded hover:bg-terracotta/15 text-sm text-cream">Simulador Peso × Diâmetro <span class="block text-[10px] text-gray-500">Visualização da abertura da massa</span></button>
+              <button type="button" onclick="switchTab('aba5'); this.closest('details').removeAttribute('open')" class="w-full text-left px-3 py-2 rounded hover:bg-terracotta/15 text-sm text-cream">Pizzarias AVPN Mundo <span class="block text-[10px] text-gray-500">Diretório, filtros e mapas</span></button>
+            </div>
+          </details>
           
           <!-- Badge do Contador com Tooltip -->
           <div class="relative group cursor-pointer bg-charcoal px-3 py-1.5 rounded-lg border border-gold/20 flex items-center space-x-2">
@@ -123,7 +167,7 @@
               <p class="font-semibold text-gold mb-1">Estatísticas deste Dispositivo:</p>
               <p id="tooltip-session-visits">Visitas Locais Totais: ---</p>
               <p id="tooltip-last-visit">Última Visita: ---</p>
-              <p class="text-[10px] text-gray-400 mt-1 border-t border-gray-700 pt-1">Contador híbrido resiliente com sync remoto.</p>
+              <p class="text-[10px] text-gray-400 mt-1 border-t border-gray-700 pt-1">Contador local deste dispositivo, sem serviço externo.</p>
             </div>
           </div>
 
@@ -139,34 +183,44 @@
       </div>
 
       <!-- ==================== BARRA DE NAVEGAÇÃO POR ABAS ==================== -->
-      <nav class="mt-4 flex space-x-1 sm:space-x-2 border-b border-gray-700/60 overflow-x-auto pb-1 scrollbar-none" id="tab-navigation">
+      <nav class="mt-4 flex space-x-1 sm:space-x-2 border-b border-gray-700/60 overflow-x-auto pb-1 scrollbar-none" id="tab-navigation" aria-label="Navegação principal">
         
-        <button onclick="switchTab('aba1')" data-tab="aba1" class="tab-btn active px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-terracotta text-terracotta bg-terracotta/10 flex items-center space-x-2 transition whitespace-nowrap">
+        <button onclick="switchTab('aba1')" data-tab="aba1" aria-selected="true" role="tab" class="tab-btn active px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-terracotta text-terracotta bg-terracotta/10 flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
           <span>Calculadora de Massa</span>
         </button>
 
-        <button onclick="switchTab('aba2')" data-tab="aba2" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
+        <button onclick="switchTab('aba2')" data-tab="aba2" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span>Cronograma Reverso</span>
         </button>
 
-        <button onclick="switchTab('aba3')" data-tab="aba3" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
+        <button onclick="switchTab('aba3')" data-tab="aba3" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
           <span>Coberturas & Custos (CMV)</span>
         </button>
 
-        <button onclick="switchTab('aba4')" data-tab="aba4" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
+        <button onclick="switchTab('aba4')" data-tab="aba4" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-2V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
           <span>Simulador Peso × Diâmetro</span>
         </button>
 
-        <button onclick="switchTab('aba5')" data-tab="aba5" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
+        <button onclick="switchTab('aba5')" data-tab="aba5" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gold hover:bg-charcoal flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           <span>Pizzarias AVPN Mundo</span>
         </button>
 
       </nav>
+      <div class="sm:hidden mt-3 flex items-center gap-2">
+        <label for="mobile-tab-select" class="text-xs text-gray-400 whitespace-nowrap">Ir para:</label>
+        <select id="mobile-tab-select" class="flex-1 min-h-11 bg-charcoal border border-terracotta/50 rounded-lg px-3 py-2 text-sm text-cream font-semibold focus:border-gold focus:ring-1 focus:ring-gold outline-none">
+          <option value="aba1">Calculadora de Massa</option>
+          <option value="aba2">Cronograma Reverso</option>
+          <option value="aba3">Coberturas e Custos (CMV)</option>
+          <option value="aba4">Simulador Peso x Diâmetro</option>
+          <option value="aba5">Pizzarias AVPN Mundo</option>
+        </select>
+      </div>
     </div>
   </header>
 
@@ -181,7 +235,7 @@
         <div>
           <h2 class="text-xl font-bold text-cream flex items-center gap-2">
             <span>Calculadora de Massa Napolitana AVPN</span>
-            <span class="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded border border-gold/40">Fórmulas Base Água (100%)</span>
+            <span class="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded border border-gold/40">Método base água • 55% inicial</span>
           </h2>
           <p class="text-xs text-gray-400 mt-1">
             Parâmetros estritamente calibrados de acordo com as normas da Associazione Verace Pizza Napoletana.
@@ -198,67 +252,80 @@
         
         <!-- Formulário de Controles (Controles deslizantes + Inputs) -->
         <div class="lg:col-span-7 bg-charcoalCard p-6 rounded-xl border border-gray-800 space-y-5">
-          <h3 class="text-base font-semibold text-gold border-b border-gray-800 pb-2">Parâmetros da Produção</h3>
-
-          <!-- Qtd de Pizzas -->
-          <div>
-            <div class="flex justify-between items-center text-sm mb-1">
-              <label for="input-qtd" class="font-medium text-gray-300">Quantidade de Pizzas / Panetti:</label>
-              <input type="number" id="input-qtd" value="20" min="1" max="500" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-800 pb-3">
+            <h3 class="text-base font-semibold text-gold">Ingredientes e parâmetros da produção</h3>
+            <div class="flex items-center gap-2">
+              <label for="recipe-mode" class="text-xs text-gray-400 whitespace-nowrap">Fazer receita por:</label>
+              <select id="recipe-mode" class="bg-charcoal border border-terracotta/50 rounded px-2.5 py-1.5 text-xs text-cream font-semibold focus:border-gold outline-none">
+                <option value="ingredients" selected>Ingredientes</option>
+                <option value="cartela">Cartela de bancada</option>
+              </select>
             </div>
-            <input type="range" id="slider-qtd" value="20" min="1" max="100" class="w-full accent-terracotta">
           </div>
 
-          <!-- Peso por Panetto -->
-          <div>
+          <!-- Ordem operacional: água, sal, farinha e fermento -->
+          <div class="rounded-lg border border-blue-400/30 bg-blue-950/10 p-3">
             <div class="flex justify-between items-center text-sm mb-1">
-              <label for="input-peso" class="font-medium text-gray-300">Peso por Boleadora / Panetto (g):</label>
+              <label for="input-agua" class="font-semibold text-blue-200">1. Água Potável Fria (base da receita):</label>
               <div class="flex items-center gap-1">
-                <input type="number" id="input-peso" value="200" min="150" max="350" step="1" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
-                <span class="text-xs text-gray-400">g</span>
+                <input type="number" id="input-agua" value="1000" min="250" max="10000" step="10" class="w-24 bg-charcoal border border-blue-400/50 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
+                <span class="text-xs text-gray-400">g / ml</span>
               </div>
             </div>
-            <input type="range" id="slider-peso" value="200" min="180" max="300" step="1" class="w-full accent-terracotta">
-            <p class="text-[11px] text-gray-500 mt-0.5">Faixa AVPN recomendada: 200g a 280g</p>
+            <input type="range" id="slider-agua" value="1000" min="250" max="5000" step="10" class="w-full accent-terracotta">
+            <p class="text-[11px] text-gray-400 mt-0.5">Para a água, 1 g equivale aproximadamente a 1 ml.</p>
           </div>
 
-          <!-- Hidratação % -->
           <div>
             <div class="flex justify-between items-center text-sm mb-1">
-              <label for="input-hidratacao" class="font-medium text-gray-300">Hidratação (Água / Farinha %):</label>
-              <div class="flex items-center gap-1">
-                <input type="number" id="input-hidratacao" value="55.0" min="50" max="75" step="0.5" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
-                <span class="text-xs text-gray-400">%</span>
-              </div>
-            </div>
-            <input type="range" id="slider-hidratacao" value="55.0" min="50" max="70" step="0.5" class="w-full accent-terracotta">
-            <p class="text-[11px] text-gray-500 mt-0.5">Faixa AVPN estrita: 55,0% a 62,5%</p>
-          </div>
-
-          <!-- Sal Marinho g/L -->
-          <div>
-            <div class="flex justify-between items-center text-sm mb-1">
-              <label for="input-sal" class="font-medium text-gray-300">Sal Marinho Fino (g / Litro de Água):</label>
+              <label for="input-sal" class="font-medium text-gray-300">2. Sal Marinho Fino (g / litro de água):</label>
               <div class="flex items-center gap-1">
                 <input type="number" id="input-sal" value="55" min="30" max="80" step="1" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
                 <span class="text-xs text-gray-400">g/L</span>
               </div>
             </div>
             <input type="range" id="slider-sal" value="55" min="35" max="70" step="1" class="w-full accent-terracotta">
-            <p class="text-[11px] text-gray-500 mt-0.5">Faixa AVPN estrita: 40g a 60g por Litro de água</p>
+            <p class="text-[11px] text-gray-500 mt-0.5">Faixa AVPN estrita: 40 g a 60 g por litro de água.</p>
           </div>
 
-          <!-- Fermento Fresco g/L -->
           <div>
             <div class="flex justify-between items-center text-sm mb-1">
-              <label for="input-fermento" class="font-medium text-gray-300">Fermento Biológico Fresco (g / L de Água):</label>
+              <label for="input-hidratacao" class="font-medium text-gray-300">3. Farinha Tipo 00 (calculada pela hidratação):</label>
+              <div class="flex items-center gap-1">
+                <input type="number" id="input-hidratacao" value="55.0" min="50" max="75" step="0.5" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
+                <span class="text-xs text-gray-400">% hidratação</span>
+              </div>
+            </div>
+            <input type="range" id="slider-hidratacao" value="55.0" min="50" max="70" step="0.5" class="w-full accent-terracotta">
+            <p class="text-[11px] text-gray-500 mt-0.5">A farinha é calculada como água ÷ hidratação. Padrão inicial: 55%.</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center text-sm mb-1">
+              <label for="input-fermento" class="font-medium text-gray-300">4. Fermento Biológico Fresco (g / litro de água):</label>
               <div class="flex items-center gap-1">
                 <input type="number" id="input-fermento" value="0.20" min="0.1" max="5.0" step="0.05" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
                 <span class="text-xs text-gray-400">g/L</span>
               </div>
             </div>
             <input type="range" id="slider-fermento" value="0.20" min="0.1" max="4.0" step="0.05" class="w-full accent-terracotta">
-            <p class="text-[11px] text-gray-500 mt-0.5">Faixa AVPN: 0.1g a 3.0g por Litro de água (ajuste para 12-24h)</p>
+            <p class="text-[11px] text-gray-500 mt-0.5">Faixa AVPN: 0,1 g a 3,0 g por litro de água (ajuste para 12–24h).</p>
+          </div>
+
+          <div class="border-t border-gray-700 pt-4 space-y-4">
+            <h4 class="text-sm font-semibold text-cream">Produção e rendimento</h4>
+            <div>
+              <div class="flex justify-between items-center text-sm mb-1">
+                <label for="input-qtd" class="font-medium text-gray-300">Quantidade de pizzas / panetti:</label>
+                <input type="number" id="input-qtd" value="12" min="1" max="500" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
+              </div>
+              <input type="range" id="slider-qtd" value="12" min="1" max="100" class="w-full accent-terracotta">
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <label for="input-peso" id="peso-label" class="font-medium text-gray-300">Peso calculado por panetto:</label>
+              <div class="flex items-center gap-1"><input type="number" id="input-peso" value="239" min="150" max="350" step="1" readonly class="w-20 bg-charcoal/70 border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold"><span class="text-xs text-gray-400">g</span></div>
+            </div>
+            <p id="recipe-mode-help" class="text-[11px] text-gray-500">No modo Ingredientes, o peso é calculado a partir da água e da quantidade de panetti. No modo Cartela, informe o peso desejado.</p>
           </div>
 
         </div>
@@ -273,19 +340,19 @@
 
             <div class="space-y-3 mt-4">
               <div class="flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
-                <span class="text-sm font-medium text-gray-300">🌾 Farinha Tipo 00 (W280-330):</span>
-                <span id="res-farinha" class="font-bold text-lg text-cream">0 g</span>
+                <span class="text-sm font-medium text-blue-200">1. Água Potável Fria:</span>
+                <span id="res-agua" class="font-bold text-lg text-blue-400">0 g / 0 ml</span>
               </div>
               <div class="flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
-                <span class="text-sm font-medium text-gray-300">💧 Água Potável Fria:</span>
-                <span id="res-agua" class="font-bold text-lg text-blue-400">0 ml</span>
-              </div>
-              <div class="flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
-                <span class="text-sm font-medium text-gray-300">🧂 Sal Marinho Fino:</span>
+                <span class="text-sm font-medium text-gray-300">2. Sal Marinho Fino:</span>
                 <span id="res-sal" class="font-bold text-lg text-gray-200">0 g</span>
               </div>
               <div class="flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
-                <span class="text-sm font-medium text-gray-300">🍞 Fermento Biológico Fresco:</span>
+                <span class="text-sm font-medium text-gray-300">3. Farinha Tipo 00 (W280-330):</span>
+                <span id="res-farinha" class="font-bold text-lg text-cream">0 g</span>
+              </div>
+              <div class="flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
+                <span class="text-sm font-medium text-gray-300">4. Fermento Biológico Fresco:</span>
                 <span id="res-fermento-fresco" class="font-bold text-lg text-gold">0.00 g</span>
               </div>
               <div class="flex justify-between items-center p-2 rounded bg-charcoal/50 border border-gray-800/80 text-xs">
@@ -315,9 +382,9 @@
             <thead class="bg-charcoal text-gray-400 uppercase font-mono border-b border-gray-700">
               <tr>
                 <th class="p-3">Pizzas (Un)</th>
-                <th class="p-3">Farinha 00 (g)</th>
                 <th class="p-3">Água (ml)</th>
                 <th class="p-3">Sal Marinho (g)</th>
+                <th class="p-3">Farinha 00 (g)</th>
                 <th class="p-3">Fermento Fresco (g)</th>
                 <th class="p-3">Fermento Seco (g)</th>
                 <th class="p-3 text-right">Peso Total (kg)</th>
@@ -750,7 +817,17 @@
         if (selectedBtn) {
           selectedBtn.classList.add('active', 'border-terracotta', 'text-terracotta', 'bg-terracotta/10');
           selectedBtn.classList.remove('border-transparent', 'text-gray-400');
+          selectedBtn.setAttribute('aria-selected', 'true');
+          if (window.matchMedia && window.matchMedia('(max-width: 640px)').matches) {
+            selectedBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
         }
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          if (btn !== selectedBtn) btn.setAttribute('aria-selected', 'false');
+        });
+        const mobileTabSelect = document.getElementById('mobile-tab-select');
+        if (mobileTabSelect && mobileTabSelect.value !== tabId) mobileTabSelect.value = tabId;
 
         // Atualiza hash sem rolagem
         if (window.history && window.history.pushState) {
@@ -769,6 +846,10 @@
     // Event Listener no DOMContentLoaded para suporte a hash e links
     document.addEventListener('DOMContentLoaded', function() {
       try {
+        const mobileTabSelect = document.getElementById('mobile-tab-select');
+        if (mobileTabSelect) {
+          mobileTabSelect.addEventListener('change', () => switchTab(mobileTabSelect.value));
+        }
         const hash = window.location.hash.replace('#', '');
         if (hash && document.getElementById(hash)) {
           switchTab(hash);
@@ -858,10 +939,14 @@
     try {
       (function initCalculadora() {
         // Elementos DOM
+        const inputAgua = document.getElementById('input-agua');
+        const sliderAgua = document.getElementById('slider-agua');
+        const recipeMode = document.getElementById('recipe-mode');
         const inputQtd = document.getElementById('input-qtd');
         const sliderQtd = document.getElementById('slider-qtd');
         const inputPeso = document.getElementById('input-peso');
-        const sliderPeso = document.getElementById('slider-peso');
+        const pesoLabel = document.getElementById('peso-label');
+        const recipeModeHelp = document.getElementById('recipe-mode-help');
         const inputHidrat = document.getElementById('input-hidratacao');
         const sliderHidrat = document.getElementById('slider-hidratacao');
         const inputSal = document.getElementById('input-sal');
@@ -886,34 +971,65 @@
           slider.addEventListener('input', () => { input.value = slider.value; calcular(); });
         }
 
+        bindSync(inputAgua, sliderAgua);
         bindSync(inputQtd, sliderQtd);
-        bindSync(inputPeso, sliderPeso);
         bindSync(inputHidrat, sliderHidrat);
         bindSync(inputSal, sliderSal);
         bindSync(inputFerm, sliderFerm);
 
+        function updateRecipeModeUI() {
+          const isCartelaMode = recipeMode.value === 'cartela';
+          inputAgua.readOnly = isCartelaMode;
+          sliderAgua.disabled = isCartelaMode;
+          inputPeso.readOnly = !isCartelaMode;
+          inputAgua.classList.toggle('opacity-60', isCartelaMode);
+          sliderAgua.classList.toggle('opacity-50', isCartelaMode);
+          inputPeso.classList.toggle('bg-charcoal/70', !isCartelaMode);
+          inputPeso.classList.toggle('border-terracotta/60', isCartelaMode);
+          pesoLabel.textContent = isCartelaMode ? 'Peso desejado por panetto:' : 'Peso calculado por panetto:';
+          recipeModeHelp.textContent = isCartelaMode
+            ? 'Informe quantidade e peso dos panetti. A calculadora ajustará automaticamente a água, o sal, a farinha e o fermento da cartela.'
+            : 'No modo Ingredientes, informe a água. O peso será calculado a partir dos ingredientes e da quantidade de panetti.';
+        }
+
+        inputPeso.addEventListener('input', calcular);
+        recipeMode.addEventListener('change', () => {
+          updateRecipeModeUI();
+          calcular();
+        });
+
         function calcular() {
-          const qtd = parseFloat(inputQtd.value) || 1;
-          const peso = parseFloat(inputPeso.value) || 200;
+          const aguaInformada = parseFloat(inputAgua.value) || 1000;
+          const qtd = parseFloat(inputQtd.value) || 12;
+          const pesoInformado = parseFloat(inputPeso.value) || 239;
           const hidrat = parseFloat(inputHidrat.value) || 55;
           const salGL = parseFloat(inputSal.value) || 55;
           const fermGL = parseFloat(inputFerm.value) || 0.2;
 
-          // Fórmula Base Água (100%):
-          // Massa Total = Qtd * Peso
-          // Massa Total = Agua * (1 + 100/Hidrat + Sal/1000 + Ferm/1000)
-          const massaTotalGramos = qtd * peso;
-          const proporcaoSoma = 1 + (100 / hidrat) + (salGL / 1000) + (fermGL / 1000);
-          
-          const agua = massaTotalGramos / proporcaoSoma;
+          let agua;
+          let massaTotalGramos;
+          if (recipeMode.value === 'cartela') {
+            // Modo cartela: quantidade e peso dos panetti determinam a massa total.
+            massaTotalGramos = qtd * pesoInformado;
+            const proporcaoSoma = 1 + (100 / hidrat) + (salGL / 1000) + (fermGL / 1000);
+            agua = massaTotalGramos / proporcaoSoma;
+          } else {
+            // Modo ingredientes: a quantidade de água é o primeiro elemento informado.
+            agua = aguaInformada;
+          }
           const farinha = agua / (hidrat / 100);
           const sal = (agua / 1000) * salGL;
           const fermFresco = (agua / 1000) * fermGL;
           const fermSeco = fermFresco / 3;
+          massaTotalGramos = massaTotalGramos || (agua + farinha + sal + fermFresco);
+          const peso = massaTotalGramos / qtd;
+          inputAgua.value = Math.round(agua);
+          sliderAgua.value = Math.min(Math.max(Math.round(agua), Number(sliderAgua.min)), Number(sliderAgua.max));
+          inputPeso.value = Math.round(peso);
 
           // Exibição nos cards
           resFarinha.textContent = `${Math.round(farinha).toLocaleString('pt-BR')} g`;
-          resAgua.textContent = `${Math.round(agua).toLocaleString('pt-BR')} ml`;
+          resAgua.textContent = `${Math.round(agua).toLocaleString('pt-BR')} g / ${Math.round(agua).toLocaleString('pt-BR')} ml`;
           resSal.textContent = `${sal.toFixed(1)} g`;
           resFermFresco.textContent = `${fermFresco.toFixed(2)} g`;
           resFermSeco.textContent = `${fermSeco.toFixed(2)} g`;
@@ -937,21 +1053,20 @@
           }
 
           // Atualização da Tabela Dinâmica de Escalonamento
-          renderTabelaEscalonamento(peso, hidrat, salGL, fermGL, qtd);
+          renderTabelaEscalonamento(agua, hidrat, salGL, fermGL, qtd);
         }
 
-        function renderTabelaEscalonamento(peso, hidrat, salGL, fermGL, currentQtd) {
+        function renderTabelaEscalonamento(aguaBase, hidrat, salGL, fermGL, currentQtd) {
           const lotes = [1, 2, 5, 10, 12, 14, 16, 20, 30, 40, 50];
-          const proporcaoSoma = 1 + (100 / hidrat) + (salGL / 1000) + (fermGL / 1000);
 
           let html = '';
           lotes.forEach(lote => {
-            const massaG = lote * peso;
-            const agua = massaG / proporcaoSoma;
+            const agua = aguaBase * (lote / currentQtd);
             const farinha = agua / (hidrat / 100);
             const sal = (agua / 1000) * salGL;
             const fFresco = (agua / 1000) * fermGL;
             const fSeco = fFresco / 3;
+            const massaG = agua + farinha + sal + fFresco;
 
             const isSelected = lote === parseInt(currentQtd, 10);
             const rowClass = isSelected ? 'bg-terracotta/20 font-bold border-l-4 border-terracotta text-cream' : 'hover:bg-charcoal/50 text-gray-300';
@@ -959,9 +1074,9 @@
             html += `
               <tr class="${rowClass} transition">
                 <td class="p-3">${lote} ${isSelected ? '<span class="text-[10px] bg-terracotta px-1.5 py-0.5 rounded ml-1 text-white">ATUAL</span>' : ''}</td>
-                <td class="p-3">${Math.round(farinha).toLocaleString('pt-BR')} g</td>
                 <td class="p-3 text-blue-300">${Math.round(agua).toLocaleString('pt-BR')} ml</td>
                 <td class="p-3">${sal.toFixed(1)} g</td>
+                <td class="p-3">${Math.round(farinha).toLocaleString('pt-BR')} g</td>
                 <td class="p-3 text-gold">${fFresco.toFixed(2)} g</td>
                 <td class="p-3 text-amber-300">${fSeco.toFixed(2)} g</td>
                 <td class="p-3 text-right font-mono text-cream">${(massaG / 1000).toFixed(2)} kg</td>
@@ -971,7 +1086,8 @@
           tableBody.innerHTML = html;
         }
 
-        // Executa o primeiro cálculo
+        // Inicializa o modo padrão e executa o primeiro cálculo
+        updateRecipeModeUI();
         calcular();
       })();
     } catch (err) {
@@ -2747,7 +2863,7 @@
           {"id": "1098", "name": "Pizza Beppe 4", "address": "Vleutenseweg 124, 3532HM Utrecht ()", "city": "Utrecht", "country": "Holanda", "phone": "+31302020720", "instagram": "@pizzabeppe", "instagramUrl": "https://www.instagram.com/pizzabeppe/", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/1128-pizza_beppe_4"},
           {"id": "1099", "name": "Napalone Pizza- Cocktail Bar", "address": "Stefana Żeromskiego 113, 26-026 Bilcza (Swietokrzyskie)", "city": "Bilcza", "country": "Polônia", "phone": "+48 660 910 620", "instagram": "@napalone_pizza_cocktail_bar", "instagramUrl": "https://www.instagram.com/napalone_pizza_cocktail_bar/", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/1074-napalone_pizza_cocktail_bar"},
           {"id": "1100", "name": "Pizza Beppe 4", "address": "Rozenboomsteeg 12-14, 1012 PR Amsterdam (CA)", "city": "Amsterdam", "country": "Holanda", "phone": "+31 20 217 0312", "instagram": "@pizzabeppe", "instagramUrl": "https://www.instagram.com/pizzabeppe/", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/1146-pizza_beppe_4"},
-          {"id": "1115", "name": "Fru Geest - Upstairs", "address": "Ramsherred 47F, 6200 Aabenraa () Southdenmark", "city": "Aabenraa", "country": "Dinamarca", "phone": "+45 28 57 13 33", "instagram": "@frugeestupstairs", "instagramUrl": "https://www.instagram.com/frugeestupstairs/", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/1075-fru_geest__upstairs"},
+          {"id": "1115", "name": "Fru Geest - Upstairs", "address": "Ramsherred 47F, 6200 Aabenraa () Southdenmark", "city": "Aabenraa", "country": "Danimarca", "phone": "+45 28 57 13 33", "instagram": "@frugeestupstairs", "instagramUrl": "https://www.instagram.com/frugeestupstairs/", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/1075-fru_geest__upstairs"},
           {"id": "1116", "name": "Pizzeria 500 stopni", "address": "Nowy Świat 3, lok. U4, 15-453 Bialystok (Podlasie)", "city": "Bialystok", "country": "Polônia", "phone": "+48574105500", "instagram": "@500_stopni", "instagramUrl": "https://www.instagram.com/500_stopni/", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/1172-pizzeria_500_stopni"},
           {"id": "1118", "name": "Pizza Beppe 4", "address": "Willemstraat 1D, 5611 HA Eindhoven (Noord-Brabant)", "city": "Eindhoven", "country": "Holanda", "phone": "+31681036596", "instagram": "Instagram", "instagramUrl": "https://www.instagram.com/explore/locations/112886041680581/pizza-beppe/", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/1209-pizza_beppe_4"},
           {"id": "1119", "name": "Rudy's Pizza Napoletana - Westfiled", "address": "Lower Southern Terrace, unit 1032, W12 7GF London / Londra ()", "city": "London / Londra", "country": "Reino Unido", "phone": "+442081659909", "instagram": "@wearerudyspizza", "instagramUrl": "https://www.instagram.com/wearerudyspizza/", "avpnUrl": "https://www.pizzanapoletana.org/en/associati/1222-rudy_s_pizza_napoletana__westfiled"},
