@@ -136,6 +136,35 @@
       background: linear-gradient(135deg, rgba(45, 30, 24, 0.98), rgba(28, 25, 22, 0.98));
       box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
     }
+    .detail-pizzeria-logo,
+    .detail-pizzeria-logo-fallback {
+      width: 4.5rem;
+      height: 4.5rem;
+      flex: 0 0 4.5rem;
+      border-radius: 1rem;
+      object-fit: contain;
+      background: #11100f;
+      border: 1px solid rgba(212, 163, 115, 0.38);
+    }
+    .detail-pizzeria-logo-fallback {
+      display: grid;
+      place-items: center;
+      color: #F1C27D;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+    .detail-feature-chip {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(212, 163, 115, 0.25);
+      border-radius: 999px;
+      background: rgba(212, 163, 115, 0.08);
+      color: #D4A373;
+      padding: 0.3rem 0.55rem;
+      font-size: 0.68rem;
+      line-height: 1;
+    }
     .detail-info-list dd {
       overflow-wrap: anywhere;
     }
