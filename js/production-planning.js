@@ -27,7 +27,7 @@
       function renderCompleteShopping() {
         const dough = getDoughIngredients();
         const items = [
-          ['Farinha tipo 00', `${fmt(dough.flour, 0)} g`, 'Massa'], ['Água', `${fmt(dough.water, 0)} ml`, 'Massa'],
+          ['Farinha tipo 00', `${fmt(dough.flour, 0)} g`, 'Massa'], ['Água', `${fmt(dough.water, 0)} g`, 'Massa'],
           ['Sal marinho', `${fmt(dough.salt, 1)} g`, 'Massa'], ['Fermento fresco', `${fmt(dough.yeast, 2)} g`, 'Massa'],
           ['Caixas', `${fmt(number('shopping-boxes'), 0)} un.`, 'Operação'], ['Energia elétrica', `${fmt(number('shopping-energy'), 1)} kWh`, 'Forno'],
           ['Lenha', `${fmt(number('shopping-wood'), 1)} kg`, 'Forno'], ['Gás', `${fmt(number('shopping-gas'), 1)} kg`, 'Forno']

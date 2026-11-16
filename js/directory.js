@@ -164,7 +164,7 @@
 
           // Exibição nos cards
           resFarinha.textContent = `${Math.round(farinha).toLocaleString('pt-BR')} g`;
-          resAgua.textContent = `${Math.round(agua).toLocaleString('pt-BR')} g / ${Math.round(agua).toLocaleString('pt-BR')} ml`;
+          resAgua.textContent = `${Math.round(agua).toLocaleString('pt-BR')} g`;
           resSal.textContent = `${sal.toFixed(1)} g`;
           resFermFresco.textContent = `${fermFresco.toFixed(2)} g`;
           resFermSeco.textContent = `${fermSeco.toFixed(2)} g`;
@@ -200,8 +200,8 @@
             const farinha = agua / (hidrat / 100);
             const sal = (agua / 1000) * salGL;
             const fFresco = (agua / 1000) * fermGL;
-            const fSeco = fFresco / 3;
             const massaG = agua + farinha + sal + fFresco;
+            const pesoPizza = massaG / lote;
 
             const isSelected = lote === parseInt(currentQtd, 10);
             const rowClass = isSelected ? 'bg-terracotta/20 font-bold border-l-4 border-terracotta text-cream' : 'hover:bg-charcoal/50 text-gray-300';
@@ -209,11 +209,11 @@
             html += `
               <tr class="${rowClass} transition">
                 <td class="p-3">${lote} ${isSelected ? '<span class="text-[10px] bg-terracotta px-1.5 py-0.5 rounded ml-1 text-white">ATUAL</span>' : ''}</td>
-                <td class="p-3 text-blue-300">${Math.round(agua).toLocaleString('pt-BR')} ml</td>
-                <td class="p-3">${sal.toFixed(1)} g</td>
+                <td class="p-3 text-gold">${Math.round(pesoPizza).toLocaleString('pt-BR')} g</td>
+                <td class="p-3 text-blue-300">${Math.round(agua).toLocaleString('pt-BR')} g</td>
                 <td class="p-3">${Math.round(farinha).toLocaleString('pt-BR')} g</td>
+                <td class="p-3">${sal.toFixed(1)} g</td>
                 <td class="p-3 text-gold">${fFresco.toFixed(2)} g</td>
-                <td class="p-3 text-amber-300">${fSeco.toFixed(2)} g</td>
                 <td class="p-3 text-right font-mono text-cream">${(massaG / 1000).toFixed(2)} kg</td>
               </tr>
             `;
