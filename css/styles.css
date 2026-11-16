@@ -48,6 +48,65 @@
       color: #D4A373;
       box-shadow: inset 0 -3px 0 #C84B31, 0 0 0 1px rgba(200, 75, 49, 0.18);
     }
+
+    /* Hierarquia da calculadora: controles são editáveis; resultados são saída. */
+    .input-panel {
+      background: linear-gradient(180deg, rgba(30, 27, 24, 0.98), rgba(24, 22, 20, 0.98));
+      border-color: rgba(212, 163, 115, 0.28) !important;
+    }
+    .input-panel > .flex:first-child {
+      border-color: rgba(212, 163, 115, 0.28) !important;
+    }
+    .input-panel input[type="number"],
+    .input-panel select {
+      background-color: #11100f;
+      border-color: rgba(212, 163, 115, 0.42);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .input-panel input[type="number"]:focus,
+    .input-panel select:focus {
+      border-color: #D4A373;
+      box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.14);
+    }
+    .input-panel input[type="range"] {
+      height: 0.45rem;
+      cursor: pointer;
+    }
+    .result-panel {
+      background: linear-gradient(180deg, rgba(37, 31, 26, 0.98), rgba(25, 22, 20, 0.98));
+      border-color: rgba(200, 75, 49, 0.42) !important;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    }
+    .result-panel h3 {
+      color: #F1C27D;
+      letter-spacing: 0.01em;
+    }
+    .result-row {
+      min-height: 3rem;
+      border-color: rgba(212, 163, 115, 0.16) !important;
+      background: rgba(17, 16, 15, 0.72) !important;
+    }
+    .result-row span:last-child {
+      margin-left: 1rem;
+      white-space: nowrap;
+    }
+    .result-primary {
+      border-color: rgba(85, 164, 205, 0.52) !important;
+      background: rgba(21, 52, 67, 0.34) !important;
+    }
+    .result-primary span:last-child {
+      font-size: 1.2rem;
+    }
+    .result-secondary {
+      opacity: 0.82;
+    }
+    #avpn-warnings-list:empty {
+      display: none;
+    }
+    #avpn-warnings-list:not(:empty) {
+      border-color: rgba(245, 158, 11, 0.45);
+      background: rgba(120, 53, 15, 0.22);
+    }
     @media (max-width: 640px) {
       #tab-navigation {
         gap: 0.35rem;
@@ -65,6 +124,16 @@
         padding-right: 0.85rem;
         scroll-snap-align: center;
         -webkit-tap-highlight-color: transparent;
+      }
+      .result-row {
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      .result-row span:first-child {
+        line-height: 1.35;
+      }
+      .result-row span:last-child {
+        text-align: right;
       }
     }
 
