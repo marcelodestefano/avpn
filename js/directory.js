@@ -903,9 +903,12 @@
         let selectedPizzeria = pizzeriasData[startupPizzeriaIndex] || pizzeriasData[0];
         let mapSatelliteMode = false;
         const favoritesKey = 'avpn_pizzeria_favorites_v1';
+        const notesKey = 'avpn_pizzeria_notes_v1';
         let favoriteIds = new Set();
+        let personalNotes = {};
         let compareIds = new Set();
         try { favoriteIds = new Set(JSON.parse(localStorage.getItem(favoritesKey) || '[]')); } catch (error) {}
+        try { personalNotes = JSON.parse(localStorage.getItem(notesKey) || '{}') || {}; } catch (error) {}
 
         // Elementos DOM
         const iframe = document.getElementById('google-maps-iframe');
@@ -938,6 +941,76 @@
           browseSections.forEach(section => section.classList.toggle('hidden', isVisible));
         }
 
+        function getPizzeriaHours(pizzeria) {
+          const raw = pizzeria.openingHours || pizzeria.opening_hours || pizzeria.hours || pizzeria.horarios;
+          if (!raw) return [];
+          if (typeof raw === 'string') return [{ day: 'Horários', value: raw }];
+          if (Array.isArray(raw)) return raw.map((value, index) => ({ day: `Dia ${index + 1}`, value: String(value) }));
+          return Object.entries(raw).map(([day, value]) => ({ day, value: Array.isArray(value) ? value.join(' · ') : String(value) }));
+        }
+
+        function getPizzeriaStatus(pizzeria, hours) {
+          if (typeof pizzeria.openNow === 'boolean') return pizzeria.openNow ? 'Aberta agora' : 'Fechada agora';
+          if (typeof pizzeria.open_now === 'boolean') return pizzeria.open_now ? 'Aberta agora' : 'Fechada agora';
+          return hours.length ? 'Horários cadastrados' : 'Horários não informados';
+        }
+
+        function getPizzeriaGallery(pizzeria) {
+          const candidates = [pizzeria.logoUrl, pizzeria.imageUrl, pizzeria.image, pizzeria.photoUrl]
+            .concat(Array.isArray(pizzeria.photos) ? pizzeria.photos : [])
+            .concat(Array.isArray(pizzeria.gallery) ? pizzeria.gallery : []);
+          return [...new Set(candidates.filter(value => typeof value === 'string' && /^https?:\/\//i.test(value)))].slice(0, 6);
+        }
+
+        function getPizzeriaFeatures(pizzeria) {
+          const features = [];
+          const add = (label, value) => { if (value === true || (typeof value === 'string' && value.trim())) features.push(value === true || !label ? (value === true ? label : value.trim()) : `${label}: ${value}`); };
+          const rawFeatures = pizzeria.features || pizzeria.characteristics || pizzeria.caracteristicas;
+          if (Array.isArray(rawFeatures)) rawFeatures.forEach(value => add('', value));
+          if (typeof rawFeatures === 'string') rawFeatures.split(/[,;|]/).forEach(value => add('', value.trim()));
+          add('Culinária', pizzeria.cuisine || pizzeria.cuisineType || pizzeria.tipoCulinaria);
+          add('Forno', pizzeria.ovenType || pizzeria.oven || pizzeria.tipoForno);
+          add('Delivery', pizzeria.delivery);
+          add('Salão', pizzeria.dineIn ?? pizzeria.dine_in);
+          add('Reservas', pizzeria.reservations ?? pizzeria.reserva);
+          add('Vegetariano', pizzeria.vegetarian ?? pizzeria.vegetariano);
+          add('Vegano', pizzeria.vegan ?? pizzeria.vegano);
+          add('Sem glúten', pizzeria.glutenFree ?? pizzeria.semGluten);
+          add('Acessibilidade', pizzeria.accessibility ?? pizzeria.acessibilidade);
+          add('Estacionamento', pizzeria.parking ?? pizzeria.estacionamento);
+          return [...new Set(features.filter(Boolean))].slice(0, 18);
+        }
+
+        function getPizzeriaMenuLink(pizzeria) {
+          const value = pizzeria.menuUrl || pizzeria.menu_url || pizzeria.menuLink || pizzeria.cardapioUrl || pizzeria.cardapio;
+          return typeof value === 'string' && /^https?:\/\//i.test(value) ? value : '';
+        }
+
+        function getPizzeriaHistory(pizzeria) {
+          return [
+            ['História', pizzeria.history || pizzeria.historia || pizzeria.description],
+            ['Fundação', pizzeria.foundedYear || pizzeria.yearFounded || pizzeria.anoFundacao],
+            ['Fundador', pizzeria.founder || pizzeria.fundador],
+            ['Pizzaiolo / responsável', pizzeria.pizzaiolo || pizzeria.owner || pizzeria.responsavel],
+            ['Associada à AVPN desde', pizzeria.avpnSince || pizzeria.avpn_since],
+            ['Prêmios e reconhecimentos', pizzeria.awards || pizzeria.premios],
+            ['Eventos e participações', pizzeria.events || pizzeria.eventos]
+          ].filter(([, value]) => value !== undefined && value !== null && String(value).trim());
+        }
+
+        function formatDistance(km) {
+          return km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1).replace('.', ',')} km`;
+        }
+
+        function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+          const toRad = value => value * Math.PI / 180;
+          const earthRadius = 6371;
+          const dLat = toRad(lat2 - lat1);
+          const dLon = toRad(lon2 - lon1);
+          const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+          return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
         function renderPizzeriaDetail(pizzeria) {
           if (!pizzeria) return;
           const isFavorite = favoriteIds.has(String(pizzeria.id));
@@ -947,7 +1020,11 @@
           const mapLink = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
           const googleRating = pizzeria.googleRating ?? pizzeria.google_rating ?? pizzeria.rating ?? null;
           const googleReviews = pizzeria.googleReviewCount ?? pizzeria.google_review_count ?? pizzeria.reviewCount ?? null;
-          const googleRatingHtml = googleRating
+          const hasGoogleRating = Number.isFinite(Number(googleRating)) && Number(googleRating) > 0 && Number(googleRating) <= 5;
+          const googleUpdatedAt = pizzeria.googleRatingUpdatedAt || pizzeria.google_rating_updated_at || pizzeria.ratingUpdatedAt || null;
+          const googleSummary = pizzeria.googleReviewSummary || pizzeria.google_review_summary || pizzeria.reviewSummary || '';
+          const googleHighlights = Array.isArray(pizzeria.googleReviewHighlights) ? pizzeria.googleReviewHighlights : [];
+          const googleRatingHtml = hasGoogleRating
             ? `<span class="text-gold font-bold">${escapeHtml(Number(googleRating).toFixed(1))} / 5</span>${googleReviews ? `<span class="text-gray-500">(${escapeHtml(googleReviews)} avaliações)</span>` : ''}`
             : '<span class="text-gray-400">Consultar avaliação atual</span>';
           const initials = String(pizzeria.name || 'AVPN').split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase();
@@ -961,6 +1038,53 @@
           const phoneLink = phoneValue !== 'Não informado' ? `<a href="tel:${escapeHtml(phoneValue)}" class="text-blue-300 hover:underline">${escapeHtml(phoneValue)}</a>` : '<span class="text-gray-500">Não informado</span>';
           const instagramValue = pizzeria.instagram || 'Não informado';
           const instagramHtml = igLink ? `<a href="${escapeHtml(igLink)}" target="_blank" rel="noopener noreferrer" class="text-terracotta hover:underline">${escapeHtml(instagramValue)}</a>` : `<span class="text-gray-500">${escapeHtml(instagramValue)}</span>`;
+          const hours = getPizzeriaHours(pizzeria);
+          const status = getPizzeriaStatus(pizzeria, hours);
+          const statusClass = status === 'Aberta agora' ? 'text-emerald-300' : status === 'Fechada agora' ? 'text-red-300' : 'text-gray-300';
+          const hoursHtml = hours.length
+            ? hours.map(row => `<div class="flex justify-between gap-3 border-b border-gray-800 py-2 last:border-0"><span class="text-gray-400">${escapeHtml(row.day)}</span><span class="text-cream text-right">${escapeHtml(row.value)}</span></div>`).join('')
+            : '<p class="text-sm text-gray-400">Horários ainda não cadastrados.</p>';
+          const gallery = getPizzeriaGallery(pizzeria);
+          const features = getPizzeriaFeatures(pizzeria);
+          const menuLink = getPizzeriaMenuLink(pizzeria);
+          const history = getPizzeriaHistory(pizzeria);
+          const hasCoordinates = Number.isFinite(Number(pizzeria.lat)) && Number.isFinite(Number(pizzeria.lng));
+          const isCompared = compareIds.has(String(pizzeria.id));
+          const pizzeriaKey = String(pizzeria.id);
+          const personalNote = personalNotes[pizzeriaKey] || '';
+          const shareText = `${pizzeria.name} — ${pizzeria.addressPt || pizzeria.address || ''}`;
+          const shareUrl = window.location.href;
+          const whatsappLink = `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`;
+          const emailLink = `mailto:?subject=${encodeURIComponent(`Pizzaria AVPN: ${pizzeria.name}`)}&body=${encodeURIComponent(`${shareText}\n${shareUrl}`)}`;
+          const sourceLinks = [
+            pizzeria.avpnUrl ? `<a href="${escapeHtml(pizzeria.avpnUrl)}" target="_blank" rel="noopener noreferrer">Ficha oficial AVPN</a>` : '',
+            `<a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer">Google Maps</a>`,
+            igLink ? `<a href="${escapeHtml(igLink)}" target="_blank" rel="noopener noreferrer">Instagram</a>` : ''
+          ].filter(Boolean);
+          const missingFields = [
+            !hours.length ? 'horários' : '', !gallery.length ? 'logo/fotos' : '', !menuLink ? 'cardápio' : '', !history.length ? 'histórico' : '', !hasGoogleRating ? 'avaliação Google' : ''
+          ].filter(Boolean);
+          const comparedPizzerias = pizzeriasData.filter(item => compareIds.has(String(item.id)));
+          const comparisonTable = comparedPizzerias.length > 1
+            ? `<div class="overflow-x-auto"><table class="w-full text-xs text-left"><thead><tr class="border-b border-gray-700"><th class="p-2 text-gray-500">Critério</th>${comparedPizzerias.map(item => `<th class="p-2 text-gold">${escapeHtml(item.name)}</th>`).join('')}</tr></thead><tbody>${[
+              ['País', item => item.countryPt], ['Cidade', item => item.cityPt], ['Estado / província', item => item.statePt], ['Avaliação Google', item => item.googleRating || item.rating ? `${item.googleRating || item.rating} / 5` : 'Não cadastrada'], ['Telefone', item => item.phone || 'Não informado'], ['Endereço', item => item.addressPt]
+            ].map(([label, getter]) => `<tr class="border-b border-gray-800"><td class="p-2 text-gray-400">${label}</td>${comparedPizzerias.map(item => `<td class="p-2 text-cream">${escapeHtml(getter(item) || 'Não informado')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+            : '<p class="text-sm text-gray-400">Adicione pelo menos mais uma pizzaria para visualizar a comparação.</p>';
+          const featureHtml = [
+            'Associada à AVPN',
+            pizzeria.address ? 'Endereço cadastrado' : '',
+            phoneValue !== 'Não informado' ? 'Telefone cadastrado' : '',
+            igLink ? 'Instagram cadastrado' : '',
+            pizzeria.avpnUrl ? 'Ficha oficial disponível' : '',
+            ...features
+          ].filter(Boolean).map(value => `<span class="detail-feature-chip">${escapeHtml(value)}</span>`).join('');
+          const ratingStars = hasGoogleRating ? '★★★★★'.slice(0, Math.max(0, Math.min(5, Math.round(Number(googleRating))))).padEnd(5, '☆') : '☆☆☆☆☆';
+          const ratingDetailsHtml = hasGoogleRating
+            ? `<div class="detail-rating-score"><span class="detail-rating-stars">${ratingStars}</span><strong>${escapeHtml(Number(googleRating).toFixed(1))}</strong><span class="text-gray-500">/ 5</span></div>${googleReviews ? `<p class="text-sm text-gray-300 mt-1">${escapeHtml(googleReviews)} avaliações no Google</p>` : ''}${googleUpdatedAt ? `<p class="text-[11px] text-gray-500 mt-1">Atualizado em ${escapeHtml(googleUpdatedAt)}</p>` : ''}${googleSummary ? `<p class="text-sm text-gray-300 mt-3">${escapeHtml(googleSummary)}</p>` : ''}${googleHighlights.length ? `<div class="flex flex-wrap gap-2 mt-3">${googleHighlights.slice(0, 6).map(value => `<span class="detail-feature-chip">${escapeHtml(value)}</span>`).join('')}</div>` : ''}`
+            : '<p class="text-sm text-gray-400">A nota e o resumo das avaliações ainda não estão cadastrados. Consulte a fonte atual no Google Maps.</p>';
+          const galleryHtml = gallery.length
+            ? gallery.map((url, index) => `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="detail-gallery-item"><img src="${escapeHtml(url)}" alt="${index === 0 ? `Logo ou imagem de ${escapeHtml(pizzeria.name)}` : `Imagem ${index + 1} de ${escapeHtml(pizzeria.name)}`}" loading="lazy" onerror="this.closest('a').remove()"></a>`).join('')
+            : '<div class="detail-gallery-empty"><strong>Fotos e logo ainda não cadastrados</strong><small>Quando houver imagens oficiais, elas aparecerão aqui.</small></div>';
 
           detailContent.innerHTML = `
             <div class="detail-hero bg-charcoalCard p-5 sm:p-7 rounded-xl border border-terracotta/40">
@@ -981,8 +1105,20 @@
                 </div>
                 <div class="flex flex-wrap gap-2">
                   <button type="button" id="directory-detail-favorite" class="px-3 py-2 rounded border border-gold/40 bg-charcoal text-gold text-xs font-semibold hover:bg-gold/10">${isFavorite ? '★ Remover dos favoritos' : '☆ Adicionar aos favoritos'}</button>
+                  <button type="button" id="directory-detail-compare" class="px-3 py-2 rounded border border-blue-400/40 bg-charcoal text-blue-300 text-xs font-semibold hover:bg-blue-900/20">${isCompared ? '✓ Remover da comparação' : '+ Comparar'} (${compareIds.size}/3)</button>
                   <a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded bg-terracotta text-cream text-xs font-semibold hover:bg-terracotta/80">Abrir no Google Maps</a>
                 </div>
+              </div>
+              <div class="detail-summary-grid mt-5">
+                <div class="detail-summary-item"><span class="detail-summary-label">Avaliação Google</span><strong>${hasGoogleRating ? `${escapeHtml(Number(googleRating).toFixed(1))} / 5` : 'Consultar no Maps'}</strong><span>${googleReviews ? `${escapeHtml(googleReviews)} avaliações` : 'Nota não cadastrada'}</span><a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer">Ver avaliação</a></div>
+                <div class="detail-summary-item"><span class="detail-summary-label">Funcionamento</span><strong class="${statusClass}">${escapeHtml(status)}</strong><span>${hours.length ? 'Dados cadastrados' : 'Fonte: Google Maps'}</span></div>
+                <div class="detail-summary-item"><span class="detail-summary-label">Localização</span><strong>${escapeHtml(pizzeria.cityPt)}</strong><span>${escapeHtml(pizzeria.countryPt)}</span></div>
+                <div class="detail-summary-item"><span class="detail-summary-label">Contato</span><strong>${phoneValue !== 'Não informado' ? phoneLink : 'Não informado'}</strong><span>${igLink ? 'Instagram disponível' : 'Sem Instagram cadastrado'}</span></div>
+              </div>
+              <div class="detail-location-panel mt-4">
+                <div><span class="detail-summary-label">Localização e acesso</span><strong>${escapeHtml(pizzeria.addressPt)}</strong><span>${hasCoordinates ? 'Coordenadas cadastradas' : 'Endereço cadastrado'}</span></div>
+                <div class="flex flex-wrap gap-2"><button type="button" id="directory-copy-address" class="detail-action-button">Copiar endereço</button><button type="button" id="directory-share-pizzeria" class="detail-action-button">Compartilhar ficha</button><a href="${escapeHtml(whatsappLink)}" target="_blank" rel="noopener noreferrer" class="detail-action-button">WhatsApp</a><a href="${escapeHtml(emailLink)}" class="detail-action-button">E-mail</a><button type="button" id="directory-distance-btn" class="detail-action-button">Calcular distância</button></div>
+                <span id="directory-distance-result" class="text-xs text-gray-400">${hasCoordinates ? 'A distância será calculada com a sua localização, mediante autorização.' : 'Distância indisponível: a base ainda não possui coordenadas.'}</span>
               </div>
             </div>
 
@@ -992,17 +1128,12 @@
                 <div class="bg-charcoal rounded border border-gold/30 p-3">
                   <span class="block text-[10px] uppercase tracking-wide text-gray-500">Avaliação atual no Google</span>
                   <div class="flex items-center gap-2 mt-1 text-sm">${googleRatingHtml}</div>
+                  <div class="mt-3">${ratingDetailsHtml}</div>
                   <a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer" class="inline-block mt-2 text-[11px] text-blue-300 hover:underline">Abrir Google Maps e conferir a nota atual</a>
                 </div>
                 <div>
                   <h4 class="text-[10px] uppercase tracking-wide text-gray-500 mb-2">Principais características cadastradas</h4>
-                  <div class="flex flex-wrap gap-2">
-                    <span class="detail-feature-chip">Associada à AVPN</span>
-                    ${pizzeria.address ? '<span class="detail-feature-chip">Endereço cadastrado</span>' : ''}
-                    ${phoneValue !== 'Não informado' ? '<span class="detail-feature-chip">Telefone cadastrado</span>' : ''}
-                    ${igLink ? '<span class="detail-feature-chip">Instagram cadastrado</span>' : ''}
-                    ${pizzeria.avpnUrl ? '<span class="detail-feature-chip">Ficha oficial disponível</span>' : ''}
-                  </div>
+                  <div class="flex flex-wrap gap-2">${featureHtml || '<span class="text-sm text-gray-400">Características adicionais ainda não cadastradas.</span>'}</div>
                 </div>
                 <dl class="detail-info-list space-y-3 text-sm">
                   <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">Nome</dt><dd class="text-cream mt-0.5">${escapeHtml(pizzeria.name)}</dd></div>
@@ -1013,6 +1144,12 @@
                   <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">Endereço traduzido</dt><dd class="text-cream mt-0.5">${escapeHtml(pizzeria.addressPt)}</dd></div>
                   <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">Endereço original</dt><dd class="text-gray-400 mt-0.5 italic">${escapeHtml(pizzeria.address)}</dd></div>
                 </dl>
+                <div class="border-t border-gray-800 pt-4">
+                  <h3 class="text-base font-semibold text-gold mb-2">Horário de funcionamento</h3>
+                  <div class="mb-2 flex items-center gap-2 text-sm"><span class="detail-status-dot ${status === 'Aberta agora' ? 'is-open' : status === 'Fechada agora' ? 'is-closed' : ''}"></span><strong class="${statusClass}">${escapeHtml(status)}</strong></div>
+                  <div class="text-xs">${hoursHtml}</div>
+                  <a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer" class="inline-block mt-3 text-[11px] text-blue-300 hover:underline">Consultar horários atualizados no Google Maps</a>
+                </div>
               </div>
 
               <div class="lg:col-span-3 bg-charcoalCard p-5 rounded-xl border border-gray-800 space-y-4">
@@ -1024,18 +1161,68 @@
                 <div class="flex flex-wrap gap-2 pt-1">
                   <a href="${escapeHtml(pizzeria.avpnUrl)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded border border-gold/40 text-gold text-xs font-semibold hover:bg-gold/10">Ficha oficial AVPN</a>
                   <a href="${escapeHtml(routeLink)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded border border-blue-400/40 text-blue-300 text-xs font-semibold hover:bg-blue-900/20">Traçar rota</a>
+                  ${menuLink ? `<a href="${escapeHtml(menuLink)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded border border-emerald-400/40 text-emerald-300 text-xs font-semibold hover:bg-emerald-900/20">Ver cardápio</a>` : ''}
                 </div>
+                <div class="bg-charcoal rounded border border-gray-800 p-3 text-sm"><span class="block text-[10px] uppercase tracking-wide text-gray-500">Cardápio</span>${menuLink ? '<span class="text-emerald-300">Cardápio oficial disponível no link acima.</span>' : '<span class="text-gray-400">Cardápio oficial não cadastrado.</span>'}</div>
                 <div class="overflow-hidden rounded-lg border border-gray-800 bg-charcoal h-64 sm:h-80">
                   <iframe title="Mapa de ${escapeHtml(pizzeria.name)}" width="100%" height="100%" frameborder="0" loading="lazy" src="https://maps.google.com/maps?q=${mapQuery}&t=m&z=16&output=embed"></iframe>
                 </div>
                 <p class="text-[11px] text-gray-500">As informações exibidas vêm da base AVPN carregada no diretório. Use os links oficiais para consultar atualizações diretamente nas fontes.</p>
               </div>
             </div>
+            <section class="bg-charcoalCard p-5 rounded-xl border border-gray-800 space-y-4">
+              <div><h3 class="text-base font-semibold text-gold">História e reconhecimento</h3><p class="text-xs text-gray-400 mt-1">Informações históricas e institucionais confirmadas no cadastro.</p></div>
+              ${history.length ? `<div class="detail-history-grid">${history.map(([label, value]) => `<div class="detail-history-item"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('')}</div>` : '<p class="text-sm text-gray-400">História, fundação, responsáveis e prêmios ainda não cadastrados.</p>'}
+            </section>
+            <section class="bg-charcoalCard p-5 rounded-xl border border-gray-800 space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2"><div><h3 class="text-base font-semibold text-gold">Comparar pizzarias</h3><p class="text-xs text-gray-400 mt-1">Selecione até três pizzarias no diretório para comparar informações lado a lado.</p></div><span class="text-xs text-gray-500">${compareIds.size}/3 selecionadas</span></div>
+              ${comparisonTable}
+            </section>
+            <section class="bg-charcoalCard p-5 rounded-xl border border-gray-800 space-y-3">
+              <div><h3 class="text-base font-semibold text-gold">Minha anotação</h3><p class="text-xs text-gray-400 mt-1">Anotação privada salva somente neste navegador.</p></div>
+              <textarea id="directory-personal-note" rows="3" maxlength="1000" class="w-full bg-charcoal border border-gray-700 rounded-lg p-3 text-sm text-cream outline-none focus:border-gold" placeholder="Ex.: experimentar a Margherita e reservar para sexta-feira...">${escapeHtml(personalNote)}</textarea>
+              <span id="directory-note-status" class="text-[11px] text-gray-500">${personalNote ? 'Anotação salva neste dispositivo.' : 'Nenhuma anotação salva.'}</span>
+            </section>
+            <section class="bg-charcoalCard p-5 rounded-xl border border-gray-800 space-y-3">
+              <div><h3 class="text-base font-semibold text-gold">Fontes e atualização dos dados</h3><p class="text-xs text-gray-400 mt-1">Use as fontes abaixo para confirmar informações que podem mudar.</p></div>
+              <div class="flex flex-wrap gap-2 text-xs">${sourceLinks.join(' · ')}</div>
+              <div class="detail-trust-box"><strong>Origem principal:</strong> cadastro AVPN carregado no diretório.<br><strong>Última atualização da base:</strong> ${escapeHtml(pizzeria.dataUpdatedAt || pizzeria.updatedAt || 'não informada no registro')}<br><strong>Ainda não confirmado neste registro:</strong> ${escapeHtml(missingFields.length ? missingFields.join(', ') : 'nenhum campo pendente')}</div>
+            </section>
+            <section class="bg-charcoalCard p-5 rounded-xl border border-gray-800">
+              <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
+                <div><h3 class="text-base font-semibold text-gold">Galeria de fotos e logo</h3><p class="text-xs text-gray-400 mt-1">Imagens oficiais cadastradas para esta pizzaria.</p></div>
+                <span class="text-[11px] text-gray-500">${gallery.length ? `${gallery.length} imagem(ns)` : 'Sem imagens cadastradas'}</span>
+              </div>
+              <div class="detail-gallery-grid">${galleryHtml}</div>
+            </section>
           `;
 
           detailView.classList.remove('hidden');
           document.getElementById('directory-detail-back').addEventListener('click', closePizzeriaDetail);
           document.getElementById('directory-detail-favorite').addEventListener('click', () => window.togglePizzeriaFavorite(pizzeria.id));
+          document.getElementById('directory-detail-compare').addEventListener('click', () => window.togglePizzeriaCompare(pizzeria.id, !isCompared));
+          document.getElementById('directory-copy-address').addEventListener('click', async event => {
+            try { await navigator.clipboard.writeText(pizzeria.addressPt || pizzeria.address || destinationText); event.target.textContent = 'Endereço copiado'; } catch (error) { event.target.textContent = 'Selecione e copie o endereço'; }
+          });
+          document.getElementById('directory-share-pizzeria').addEventListener('click', async event => {
+            const shareData = { title: pizzeria.name, text: `${pizzeria.name} — ${pizzeria.addressPt}`, url: window.location.href };
+            try { if (navigator.share) await navigator.share(shareData); else { await navigator.clipboard.writeText(window.location.href); event.target.textContent = 'Link copiado'; } } catch (error) {}
+          });
+          document.getElementById('directory-personal-note').addEventListener('input', event => {
+            personalNotes[pizzeriaKey] = event.target.value.slice(0, 1000);
+            try { localStorage.setItem(notesKey, JSON.stringify(personalNotes)); } catch (error) {}
+            document.getElementById('directory-note-status').textContent = event.target.value.trim() ? 'Anotação salva neste dispositivo.' : 'Nenhuma anotação salva.';
+          });
+          document.getElementById('directory-distance-btn').addEventListener('click', () => {
+            const result = document.getElementById('directory-distance-result');
+            if (!hasCoordinates) { result.textContent = 'Inclua latitude e longitude no cadastro para calcular a distância.'; return; }
+            if (!navigator.geolocation) { result.textContent = 'Seu navegador não oferece geolocalização.'; return; }
+            result.textContent = 'Solicitando sua localização…';
+            navigator.geolocation.getCurrentPosition(position => {
+              const km = calculateDistanceKm(position.coords.latitude, position.coords.longitude, Number(pizzeria.lat), Number(pizzeria.lng));
+              result.textContent = `Distância em linha reta: ${formatDistance(km)}.`;
+            }, () => { result.textContent = 'Não foi possível obter sua localização. Verifique a permissão do navegador.'; }, { enableHighAccuracy: false, timeout: 10000 });
+          });
         }
 
         function closePizzeriaDetail() {
@@ -1228,6 +1415,7 @@
             compareIds.add(key);
           } else compareIds.delete(key);
           renderCards();
+          if (!detailView.classList.contains('hidden') && selectedPizzeria) renderPizzeriaDetail(selectedPizzeria);
         };
 
         document.getElementById('directory-validate-btn').addEventListener('click', () => {
