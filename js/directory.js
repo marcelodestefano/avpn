@@ -945,6 +945,15 @@
           const destinationText = `${pizzeria.name}, ${pizzeria.address}, ${pizzeria.country}`;
           const mapQuery = encodeURIComponent(destinationText);
           const mapLink = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+          const googleRating = pizzeria.googleRating ?? pizzeria.google_rating ?? pizzeria.rating ?? null;
+          const googleReviews = pizzeria.googleReviewCount ?? pizzeria.google_review_count ?? pizzeria.reviewCount ?? null;
+          const googleRatingHtml = googleRating
+            ? `<span class="text-gold font-bold">${escapeHtml(Number(googleRating).toFixed(1))} / 5</span>${googleReviews ? `<span class="text-gray-500">(${escapeHtml(googleReviews)} avaliações)</span>` : ''}`
+            : '<span class="text-gray-400">Consultar avaliação atual</span>';
+          const initials = String(pizzeria.name || 'AVPN').split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase();
+          const logoHtml = pizzeria.logoUrl
+            ? `<img src="${escapeHtml(pizzeria.logoUrl)}" alt="Logo de ${escapeHtml(pizzeria.name)}" class="detail-pizzeria-logo" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><div class="detail-pizzeria-logo-fallback" hidden>${escapeHtml(initials)}</div>`
+            : `<div class="detail-pizzeria-logo-fallback">${escapeHtml(initials)}</div>`;
           const routeLink = (pizzeria.lat && pizzeria.lng)
             ? `https://www.google.com/maps/dir/?api=1&destination=${pizzeria.lat},${pizzeria.lng}`
             : `https://www.google.com/maps/dir/?api=1&destination=${mapQuery}`;
@@ -958,11 +967,16 @@
               <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
                 <div>
                   <button type="button" id="directory-detail-back" class="text-xs text-gold hover:text-cream mb-4 inline-flex items-center gap-1">← Voltar ao diretório</button>
-                  <div class="flex flex-wrap items-center gap-2 mb-2">
-                    <span class="text-[10px] font-mono font-bold bg-gold/20 text-gold px-2 py-1 rounded border border-gold/30">AVPN #${escapeHtml(pizzeria.id)}</span>
-                    <span class="text-xs text-gray-400">${escapeHtml(pizzeria.countryPt)} · ${escapeHtml(pizzeria.cityPt)}</span>
+                  <div class="flex items-start gap-3 mb-3">
+                    ${logoHtml}
+                    <div>
+                      <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <span class="text-[10px] font-mono font-bold bg-gold/20 text-gold px-2 py-1 rounded border border-gold/30">AVPN #${escapeHtml(pizzeria.id)}</span>
+                        <span class="text-xs text-gray-400">${escapeHtml(pizzeria.countryPt)} · ${escapeHtml(pizzeria.cityPt)}</span>
+                      </div>
+                      <h2 class="text-2xl sm:text-3xl font-bold text-cream">${escapeHtml(pizzeria.name)}</h2>
+                    </div>
                   </div>
-                  <h2 class="text-2xl sm:text-3xl font-bold text-cream">${escapeHtml(pizzeria.name)}</h2>
                   <p class="mt-2 text-sm text-gold/90">${escapeHtml(pizzeria.addressPt)}</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
@@ -975,6 +989,21 @@
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
               <div class="lg:col-span-2 bg-charcoalCard p-5 rounded-xl border border-gray-800 space-y-4">
                 <h3 class="text-base font-semibold text-gold border-b border-gray-800 pb-2">Informações da pizzaria</h3>
+                <div class="bg-charcoal rounded border border-gold/30 p-3">
+                  <span class="block text-[10px] uppercase tracking-wide text-gray-500">Avaliação atual no Google</span>
+                  <div class="flex items-center gap-2 mt-1 text-sm">${googleRatingHtml}</div>
+                  <a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer" class="inline-block mt-2 text-[11px] text-blue-300 hover:underline">Abrir Google Maps e conferir a nota atual</a>
+                </div>
+                <div>
+                  <h4 class="text-[10px] uppercase tracking-wide text-gray-500 mb-2">Principais características cadastradas</h4>
+                  <div class="flex flex-wrap gap-2">
+                    <span class="detail-feature-chip">Associada à AVPN</span>
+                    ${pizzeria.address ? '<span class="detail-feature-chip">Endereço cadastrado</span>' : ''}
+                    ${phoneValue !== 'Não informado' ? '<span class="detail-feature-chip">Telefone cadastrado</span>' : ''}
+                    ${igLink ? '<span class="detail-feature-chip">Instagram cadastrado</span>' : ''}
+                    ${pizzeria.avpnUrl ? '<span class="detail-feature-chip">Ficha oficial disponível</span>' : ''}
+                  </div>
+                </div>
                 <dl class="detail-info-list space-y-3 text-sm">
                   <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">Nome</dt><dd class="text-cream mt-0.5">${escapeHtml(pizzeria.name)}</dd></div>
                   <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">ID AVPN</dt><dd class="text-cream mt-0.5">#${escapeHtml(pizzeria.id)}</dd></div>
