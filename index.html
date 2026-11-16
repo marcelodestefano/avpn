@@ -38,21 +38,6 @@
         <!-- Ferramentas e Contador de Visualizações Local -->
         <div class="flex items-center space-x-3 self-end md:self-auto">
 
-          <!-- Menu geral de funções -->
-          <details class="relative">
-            <summary class="list-none cursor-pointer px-3.5 py-1.5 bg-charcoal border border-gold/30 text-gold text-xs sm:text-sm font-semibold rounded-lg shadow transition flex items-center gap-1.5 hover:border-gold focus:outline-none focus:ring-2 focus:ring-gold/50">
-              <span aria-hidden="true">☰</span><span>Funções</span>
-            </summary>
-            <div class="absolute right-0 top-full mt-2 w-72 bg-charcoalCard border border-gold/40 rounded-lg shadow-2xl p-2 z-[60]">
-              <p class="text-[10px] uppercase tracking-wider text-gray-500 px-3 py-2">Menu principal</p>
-              <button type="button" onclick="switchTab('aba1'); this.closest('details').removeAttribute('open')" class="w-full text-left px-3 py-2 rounded hover:bg-terracotta/15 text-sm text-cream">Calculadora de Massa <span class="block text-[10px] text-gray-500">Ingredientes, hidratação e escalonamento</span></button>
-              <button type="button" onclick="switchTab('aba2'); this.closest('details').removeAttribute('open')" class="w-full text-left px-3 py-2 rounded hover:bg-terracotta/15 text-sm text-cream">Cronograma Reverso <span class="block text-[10px] text-gray-500">Planejamento de fermentação e serviço</span></button>
-              <button type="button" onclick="switchTab('aba3'); this.closest('details').removeAttribute('open')" class="w-full text-left px-3 py-2 rounded hover:bg-terracotta/15 text-sm text-cream">Coberturas e Custos (CMV) <span class="block text-[10px] text-gray-500">Insumos, compras e margem</span></button>
-              <button type="button" onclick="switchTab('aba4'); this.closest('details').removeAttribute('open')" class="w-full text-left px-3 py-2 rounded hover:bg-terracotta/15 text-sm text-cream">Simulador Peso × Diâmetro <span class="block text-[10px] text-gray-500">Visualização da abertura da massa</span></button>
-              <button type="button" onclick="switchTab('aba5'); this.closest('details').removeAttribute('open')" class="w-full text-left px-3 py-2 rounded hover:bg-terracotta/15 text-sm text-cream">Pizzarias AVPN Mundo <span class="block text-[10px] text-gray-500">Diretório, filtros e mapas</span></button>
-            </div>
-          </details>
-          
           <!-- Badge do Contador com Tooltip -->
           <div class="relative group cursor-pointer bg-charcoal px-3 py-1.5 rounded-lg border border-gold/20 flex items-center space-x-2">
             <svg class="w-4 h-4 text-gold animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,38 +73,38 @@
         
         <button onclick="switchTab('aba1')" data-tab="aba1" aria-selected="true" role="tab" class="tab-btn active px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-terracotta text-terracotta bg-terracotta/10 flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-          <span>Calculadora de Massa</span>
+          <span>Massa</span>
         </button>
 
         <button onclick="switchTab('aba2')" data-tab="aba2" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-gray-700/80 text-gray-300 bg-charcoalCard flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <span>Cronograma Reverso</span>
+          <span>Fermentação</span>
         </button>
 
         <button onclick="switchTab('aba3')" data-tab="aba3" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-gray-700/80 text-gray-300 bg-charcoalCard flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
-          <span>Coberturas & Custos (CMV)</span>
+          <span>Custos (CMV)</span>
         </button>
 
         <button onclick="switchTab('aba4')" data-tab="aba4" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-gray-700/80 text-gray-300 bg-charcoalCard flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-2V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
-          <span>Simulador Peso × Diâmetro</span>
+          <span>Simulador</span>
         </button>
 
         <button onclick="switchTab('aba5')" data-tab="aba5" aria-selected="false" role="tab" class="tab-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-gray-700/80 text-gray-300 bg-charcoalCard flex items-center space-x-2 transition whitespace-nowrap">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          <span>Pizzarias AVPN Mundo</span>
+          <span>Diretório AVPN</span>
         </button>
 
       </nav>
       <div class="sm:hidden mt-3 flex items-center gap-2">
         <label for="mobile-tab-select" class="text-xs text-gray-400 whitespace-nowrap">Ir para:</label>
         <select id="mobile-tab-select" class="flex-1 min-h-11 bg-charcoal border border-terracotta/50 rounded-lg px-3 py-2 text-sm text-cream font-semibold focus:border-gold focus:ring-1 focus:ring-gold outline-none">
-          <option value="aba1">Calculadora de Massa</option>
-          <option value="aba2">Cronograma Reverso</option>
-          <option value="aba3">Coberturas e Custos (CMV)</option>
-          <option value="aba4">Simulador Peso x Diâmetro</option>
-          <option value="aba5">Pizzarias AVPN Mundo</option>
+          <option value="aba1">Massa</option>
+          <option value="aba2">Fermentação</option>
+          <option value="aba3">Custos (CMV)</option>
+          <option value="aba4">Simulador</option>
+          <option value="aba5">Diretório AVPN</option>
         </select>
       </div>
     </div>
@@ -152,7 +137,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <!-- Formulário de Controles (Controles deslizantes + Inputs) -->
-        <div class="lg:col-span-7 bg-charcoalCard p-6 rounded-xl border border-gray-800 space-y-5">
+        <div class="input-panel lg:col-span-7 bg-charcoalCard p-6 rounded-xl border border-gray-800 space-y-5">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-800 pb-3">
             <h3 class="text-base font-semibold text-gold">Ingredientes e parâmetros da produção</h3>
             <div class="flex items-center gap-2">
@@ -232,7 +217,7 @@
         </div>
 
         <!-- Resultados e Receita Consolidada -->
-        <div class="lg:col-span-5 flex flex-col justify-between bg-charcoalCard p-6 rounded-xl border border-gray-800 space-y-4">
+        <div class="result-panel lg:col-span-5 flex flex-col justify-between bg-charcoalCard p-6 rounded-xl border border-gray-800 space-y-4">
           <div>
             <h3 class="text-base font-semibold text-gold border-b border-gray-800 pb-2 flex justify-between items-center">
               <span>Receita da Cartela de Bancada</span>
@@ -240,23 +225,23 @@
             </h3>
 
             <div class="space-y-3 mt-4">
-              <div class="flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
+              <div class="result-row result-primary flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
                 <span class="text-sm font-medium text-blue-200">1. Água Potável Fria:</span>
                 <span id="res-agua" class="font-bold text-lg text-blue-400">0 g / 0 ml</span>
               </div>
-              <div class="flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
+              <div class="result-row flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
                 <span class="text-sm font-medium text-gray-300">2. Sal Marinho Fino:</span>
                 <span id="res-sal" class="font-bold text-lg text-gray-200">0 g</span>
               </div>
-              <div class="flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
+              <div class="result-row flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
                 <span class="text-sm font-medium text-gray-300">3. Farinha Tipo 00 (W280-330):</span>
                 <span id="res-farinha" class="font-bold text-lg text-cream">0 g</span>
               </div>
-              <div class="flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
+              <div class="result-row flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
                 <span class="text-sm font-medium text-gray-300">4. Fermento Biológico Fresco:</span>
                 <span id="res-fermento-fresco" class="font-bold text-lg text-gold">0.00 g</span>
               </div>
-              <div class="flex justify-between items-center p-2 rounded bg-charcoal/50 border border-gray-800/80 text-xs">
+              <div class="result-row result-secondary flex justify-between items-center p-2 rounded bg-charcoal/50 border border-gray-800/80 text-xs">
                 <span class="text-gray-400">Alternativa: Fermento Seco Instantâneo (1/3):</span>
                 <span id="res-fermento-seco" class="font-semibold text-amber-300">0.00 g</span>
               </div>
