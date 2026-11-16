@@ -14,14 +14,21 @@
         return water;
       }
       function getDoughIngredients() {
-        const mode = $('recipe-mode')?.value || 'ingredients', quantity = Math.max(1, number('input-qtd', 12));
+        const mode = $('recipe-mode')?.value || 'ingredients', reference = $('recipe-reference')?.value || 'water', quantity = Math.max(1, number('input-qtd', 12));
         const hydration = Math.max(1, number('input-hidratacao', 55)) / 100, saltRate = Math.max(0, number('input-sal', 55)), yeastRate = Math.max(0, number('input-fermento', 0.2));
         let water;
+        let flour;
         if (mode === 'cartela') {
           const doughTotal = Math.max(0, number('input-peso', 239) * quantity), flourFactor = 1 + hydration + (saltRate * hydration / 1000) + (yeastRate * hydration / 1000);
           water = (doughTotal / flourFactor) * hydration;
-        } else water = Math.max(0, number('input-agua', 1000));
-        const flour = water / hydration;
+          flour = water / hydration;
+        } else if (reference === 'flour') {
+          flour = Math.max(0, number('input-farinha', 1818));
+          water = flour * hydration;
+        } else {
+          water = Math.max(0, number('input-agua', 1000));
+          flour = water / hydration;
+        }
         return { water, flour, salt: water * saltRate / 1000, yeast: water * yeastRate / 1000 };
       }
       function renderCompleteShopping() {
@@ -36,8 +43,9 @@
         if (target) target.innerHTML = items.map(([name, amount, group]) => `<div class="flex items-center justify-between gap-3 bg-charcoal rounded border border-gray-800 px-3 py-2"><span><strong class="block text-xs text-cream">${name}</strong><small class="text-[10px] text-gray-500">${group}</small></span><span class="text-sm font-semibold text-blue-200">${amount}</span></div>`).join('');
       }
       ['temp-ambient', 'temp-flour', 'temp-friction', 'temp-target'].forEach((id) => $(id)?.addEventListener('input', calculateWaterTemperature));
-      ['input-agua', 'input-hidratacao', 'input-sal', 'input-fermento', 'input-qtd', 'input-peso', 'recipe-mode', 'shopping-boxes', 'shopping-energy', 'shopping-wood', 'shopping-gas'].forEach((id) => $(id)?.addEventListener('input', renderCompleteShopping));
+      ['input-agua', 'input-farinha', 'input-hidratacao', 'input-sal', 'input-fermento', 'input-qtd', 'input-peso', 'recipe-mode', 'recipe-reference', 'shopping-boxes', 'shopping-energy', 'shopping-wood', 'shopping-gas'].forEach((id) => $(id)?.addEventListener('input', renderCompleteShopping));
       $('recipe-mode')?.addEventListener('change', renderCompleteShopping);
+      $('recipe-reference')?.addEventListener('change', renderCompleteShopping);
       $('temp-apply-btn')?.addEventListener('click', () => { const water = Math.max(1, calculateWaterTemperature()); if ($('recipe-mode')) $('recipe-mode').value = 'ingredients'; if ($('input-agua')) $('input-agua').value = Math.round(water); if ($('slider-agua')) $('slider-agua').value = Math.round(water); $('input-agua')?.dispatchEvent(new Event('input', { bubbles: true })); renderCompleteShopping(); });
       calculateWaterTemperature(); renderCompleteShopping();
     })();

@@ -77,6 +77,7 @@
         const inputAgua = document.getElementById('input-agua');
         const sliderAgua = document.getElementById('slider-agua');
         const recipeMode = document.getElementById('recipe-mode');
+        const recipeReference = document.getElementById('recipe-reference');
         const inputQtd = document.getElementById('input-qtd');
         const sliderQtd = document.getElementById('slider-qtd');
         const inputPeso = document.getElementById('input-peso');
@@ -84,6 +85,8 @@
         const recipeModeHelp = document.getElementById('recipe-mode-help');
         const inputHidrat = document.getElementById('input-hidratacao');
         const sliderHidrat = document.getElementById('slider-hidratacao');
+        const inputFarinha = document.getElementById('input-farinha');
+        const sliderFarinha = document.getElementById('slider-farinha');
         const inputSal = document.getElementById('input-sal');
         const sliderSal = document.getElementById('slider-sal');
         const inputFerm = document.getElementById('input-fermento');
@@ -99,6 +102,8 @@
         const badgeStatus = document.getElementById('avpn-status-badge');
         const warningsContainer = document.getElementById('avpn-warnings-list');
         const tableBody = document.getElementById('table-scaling-body');
+        const aguaHelp = document.getElementById('agua-help');
+        const farinhaHelp = document.getElementById('farinha-help');
 
         // Sincronização de Sliders e Numeric Inputs
         function bindSync(input, slider) {
@@ -109,26 +114,43 @@
         bindSync(inputAgua, sliderAgua);
         bindSync(inputQtd, sliderQtd);
         bindSync(inputHidrat, sliderHidrat);
+        bindSync(inputFarinha, sliderFarinha);
         bindSync(inputSal, sliderSal);
         bindSync(inputFerm, sliderFerm);
 
         function updateRecipeModeUI() {
           const isCartelaMode = recipeMode.value === 'cartela';
-          inputAgua.readOnly = isCartelaMode;
-          sliderAgua.disabled = isCartelaMode;
+          const usesFlourReference = recipeReference.value === 'flour' && !isCartelaMode;
+          inputAgua.readOnly = isCartelaMode || usesFlourReference;
+          sliderAgua.disabled = isCartelaMode || usesFlourReference;
+          inputFarinha.readOnly = isCartelaMode || !usesFlourReference;
+          sliderFarinha.disabled = isCartelaMode || !usesFlourReference;
+          recipeReference.disabled = isCartelaMode;
           inputPeso.readOnly = !isCartelaMode;
-          inputAgua.classList.toggle('opacity-60', isCartelaMode);
-          sliderAgua.classList.toggle('opacity-50', isCartelaMode);
+          inputAgua.classList.toggle('opacity-60', isCartelaMode || usesFlourReference);
+          sliderAgua.classList.toggle('opacity-50', isCartelaMode || usesFlourReference);
+          inputFarinha.classList.toggle('opacity-60', isCartelaMode || !usesFlourReference);
+          sliderFarinha.classList.toggle('opacity-50', isCartelaMode || !usesFlourReference);
           inputPeso.classList.toggle('bg-charcoal/70', !isCartelaMode);
           inputPeso.classList.toggle('border-terracotta/60', isCartelaMode);
           pesoLabel.textContent = isCartelaMode ? 'Peso desejado por panetto:' : 'Peso calculado por panetto:';
+          aguaHelp.textContent = isCartelaMode
+            ? 'Calculada a partir da quantidade e do peso dos panetti.'
+            : usesFlourReference ? 'Calculada pela farinha e pela hidratação.' : 'Referência editável. Informe a água somente em peso.';
+          farinhaHelp.textContent = isCartelaMode
+            ? 'Calculada a partir do total da massa.'
+            : usesFlourReference ? 'Referência editável. Informe a farinha em peso.' : 'Calculada a partir da água e da hidratação.';
           recipeModeHelp.textContent = isCartelaMode
             ? 'Informe quantidade e peso dos panetti. A calculadora ajustará automaticamente a água, o sal, a farinha e o fermento da cartela.'
-            : 'No modo Ingredientes, informe a água. O peso será calculado a partir dos ingredientes e da quantidade de panetti.';
+            : usesFlourReference ? 'No modo farinha, informe o peso da farinha. A água será calculada pela hidratação.' : 'No modo água, informe o peso da água. A farinha será calculada pela hidratação.';
         }
 
         inputPeso.addEventListener('input', calcular);
         recipeMode.addEventListener('change', () => {
+          updateRecipeModeUI();
+          calcular();
+        });
+        recipeReference.addEventListener('change', () => {
           updateRecipeModeUI();
           calcular();
         });
@@ -140,19 +162,25 @@
           const hidrat = parseFloat(inputHidrat.value) || 55;
           const salGL = parseFloat(inputSal.value) || 55;
           const fermGL = parseFloat(inputFerm.value) || 0.2;
+          const farinhaInformada = parseFloat(inputFarinha.value) || 1818;
 
           let agua;
+          let farinha;
           let massaTotalGramos;
           if (recipeMode.value === 'cartela') {
             // Modo cartela: quantidade e peso dos panetti determinam a massa total.
             massaTotalGramos = qtd * pesoInformado;
             const proporcaoSoma = 1 + (100 / hidrat) + (salGL / 1000) + (fermGL / 1000);
             agua = massaTotalGramos / proporcaoSoma;
+            farinha = agua / (hidrat / 100);
+          } else if (recipeReference.value === 'flour') {
+            farinha = farinhaInformada;
+            agua = farinha * (hidrat / 100);
           } else {
             // Modo ingredientes: a quantidade de água é o primeiro elemento informado.
             agua = aguaInformada;
+            farinha = agua / (hidrat / 100);
           }
-          const farinha = agua / (hidrat / 100);
           const sal = (agua / 1000) * salGL;
           const fermFresco = (agua / 1000) * fermGL;
           const fermSeco = fermFresco / 3;
@@ -160,6 +188,8 @@
           const peso = massaTotalGramos / qtd;
           inputAgua.value = Math.round(agua);
           sliderAgua.value = Math.min(Math.max(Math.round(agua), Number(sliderAgua.min)), Number(sliderAgua.max));
+          inputFarinha.value = Math.round(farinha);
+          sliderFarinha.value = Math.min(Math.max(Math.round(farinha), Number(sliderFarinha.min)), Number(sliderFarinha.max));
           inputPeso.value = Math.round(peso);
 
           // Exibição nos cards
