@@ -208,6 +208,10 @@
       font-size: 0.68rem;
     }
     .detail-action-button:hover { background: rgba(156, 203, 255, 0.14); }
+    .detail-action-disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
     .detail-trust-box {
       padding: 0.8rem;
       border-left: 3px solid #D4A373;
