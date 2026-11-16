@@ -851,7 +851,26 @@
         // Estado do Filtro e Paginação
         let currentPage = 1;
         const itemsPerPage = 6;
-        let selectedPizzeria = pizzeriasData.find(p => p.id === '1083') || pizzeriasData[0];
+        const pizzeriaRotationKey = 'avpn_pizzeria_rotation_index_v1';
+        const bentoIndexById = pizzeriasData.findIndex(p => String(p.id) === '1083');
+        const bentoIndexByName = pizzeriasData.findIndex(p => normalizeFilterText(p.name).includes('bento'));
+        const defaultPizzeriaIndex = bentoIndexById >= 0 ? bentoIndexById : (bentoIndexByName >= 0 ? bentoIndexByName : 0);
+        let startupPizzeriaIndex = defaultPizzeriaIndex;
+        if (pizzeriasData.length > 0) {
+          try {
+            const savedIndex = localStorage.getItem(pizzeriaRotationKey);
+            if (savedIndex !== null) {
+              const parsedIndex = Number(savedIndex);
+              if (Number.isInteger(parsedIndex) && parsedIndex >= 0 && parsedIndex < pizzeriasData.length) {
+                startupPizzeriaIndex = parsedIndex;
+              }
+            }
+            localStorage.setItem(pizzeriaRotationKey, String((startupPizzeriaIndex + 1) % pizzeriasData.length));
+          } catch (error) {
+            // Sem armazenamento local disponível, usa Bento como padrão nesta carga.
+          }
+        }
+        let selectedPizzeria = pizzeriasData[startupPizzeriaIndex] || pizzeriasData[0];
         let mapSatelliteMode = false;
         const favoritesKey = 'avpn_pizzeria_favorites_v1';
         let favoriteIds = new Set();
