@@ -942,7 +942,7 @@
         }
 
         function getPizzeriaHours(pizzeria) {
-          const raw = pizzeria.openingHours || pizzeria.opening_hours || pizzeria.hours || pizzeria.horarios;
+          const raw = pizzeria.openingHours || pizzeria.opening_hours || pizzeria.hours || pizzeria.horarios || pizzeria.googleHours || pizzeria.google_hours;
           if (!raw) return [];
           if (typeof raw === 'string') return [{ day: 'Horários', value: raw }];
           if (Array.isArray(raw)) return raw.map((value, index) => ({ day: `Dia ${index + 1}`, value: String(value) }));
@@ -1054,8 +1054,11 @@
           const personalNote = personalNotes[pizzeriaKey] || '';
           const shareText = `${pizzeria.name} — ${pizzeria.addressPt || pizzeria.address || ''}`;
           const shareUrl = window.location.href;
-          const whatsappLink = `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`;
-          const emailLink = `mailto:?subject=${encodeURIComponent(`Pizzaria AVPN: ${pizzeria.name}`)}&body=${encodeURIComponent(`${shareText}\n${shareUrl}`)}`;
+          const whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`;
+          const emailValue = pizzeria.email || pizzeria.emailAddress || pizzeria.email_address || '';
+          const hasValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(emailValue).trim());
+          const emailLink = hasValidEmail ? `mailto:${String(emailValue).trim()}?subject=${encodeURIComponent(`Pizzaria AVPN: ${pizzeria.name}`)}&body=${encodeURIComponent(`${shareText}\n${shareUrl}`)}` : '';
+          const hoursSourceLink = `<a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline">Ver horários no Google Maps</a>`;
           const sourceLinks = [
             pizzeria.avpnUrl ? `<a href="${escapeHtml(pizzeria.avpnUrl)}" target="_blank" rel="noopener noreferrer">Ficha oficial AVPN</a>` : '',
             `<a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer">Google Maps</a>`,
@@ -1111,13 +1114,13 @@
               </div>
               <div class="detail-summary-grid mt-5">
                 <div class="detail-summary-item"><span class="detail-summary-label">Avaliação Google</span><strong>${hasGoogleRating ? `${escapeHtml(Number(googleRating).toFixed(1))} / 5` : 'Consultar no Maps'}</strong><span>${googleReviews ? `${escapeHtml(googleReviews)} avaliações` : 'Nota não cadastrada'}</span><a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer">Ver avaliação</a></div>
-                <div class="detail-summary-item"><span class="detail-summary-label">Funcionamento</span><strong class="${statusClass}">${escapeHtml(status)}</strong><span>${hours.length ? 'Dados cadastrados' : 'Fonte: Google Maps'}</span></div>
+                <div class="detail-summary-item"><span class="detail-summary-label">Funcionamento</span><strong class="${statusClass}">${escapeHtml(status)}</strong><span>${hours.length ? 'Dados cadastrados' : 'Fonte: Google Maps'}</span>${hours.length ? '' : hoursSourceLink}</div>
                 <div class="detail-summary-item"><span class="detail-summary-label">Localização</span><strong>${escapeHtml(pizzeria.cityPt)}</strong><span>${escapeHtml(pizzeria.countryPt)}</span></div>
-                <div class="detail-summary-item"><span class="detail-summary-label">Contato</span><strong>${phoneValue !== 'Não informado' ? phoneLink : 'Não informado'}</strong><span>${igLink ? 'Instagram disponível' : 'Sem Instagram cadastrado'}</span></div>
+                <div class="detail-summary-item"><span class="detail-summary-label">Contato</span><strong>${phoneValue !== 'Não informado' ? phoneLink : 'Não informado'}</strong>${igLink ? `<a href="${escapeHtml(igLink)}" target="_blank" rel="noopener noreferrer">Abrir Instagram</a>` : '<span>Sem Instagram cadastrado</span>'}</div>
               </div>
               <div class="detail-location-panel mt-4">
                 <div><span class="detail-summary-label">Localização e acesso</span><strong>${escapeHtml(pizzeria.addressPt)}</strong><span>${hasCoordinates ? 'Coordenadas cadastradas' : 'Endereço cadastrado'}</span></div>
-                <div class="flex flex-wrap gap-2"><button type="button" id="directory-copy-address" class="detail-action-button">Copiar endereço</button><button type="button" id="directory-share-pizzeria" class="detail-action-button">Compartilhar ficha</button><a href="${escapeHtml(whatsappLink)}" target="_blank" rel="noopener noreferrer" class="detail-action-button">WhatsApp</a><a href="${escapeHtml(emailLink)}" class="detail-action-button">E-mail</a><button type="button" id="directory-distance-btn" class="detail-action-button">Calcular distância</button></div>
+                <div class="flex flex-wrap gap-2"><button type="button" id="directory-copy-address" class="detail-action-button">Copiar endereço</button><button type="button" id="directory-share-pizzeria" class="detail-action-button">Compartilhar ficha</button><a href="${escapeHtml(whatsappLink)}" target="_blank" rel="noopener noreferrer" class="detail-action-button">WhatsApp</a>${hasValidEmail ? `<a href="${escapeHtml(emailLink)}" class="detail-action-button">E-mail</a>` : '<span class="detail-action-button detail-action-disabled">E-mail não cadastrado</span>'}<button type="button" id="directory-distance-btn" class="detail-action-button">Calcular distância</button></div>
                 <span id="directory-distance-result" class="text-xs text-gray-400">${hasCoordinates ? 'A distância será calculada com a sua localização, mediante autorização.' : 'Distância indisponível: a base ainda não possui coordenadas.'}</span>
               </div>
             </div>
