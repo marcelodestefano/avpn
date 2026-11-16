@@ -165,10 +165,155 @@
       font-size: 0.68rem;
       line-height: 1;
     }
+    .detail-rating-score {
+      display: flex;
+      align-items: baseline;
+      gap: 0.45rem;
+      font-size: 1.2rem;
+    }
+    .detail-rating-stars {
+      color: #F1C27D;
+      letter-spacing: 0.08em;
+      font-size: 1rem;
+    }
+    .detail-location-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.85rem;
+      border: 1px solid rgba(212, 163, 115, 0.22);
+      border-radius: 0.7rem;
+      background: rgba(17, 16, 15, 0.5);
+    }
+    .detail-location-panel > div:first-child,
+    .detail-history-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.22rem;
+      min-width: 0;
+    }
+    .detail-location-panel strong {
+      color: #F3E9D8;
+      font-size: 0.8rem;
+      overflow-wrap: anywhere;
+    }
+    .detail-location-panel span:last-child { color: #8D847B; font-size: 0.68rem; }
+    .detail-action-button {
+      border: 1px solid rgba(156, 203, 255, 0.35);
+      border-radius: 0.45rem;
+      background: rgba(156, 203, 255, 0.06);
+      color: #9CCBFF;
+      padding: 0.45rem 0.6rem;
+      font-size: 0.68rem;
+    }
+    .detail-action-button:hover { background: rgba(156, 203, 255, 0.14); }
+    .detail-trust-box {
+      padding: 0.8rem;
+      border-left: 3px solid #D4A373;
+      border-radius: 0.35rem;
+      background: rgba(212, 163, 115, 0.07);
+      color: #B7AEA4;
+      font-size: 0.72rem;
+      line-height: 1.65;
+    }
+    .detail-trust-box strong { color: #D4A373; }
+    .detail-history-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+    .detail-history-item {
+      padding: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.6rem;
+      background: rgba(17, 16, 15, 0.5);
+    }
+    .detail-history-item span { color: #8D847B; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .detail-history-item strong { color: #F3E9D8; font-size: 0.78rem; overflow-wrap: anywhere; }
+    .detail-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+    .detail-summary-item {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      padding: 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.65rem;
+      background: rgba(17, 16, 15, 0.55);
+      font-size: 0.72rem;
+    }
+    .detail-summary-item strong {
+      color: #F3E9D8;
+      font-size: 0.86rem;
+      overflow-wrap: anywhere;
+    }
+    .detail-summary-item a {
+      color: #9CCBFF;
+      font-size: 0.68rem;
+    }
+    .detail-summary-label {
+      color: #8D847B;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .detail-status-dot {
+      width: 0.55rem;
+      height: 0.55rem;
+      display: inline-block;
+      border-radius: 999px;
+      background: #8D847B;
+    }
+    .detail-status-dot.is-open { background: #6EE7B7; }
+    .detail-status-dot.is-closed { background: #FCA5A5; }
+    .detail-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .detail-gallery-item,
+    .detail-gallery-empty {
+      min-height: 9rem;
+      overflow: hidden;
+      border: 1px solid rgba(212, 163, 115, 0.25);
+      border-radius: 0.75rem;
+      background: #11100f;
+    }
+    .detail-gallery-item { display: block; }
+    .detail-gallery-item img {
+      width: 100%;
+      height: 100%;
+      min-height: 9rem;
+      object-fit: cover;
+      transition: transform 180ms ease;
+    }
+    .detail-gallery-item:hover img { transform: scale(1.04); }
+    .detail-gallery-empty {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.35rem;
+      color: #D4A373;
+      text-align: center;
+      padding: 1.5rem;
+    }
+    .detail-gallery-empty small { color: #8D847B; }
     .detail-info-list dd {
       overflow-wrap: anywhere;
     }
     @media (max-width: 640px) {
+      .detail-summary-grid,
+      .detail-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .detail-gallery-empty { grid-column: 1 / -1; }
+      .detail-location-panel,
+      .detail-history-grid { grid-template-columns: 1fr; }
       #tab-navigation {
         gap: 0.35rem;
         padding-bottom: 0.5rem;
