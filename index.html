@@ -810,8 +810,13 @@
 
       </div>
 
+      <!-- Página detalhada de cada pizzaria -->
+      <section id="directory-detail-view" class="hidden space-y-5" aria-live="polite">
+        <div id="directory-detail-content"></div>
+      </section>
+
       <!-- Google Maps Iframe Container -->
-      <div class="bg-charcoalCard p-4 rounded-xl border border-gray-800 space-y-3">
+      <div class="directory-browse-section bg-charcoalCard p-4 rounded-xl border border-gray-800 space-y-3">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-gray-800 pb-2">
           <div class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
@@ -836,7 +841,7 @@
       </div>
 
       <!-- Pesquisa e Filtros -->
-      <div class="directory-filters bg-charcoalCard p-5 rounded-xl border border-gray-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-4">
+      <div class="directory-browse-section directory-filters bg-charcoalCard p-5 rounded-xl border border-gray-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-4">
         <div>
           <label class="text-xs font-medium text-gray-400 block mb-1">Pesquisar por Nome, ID ou Endereço:</label>
           <input type="text" id="map-search-input" placeholder="Ex: Michele, 156, São Paulo..." class="directory-filter-control w-full bg-charcoal border border-gray-700 rounded px-3 py-1.5 text-xs text-cream focus:border-terracotta outline-none">
@@ -881,11 +886,11 @@
       </div>
 
       <!-- Grid de Cards das Pizzarias -->
-      <div id="pizzeria-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="pizzeria-cards-grid" class="directory-browse-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Cards renderizados via JS -->
       </div>
 
-      <section class="bg-charcoalCard p-5 rounded-xl border border-gold/30 space-y-4">
+      <section class="directory-browse-section bg-charcoalCard p-5 rounded-xl border border-gold/30 space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-gray-800 pb-3">
           <div><h3 class="text-base font-semibold text-gold">Ferramentas do Diretório</h3><p class="text-xs text-gray-400 mt-1">Compare até três pizzarias ou confira a qualidade dos registros carregados.</p></div>
           <button id="directory-validate-btn" type="button" class="px-3 py-2 rounded bg-charcoal border border-gold/40 text-gold text-xs font-semibold hover:bg-gold/10">Validar base</button>
@@ -896,7 +901,7 @@
       </section>
 
       <!-- Paginação -->
-      <div class="flex justify-between items-center bg-charcoalCard p-4 rounded-xl border border-gray-800">
+      <div class="directory-browse-section flex justify-between items-center bg-charcoalCard p-4 rounded-xl border border-gray-800">
         <span id="pizzeria-pagination-info" class="text-xs text-gray-400">Exibindo 1-6 de 12 pizzarias</span>
         <div class="flex space-x-2">
           <button id="btn-prev-page" class="px-3 py-1 bg-charcoal border border-gray-700 text-xs rounded text-cream disabled:opacity-40">Anterior</button>
