@@ -925,6 +925,106 @@
         const compareList = document.getElementById('directory-compare-list');
         const compareResult = document.getElementById('directory-compare-result');
         const validationResult = document.getElementById('directory-validation-result');
+        const detailView = document.getElementById('directory-detail-view');
+        const detailContent = document.getElementById('directory-detail-content');
+        const browseSections = [...document.querySelectorAll('.directory-browse-section')];
+
+        const escapeHtml = value => String(value ?? 'Não informado').replace(/[&<>'"]/g, character => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        }[character]));
+
+        function setDirectoryDetailVisible(isVisible) {
+          detailView.classList.toggle('hidden', !isVisible);
+          browseSections.forEach(section => section.classList.toggle('hidden', isVisible));
+        }
+
+        function renderPizzeriaDetail(pizzeria) {
+          if (!pizzeria) return;
+          const isFavorite = favoriteIds.has(String(pizzeria.id));
+          const igLink = pizzeria.instagramUrl || (pizzeria.instagram ? `https://instagram.com/${pizzeria.instagram.replace('@', '')}` : '');
+          const destinationText = `${pizzeria.name}, ${pizzeria.address}, ${pizzeria.country}`;
+          const mapQuery = encodeURIComponent(destinationText);
+          const mapLink = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+          const routeLink = (pizzeria.lat && pizzeria.lng)
+            ? `https://www.google.com/maps/dir/?api=1&destination=${pizzeria.lat},${pizzeria.lng}`
+            : `https://www.google.com/maps/dir/?api=1&destination=${mapQuery}`;
+          const phoneValue = pizzeria.phone && pizzeria.phone !== 'Não informado' ? pizzeria.phone : 'Não informado';
+          const phoneLink = phoneValue !== 'Não informado' ? `<a href="tel:${escapeHtml(phoneValue)}" class="text-blue-300 hover:underline">${escapeHtml(phoneValue)}</a>` : '<span class="text-gray-500">Não informado</span>';
+          const instagramValue = pizzeria.instagram || 'Não informado';
+          const instagramHtml = igLink ? `<a href="${escapeHtml(igLink)}" target="_blank" rel="noopener noreferrer" class="text-terracotta hover:underline">${escapeHtml(instagramValue)}</a>` : `<span class="text-gray-500">${escapeHtml(instagramValue)}</span>`;
+
+          detailContent.innerHTML = `
+            <div class="detail-hero bg-charcoalCard p-5 sm:p-7 rounded-xl border border-terracotta/40">
+              <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
+                <div>
+                  <button type="button" id="directory-detail-back" class="text-xs text-gold hover:text-cream mb-4 inline-flex items-center gap-1">← Voltar ao diretório</button>
+                  <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <span class="text-[10px] font-mono font-bold bg-gold/20 text-gold px-2 py-1 rounded border border-gold/30">AVPN #${escapeHtml(pizzeria.id)}</span>
+                    <span class="text-xs text-gray-400">${escapeHtml(pizzeria.countryPt)} · ${escapeHtml(pizzeria.cityPt)}</span>
+                  </div>
+                  <h2 class="text-2xl sm:text-3xl font-bold text-cream">${escapeHtml(pizzeria.name)}</h2>
+                  <p class="mt-2 text-sm text-gold/90">${escapeHtml(pizzeria.addressPt)}</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button type="button" id="directory-detail-favorite" class="px-3 py-2 rounded border border-gold/40 bg-charcoal text-gold text-xs font-semibold hover:bg-gold/10">${isFavorite ? '★ Remover dos favoritos' : '☆ Adicionar aos favoritos'}</button>
+                  <a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded bg-terracotta text-cream text-xs font-semibold hover:bg-terracotta/80">Abrir no Google Maps</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+              <div class="lg:col-span-2 bg-charcoalCard p-5 rounded-xl border border-gray-800 space-y-4">
+                <h3 class="text-base font-semibold text-gold border-b border-gray-800 pb-2">Informações da pizzaria</h3>
+                <dl class="detail-info-list space-y-3 text-sm">
+                  <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">Nome</dt><dd class="text-cream mt-0.5">${escapeHtml(pizzeria.name)}</dd></div>
+                  <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">ID AVPN</dt><dd class="text-cream mt-0.5">#${escapeHtml(pizzeria.id)}</dd></div>
+                  <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">País</dt><dd class="text-cream mt-0.5">${escapeHtml(pizzeria.countryPt)} <span class="text-gray-500">(${escapeHtml(pizzeria.country)})</span></dd></div>
+                  <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">Cidade</dt><dd class="text-cream mt-0.5">${escapeHtml(pizzeria.cityPt)} <span class="text-gray-500">(${escapeHtml(pizzeria.city)})</span></dd></div>
+                  <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">Estado / província</dt><dd class="text-cream mt-0.5">${escapeHtml(pizzeria.statePt)}</dd></div>
+                  <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">Endereço traduzido</dt><dd class="text-cream mt-0.5">${escapeHtml(pizzeria.addressPt)}</dd></div>
+                  <div><dt class="text-[10px] uppercase tracking-wide text-gray-500">Endereço original</dt><dd class="text-gray-400 mt-0.5 italic">${escapeHtml(pizzeria.address)}</dd></div>
+                </dl>
+              </div>
+
+              <div class="lg:col-span-3 bg-charcoalCard p-5 rounded-xl border border-gray-800 space-y-4">
+                <h3 class="text-base font-semibold text-gold border-b border-gray-800 pb-2">Contato e referências</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div class="bg-charcoal rounded border border-gray-800 p-3"><span class="block text-[10px] uppercase tracking-wide text-gray-500">Telefone</span><span class="text-cream">${phoneLink}</span></div>
+                  <div class="bg-charcoal rounded border border-gray-800 p-3"><span class="block text-[10px] uppercase tracking-wide text-gray-500">Instagram</span><span>${instagramHtml}</span></div>
+                </div>
+                <div class="flex flex-wrap gap-2 pt-1">
+                  <a href="${escapeHtml(pizzeria.avpnUrl)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded border border-gold/40 text-gold text-xs font-semibold hover:bg-gold/10">Ficha oficial AVPN</a>
+                  <a href="${escapeHtml(routeLink)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded border border-blue-400/40 text-blue-300 text-xs font-semibold hover:bg-blue-900/20">Traçar rota</a>
+                </div>
+                <div class="overflow-hidden rounded-lg border border-gray-800 bg-charcoal h-64 sm:h-80">
+                  <iframe title="Mapa de ${escapeHtml(pizzeria.name)}" width="100%" height="100%" frameborder="0" loading="lazy" src="https://maps.google.com/maps?q=${mapQuery}&t=m&z=16&output=embed"></iframe>
+                </div>
+                <p class="text-[11px] text-gray-500">As informações exibidas vêm da base AVPN carregada no diretório. Use os links oficiais para consultar atualizações diretamente nas fontes.</p>
+              </div>
+            </div>
+          `;
+
+          detailView.classList.remove('hidden');
+          document.getElementById('directory-detail-back').addEventListener('click', closePizzeriaDetail);
+          document.getElementById('directory-detail-favorite').addEventListener('click', () => window.togglePizzeriaFavorite(pizzeria.id));
+        }
+
+        function closePizzeriaDetail() {
+          setDirectoryDetailVisible(false);
+          if (window.history && window.history.pushState) window.history.pushState(null, null, '#aba5');
+          window.scrollTo({ top: document.getElementById('aba5').offsetTop - 20, behavior: 'smooth' });
+        }
+
+        window.openPizzeriaDetail = function(id) {
+          const found = pizzeriasData.find(p => String(p.id) === String(id));
+          if (!found) return;
+          selectedPizzeria = found;
+          updateMapIframe(found);
+          renderPizzeriaDetail(found);
+          setDirectoryDetailVisible(true);
+          if (window.history && window.history.pushState) window.history.pushState(null, null, `#aba5/pizzaria/${encodeURIComponent(found.id)}`);
+          window.scrollTo({ top: document.getElementById('aba5').offsetTop - 20, behavior: 'smooth' });
+        };
 
         function updateMapIframe(pizzeria) {
           if (!pizzeria) return;
@@ -1026,7 +1126,7 @@
                 : `<span class="text-gray-500">📞 Não informado</span>`;
 
               html += `
-                <div class="bg-charcoalCard p-5 rounded-xl border ${isSelected ? 'border-terracotta ring-1 ring-terracotta' : 'border-gray-800'} hover:border-gold/40 transition flex flex-col justify-between space-y-3">
+                <div data-pizzeria-id="${p.id}" role="link" tabindex="0" aria-label="Abrir detalhes de ${escapeHtml(p.name)}" class="pizzeria-card bg-charcoalCard p-5 rounded-xl border ${isSelected ? 'border-terracotta ring-1 ring-terracotta' : 'border-gray-800'} hover:border-gold/40 transition flex flex-col justify-between space-y-3 cursor-pointer">
                   <div>
                     <div class="flex justify-between items-start gap-2">
                       <span class="text-[10px] font-mono font-bold bg-gold/20 text-gold px-2 py-0.5 rounded border border-gold/30">AVPN #${p.id}</span>
@@ -1048,8 +1148,11 @@
                     </div>
 
                     <div class="flex gap-2 pt-1">
-                      <button onclick="window.focusPizzeria('${p.id}')" class="flex-1 px-2.5 py-1.5 bg-terracotta hover:bg-terracotta/80 text-cream text-xs font-semibold rounded text-center transition">
+                      <button type="button" onclick="window.focusPizzeria('${p.id}')" class="flex-1 px-2.5 py-1.5 bg-terracotta hover:bg-terracotta/80 text-cream text-xs font-semibold rounded text-center transition">
                         Ver no Google Maps
+                      </button>
+                      <button type="button" onclick="window.openPizzeriaDetail('${p.id}')" class="flex-1 px-2.5 py-1.5 bg-gold/10 hover:bg-gold/20 border border-gold/40 text-gold text-xs font-semibold rounded text-center transition">
+                        Ver detalhes
                       </button>
                       <a href="${p.avpnUrl}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 bg-charcoal hover:bg-gray-800 border border-gray-700 text-gray-300 text-xs rounded text-center">
                         Ficha AVPN
@@ -1086,6 +1189,7 @@
           if (favoriteIds.has(key)) favoriteIds.delete(key); else favoriteIds.add(key);
           try { localStorage.setItem(favoritesKey, JSON.stringify([...favoriteIds])); } catch (error) {}
           renderCards();
+          if (!detailView.classList.contains('hidden') && selectedPizzeria && String(selectedPizzeria.id) === key) renderPizzeriaDetail(selectedPizzeria);
         };
 
         window.togglePizzeriaCompare = function(id, shouldAdd) {
@@ -1115,6 +1219,21 @@
             window.scrollTo({ top: iframe.offsetTop - 100, behavior: 'smooth' });
           }
         };
+
+        cardsGrid.addEventListener('click', event => {
+          if (event.target.closest('a, button, input, label')) return;
+          const card = event.target.closest('[data-pizzeria-id]');
+          if (card) window.openPizzeriaDetail(card.dataset.pizzeriaId);
+        });
+        cardsGrid.addEventListener('keydown', event => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          if (event.target.closest('a, button, input, label')) return;
+          const card = event.target.closest('[data-pizzeria-id]');
+          if (card) {
+            event.preventDefault();
+            window.openPizzeriaDetail(card.dataset.pizzeriaId);
+          }
+        });
 
         // Eventos
         searchInput.addEventListener('input', () => { currentPage = 1; renderCards(); });
