@@ -107,6 +107,17 @@
       border-color: rgba(245, 158, 11, 0.45);
       background: rgba(120, 53, 15, 0.22);
     }
+    .directory-filters > div {
+      min-width: 0;
+    }
+    .directory-filter-control {
+      min-height: 2.5rem;
+      height: 2.5rem;
+      box-sizing: border-box;
+    }
+    .directory-filters label {
+      min-height: 2rem;
+    }
     @media (max-width: 640px) {
       #tab-navigation {
         gap: 0.35rem;
