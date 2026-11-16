@@ -121,7 +121,7 @@
         <div>
           <h2 class="text-xl font-bold text-cream flex items-center gap-2">
             <span>Calculadora de Massa Napolitana AVPN</span>
-            <span class="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded border border-gold/40">Método base água • 55% inicial</span>
+            <span class="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded border border-gold/40">Referência configurável • 55% inicial</span>
           </h2>
           <p class="text-xs text-gray-400 mt-1">
             Parâmetros estritamente calibrados de acordo com as normas da Associazione Verace Pizza Napoletana.
@@ -139,7 +139,7 @@
         <!-- Formulário de Controles (Controles deslizantes + Inputs) -->
         <div class="input-panel lg:col-span-7 bg-charcoalCard p-6 rounded-xl border border-gray-800 space-y-5">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-800 pb-3">
-            <h3 class="text-base font-semibold text-gold">Ingredientes e parâmetros da produção</h3>
+            <h3 class="text-base font-semibold text-gold">Monte sua receita</h3>
             <div class="flex items-center gap-2">
               <label for="recipe-mode" class="text-xs text-gray-400 whitespace-nowrap">Fazer receita por:</label>
               <select id="recipe-mode" class="bg-charcoal border border-terracotta/50 rounded px-2.5 py-1.5 text-xs text-cream font-semibold focus:border-gold outline-none">
@@ -149,22 +149,35 @@
             </div>
           </div>
 
-          <!-- Ordem operacional: água, sal, farinha e fermento -->
+          <div class="reference-card rounded-lg border border-gold/40 bg-gold/10 p-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <p class="text-sm font-semibold text-gold">Qual ingrediente você já conhece?</p>
+                <p class="text-[11px] text-gray-400 mt-1">Escolha a referência. O outro peso será calculado automaticamente.</p>
+              </div>
+              <select id="recipe-reference" class="bg-charcoal border border-gold/50 rounded px-3 py-2 text-sm text-cream font-semibold focus:border-gold outline-none">
+                <option value="water" selected>Tenho o peso da água</option>
+                <option value="flour">Tenho o peso da farinha</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Ordem operacional: referência, hidratação, sal e fermento -->
           <div class="rounded-lg border border-blue-400/30 bg-blue-950/10 p-3">
             <div class="flex justify-between items-center text-sm mb-1">
-              <label for="input-agua" class="font-semibold text-blue-200">1. Água Potável Fria (base da receita):</label>
+              <label for="input-agua" class="font-semibold text-blue-200">Água potável fria:</label>
               <div class="flex items-center gap-1">
                 <input type="number" id="input-agua" value="1000" min="250" max="10000" step="10" class="w-24 bg-charcoal border border-blue-400/50 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
                 <span class="text-xs text-gray-400">g</span>
               </div>
             </div>
             <input type="range" id="slider-agua" value="1000" min="250" max="5000" step="10" class="w-full accent-terracotta">
-            <p class="text-[11px] text-gray-400 mt-0.5">Informe a água somente em peso.</p>
+            <p id="agua-help" class="text-[11px] text-gray-400 mt-0.5">Referência editável. Informe a água somente em peso.</p>
           </div>
 
           <div>
             <div class="flex justify-between items-center text-sm mb-1">
-              <label for="input-sal" class="font-medium text-gray-300">2. Sal Marinho Fino (g / litro de água):</label>
+              <label for="input-sal" class="font-medium text-gray-300">Sal marinho fino (g / litro de água):</label>
               <div class="flex items-center gap-1">
                 <input type="number" id="input-sal" value="55" min="30" max="80" step="1" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
                 <span class="text-xs text-gray-400">g/L</span>
@@ -176,19 +189,31 @@
 
           <div>
             <div class="flex justify-between items-center text-sm mb-1">
-              <label for="input-hidratacao" class="font-medium text-gray-300">3. Farinha Tipo 00 (calculada pela hidratação):</label>
+              <label for="input-hidratacao" class="font-medium text-gray-300">Hidratação da massa:</label>
               <div class="flex items-center gap-1">
                 <input type="number" id="input-hidratacao" value="55.0" min="50" max="75" step="0.5" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
                 <span class="text-xs text-gray-400">%</span>
               </div>
             </div>
             <input type="range" id="slider-hidratacao" value="55.0" min="50" max="70" step="0.5" class="w-full accent-terracotta">
-            <p class="text-[11px] text-gray-500 mt-0.5">A farinha é calculada como água ÷ hidratação. Padrão inicial: 55%.</p>
+            <p class="text-[11px] text-gray-500 mt-0.5">Padrão inicial: 55%. Define a proporção entre água e farinha.</p>
+          </div>
+
+          <div class="rounded-lg border border-cream/20 bg-charcoal/60 p-3">
+            <div class="flex justify-between items-center text-sm mb-1">
+              <label for="input-farinha" class="font-medium text-gray-300">Farinha tipo 00:</label>
+              <div class="flex items-center gap-1">
+                <input type="number" id="input-farinha" value="1818" min="250" max="20000" step="1" readonly class="w-24 bg-charcoal/70 border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
+                <span class="text-xs text-gray-400">g</span>
+              </div>
+            </div>
+            <input type="range" id="slider-farinha" value="1818" min="250" max="20000" step="1" disabled class="w-full accent-terracotta">
+            <p id="farinha-help" class="text-[11px] text-gray-500 mt-0.5">Calculada a partir da água e da hidratação.</p>
           </div>
 
           <div>
             <div class="flex justify-between items-center text-sm mb-1">
-              <label for="input-fermento" class="font-medium text-gray-300">4. Fermento Biológico Fresco (g / litro de água):</label>
+              <label for="input-fermento" class="font-medium text-gray-300">Fermento fresco (g / litro de água):</label>
               <div class="flex items-center gap-1">
                 <input type="number" id="input-fermento" value="0.20" min="0.1" max="5.0" step="0.05" class="w-20 bg-charcoal border border-gray-700 rounded px-2 py-1 text-right text-gold font-bold focus:border-terracotta outline-none">
                 <span class="text-xs text-gray-400">g/L</span>
@@ -199,7 +224,7 @@
           </div>
 
           <div class="border-t border-gray-700 pt-4 space-y-4">
-            <h4 class="text-sm font-semibold text-cream">Produção e rendimento</h4>
+            <h4 class="text-sm font-semibold text-cream">Quantidade e rendimento</h4>
             <div>
               <div class="flex justify-between items-center text-sm mb-1">
                 <label for="input-qtd" class="font-medium text-gray-300">Quantidade de pizzas / panetti:</label>
@@ -220,26 +245,26 @@
         <div class="result-panel lg:col-span-5 flex flex-col justify-between bg-charcoalCard p-6 rounded-xl border border-gray-800 space-y-4">
           <div>
             <h3 class="text-base font-semibold text-gold border-b border-gray-800 pb-2 flex justify-between items-center">
-              <span>Receita da Cartela de Bancada</span>
+              <span>Ingredientes calculados</span>
               <span id="res-massa-total-badge" class="text-xs bg-terracotta/20 text-terracotta px-2 py-0.5 rounded border border-terracotta/30">Total: 4.00 kg</span>
             </h3>
 
             <div class="space-y-3 mt-4">
               <div class="result-row result-primary flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
-                <span class="text-sm font-medium text-blue-200">1. Água Potável Fria:</span>
-                <span id="res-agua" class="font-bold text-lg text-blue-400">0 g</span>
+                <span class="text-base font-semibold text-blue-200">Água potável fria</span>
+                <span id="res-agua" class="font-bold text-xl text-blue-400">0 g</span>
               </div>
               <div class="result-row flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
-                <span class="text-sm font-medium text-gray-300">2. Sal Marinho Fino:</span>
-                <span id="res-sal" class="font-bold text-lg text-gray-200">0 g</span>
+                <span class="text-base font-semibold text-gray-300">Sal marinho fino</span>
+                <span id="res-sal" class="font-bold text-xl text-gray-200">0 g</span>
               </div>
               <div class="result-row flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
-                <span class="text-sm font-medium text-gray-300">3. Farinha Tipo 00 (W280-330):</span>
-                <span id="res-farinha" class="font-bold text-lg text-cream">0 g</span>
+                <span class="text-base font-semibold text-gray-300">Farinha tipo 00</span>
+                <span id="res-farinha" class="font-bold text-xl text-cream">0 g</span>
               </div>
               <div class="result-row flex justify-between items-center p-2.5 rounded bg-charcoal border border-gray-800">
-                <span class="text-sm font-medium text-gray-300">4. Fermento Biológico Fresco:</span>
-                <span id="res-fermento-fresco" class="font-bold text-lg text-gold">0.00 g</span>
+                <span class="text-base font-semibold text-gray-300">Fermento biológico fresco</span>
+                <span id="res-fermento-fresco" class="font-bold text-xl text-gold">0.00 g</span>
               </div>
               <div class="result-row result-secondary flex justify-between items-center p-2 rounded bg-charcoal/50 border border-gray-800/80 text-xs">
                 <span class="text-gray-400">Alternativa: Fermento Seco Instantâneo (1/3):</span>
