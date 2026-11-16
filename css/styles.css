@@ -57,6 +57,12 @@
     .input-panel > .flex:first-child {
       border-color: rgba(212, 163, 115, 0.28) !important;
     }
+    .reference-card {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    .reference-card select {
+      min-width: 13rem;
+    }
     .input-panel input[type="number"],
     .input-panel select {
       background-color: #11100f;
@@ -96,6 +102,10 @@
     }
     .result-primary span:last-child {
       font-size: 1.2rem;
+    }
+    .result-row:not(.result-secondary) span:last-child {
+      font-size: 1.25rem;
+      line-height: 1.2;
     }
     .result-secondary {
       opacity: 0.82;
